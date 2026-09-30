@@ -92,10 +92,1255 @@
           }
         }
       }
+    },
+    "/api/v1/auth/config": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Get authentication metadata and configuration",
+        "description": "Returns dynamic system metadata, active roles, and dev demo accounts if in dev mode.",
+        "operationId": "get_auth_config_api_v1_auth_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthConfigResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "User login with email and password",
+        "description": "Authenticates credentials, issues a short-lived JWT access token and rotating refresh token.",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Rotate refresh token for new access/refresh pair",
+        "description": "Rotates the refresh token. If an already revoked token is submitted, invalidates the whole session family.",
+        "operationId": "refresh_api_v1_auth_refresh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Logout current session",
+        "description": "Revokes the specified refresh token and closes the session.",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/LogoutRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/logout-all": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Logout from all devices",
+        "description": "Revokes all active refresh tokens for the authenticated user.",
+        "operationId": "logout_all_api_v1_auth_logout_all_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Get current user profile and permissions",
+        "description": "Returns authenticated user details along with permitted actions.",
+        "operationId": "get_me_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSummary"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Change user password",
+        "description": "Validates current password, applies new password, and revokes all active sessions.",
+        "operationId": "change_password_api_v1_auth_change_password_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register a new user account",
+        "description": "Creates a new account with specified role.",
+        "operationId": "register_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSummary"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/roles": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all system roles",
+        "description": "List available system roles.",
+        "operationId": "get_roles_api_v1_users_roles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RoleResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Roles Api V1 Users Roles Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/managers": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List active managers for assignment",
+        "description": "List eligible managers and administrators for MR assignment.",
+        "operationId": "list_managers_api_v1_users_managers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ManagerSummary"
+                  },
+                  "type": "array",
+                  "title": "Response List Managers Api V1 Users Managers Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/my-team": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get manager's active team members",
+        "description": "List active MRs assigned to current logged-in manager.",
+        "operationId": "get_my_team_api_v1_users_my_team_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get My Team Api V1 Users My Team Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me/profile": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get current user profile with manager info",
+        "description": "Get full profile details for logged-in user including manager and avatar.",
+        "operationId": "get_my_profile_api_v1_users_me_profile_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update current user profile",
+        "description": "Self-service profile update (name, phone, avatar).",
+        "operationId": "update_my_profile_api_v1_users_me_profile_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List users with data scoping and filters",
+        "description": "Fetch paginated, role-scoped list of user accounts.",
+        "operationId": "list_users_api_v1_users_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by role code (ADMIN, MANAGER, MR)",
+              "title": "Role"
+            },
+            "description": "Filter by role code (ADMIN, MANAGER, MR)"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search by name, email, or phone",
+              "title": "Search"
+            },
+            "description": "Search by name, email, or phone"
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter active/inactive",
+              "title": "Is Active"
+            },
+            "description": "Filter active/inactive"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Items per page",
+              "default": 50,
+              "title": "Page Size"
+            },
+            "description": "Items per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create user account (Admin only)",
+        "description": "Create a new user account with role and optional manager assignment.",
+        "operationId": "create_user_api_v1_users_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user details by ID",
+        "description": "Get user details by ID respecting team scope.",
+        "operationId": "get_user_details_api_v1_users__user_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user account",
+        "description": "Update user account attributes.",
+        "operationId": "update_user_api_v1_users__user_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}/status": {
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Activate or deactivate user account (BR-14)",
+        "description": "Activate or deactivate user. Deactivating revokes all active tokens immediately.",
+        "operationId": "update_user_status_api_v1_users__user_id__status_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserStatusUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}/assign-manager": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Assign MR to a Manager with history",
+        "description": "Assign an MR to a manager. Replaces active assignment while preserving history.",
+        "operationId": "assign_manager_api_v1_users__user_id__assign_manager_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignManagerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagerMRAssignmentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}/assignments": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get manager assignment history for MR",
+        "description": "Retrieve full manager assignment audit history for an MR.",
+        "operationId": "get_assignment_history_api_v1_users__user_id__assignments_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ManagerMRAssignmentResponse"
+                  },
+                  "title": "Response Get Assignment History Api V1 Users  User Id  Assignments Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/upload": {
+      "post": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Upload a file or image",
+        "description": "Upload a file (photo, document) through StorageProvider.",
+        "operationId": "upload_file_api_v1_files_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_file_api_v1_files_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/files/{file_id}": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Get file metadata",
+        "description": "Get metadata for an existing file record.",
+        "operationId": "get_file_metadata_api_v1_files__file_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "File Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/files/{file_id}/download": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Download or stream file content",
+        "description": "Serve binary file bytes.",
+        "operationId": "download_file_api_v1_files__file_id__download_get",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "File Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AssignManagerRequest": {
+        "properties": {
+          "manager_id": {
+            "type": "integer",
+            "title": "Manager Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "manager_id"
+        ],
+        "title": "AssignManagerRequest",
+        "description": "Request to assign or reassign an MR to a Manager."
+      },
+      "AuthConfigResponse": {
+        "properties": {
+          "project_name": {
+            "type": "string",
+            "title": "Project Name"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles"
+          },
+          "demo_accounts": {
+            "items": {
+              "$ref": "#/components/schemas/DemoAccount"
+            },
+            "type": "array",
+            "title": "Demo Accounts",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "project_name",
+          "version",
+          "environment",
+          "roles"
+        ],
+        "title": "AuthConfigResponse",
+        "description": "Dynamic auth configuration and available roles provided by backend."
+      },
+      "Body_upload_file_api_v1_files_upload_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_file_api_v1_files_upload_post"
+      },
+      "ChangePasswordRequest": {
+        "properties": {
+          "old_password": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Old Password"
+          },
+          "new_password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "New Password",
+            "description": "Minimum 8 characters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "old_password",
+          "new_password"
+        ],
+        "title": "ChangePasswordRequest",
+        "description": "Request payload for updating password."
+      },
+      "DemoAccount": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role",
+          "email",
+          "password",
+          "label"
+        ],
+        "title": "DemoAccount",
+        "description": "Development/preview demo credentials."
+      },
+      "FileResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "filename": {
+            "type": "string",
+            "title": "Filename"
+          },
+          "original_filename": {
+            "type": "string",
+            "title": "Original Filename"
+          },
+          "mime_type": {
+            "type": "string",
+            "title": "Mime Type"
+          },
+          "file_size_bytes": {
+            "type": "integer",
+            "title": "File Size Bytes"
+          },
+          "storage_provider": {
+            "type": "string",
+            "title": "Storage Provider"
+          },
+          "file_url": {
+            "type": "string",
+            "title": "File Url"
+          },
+          "uploaded_by": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Uploaded By"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "filename",
+          "original_filename",
+          "mime_type",
+          "file_size_bytes",
+          "storage_provider",
+          "file_url",
+          "created_at"
+        ],
+        "title": "FileResponse",
+        "description": "File metadata response."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
       "HealthResponse": {
         "properties": {
           "status": {
@@ -134,6 +1379,200 @@
         ],
         "title": "HealthResponse",
         "description": "Schema for basic service health check."
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "title": "Password",
+            "description": "Plaintext login password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "description": "User credentials for standard email/password authentication."
+      },
+      "LogoutRequest": {
+        "properties": {
+          "refresh_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "title": "LogoutRequest",
+        "description": "Optional payload to explicitly specify the refresh token to revoke."
+      },
+      "ManagerMRAssignmentResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "manager_id": {
+            "type": "integer",
+            "title": "Manager Id"
+          },
+          "manager_name": {
+            "type": "string",
+            "title": "Manager Name"
+          },
+          "mr_id": {
+            "type": "integer",
+            "title": "Mr Id"
+          },
+          "mr_name": {
+            "type": "string",
+            "title": "Mr Name"
+          },
+          "assigned_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Assigned At"
+          },
+          "unassigned_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unassigned At"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "manager_id",
+          "manager_name",
+          "mr_id",
+          "mr_name",
+          "assigned_at",
+          "is_active"
+        ],
+        "title": "ManagerMRAssignmentResponse",
+        "description": "Historical or active assignment record."
+      },
+      "ManagerSummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "full_name",
+          "email"
+        ],
+        "title": "ManagerSummary",
+        "description": "Manager summary response."
+      },
+      "MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "MessageResponse",
+        "description": "Generic status response."
+      },
+      "ProfileUpdateRequest": {
+        "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "profile_picture_file_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Picture File Id"
+          }
+        },
+        "type": "object",
+        "title": "ProfileUpdateRequest",
+        "description": "Self-service profile update request."
       },
       "ReadinessComponent": {
         "properties": {
@@ -189,6 +1628,554 @@
         ],
         "title": "ReadyResponse",
         "description": "Schema for detailed system readiness."
+      },
+      "RefreshTokenRequest": {
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token",
+            "description": "The opaque refresh token string"
+          }
+        },
+        "type": "object",
+        "required": [
+          "refresh_token"
+        ],
+        "title": "RefreshTokenRequest",
+        "description": "Refresh token payload used to rotate tokens."
+      },
+      "RegisterRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Password"
+          },
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "role_code": {
+            "type": "string",
+            "title": "Role Code",
+            "description": "Requested role: MR, MANAGER, or ADMIN",
+            "default": "MR"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "full_name"
+        ],
+        "title": "RegisterRequest",
+        "description": "Self-registration request for new personnel."
+      },
+      "RoleResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "RoleResponse",
+        "description": "Role summary response."
+      },
+      "TokenResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "Bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In",
+            "description": "Access token expiration in seconds"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserSummary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in",
+          "user"
+        ],
+        "title": "TokenResponse",
+        "description": "JWT access token and rotating refresh token response."
+      },
+      "UserCreate": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "role_code": {
+            "type": "string",
+            "title": "Role Code",
+            "description": "Role code: ADMIN, MANAGER, or MR"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "title": "Password",
+            "description": "Initial password"
+          },
+          "force_password_change": {
+            "type": "boolean",
+            "title": "Force Password Change",
+            "default": false
+          },
+          "manager_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manager Id",
+            "description": "Assigned Manager ID if creating an MR"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "full_name",
+          "role_code",
+          "password"
+        ],
+        "title": "UserCreate",
+        "description": "Create new user account."
+      },
+      "UserListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/UserResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "page_size",
+          "total_pages"
+        ],
+        "title": "UserListResponse",
+        "description": "Paginated list of users."
+      },
+      "UserResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "role_id": {
+            "type": "integer",
+            "title": "Role Id"
+          },
+          "role": {
+            "$ref": "#/components/schemas/RoleResponse"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "force_password_change": {
+            "type": "boolean",
+            "title": "Force Password Change"
+          },
+          "failed_login_attempts": {
+            "type": "integer",
+            "title": "Failed Login Attempts"
+          },
+          "locked_until": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locked Until"
+          },
+          "last_login_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Login At"
+          },
+          "profile_picture_file_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Picture File Id"
+          },
+          "profile_picture_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Picture Url"
+          },
+          "current_manager": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ManagerSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "full_name",
+          "role_id",
+          "role",
+          "is_active",
+          "force_password_change",
+          "failed_login_attempts",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "UserResponse",
+        "description": "Comprehensive user account response."
+      },
+      "UserStatusUpdate": {
+        "properties": {
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "is_active"
+        ],
+        "title": "UserStatusUpdate",
+        "description": "Activate or deactivate user account."
+      },
+      "UserSummary": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "force_password_change": {
+            "type": "boolean",
+            "title": "Force Password Change",
+            "default": false
+          },
+          "permissions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Permissions",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "full_name",
+          "role"
+        ],
+        "title": "UserSummary",
+        "description": "Safe user profile overview without sensitive credentials."
+      },
+      "UserUpdate": {
+        "properties": {
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "role_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Role Code"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 6
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Password"
+          },
+          "profile_picture_file_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Picture File Id"
+          }
+        },
+        "type": "object",
+        "title": "UserUpdate",
+        "description": "Update user account attributes."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
   }

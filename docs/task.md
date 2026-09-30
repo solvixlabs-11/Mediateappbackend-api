@@ -37,21 +37,21 @@ Mobile
 
 ## Phase 1: Auth, Users, Profile (features 1, 2, 33)
 Backend
-- [ ] P1-B-01 Tables: roles, permissions, role_permissions, users, refresh_tokens, manager_mr_assignments, audit_logs, files
-- [ ] P1-B-02 Seed roles, permissions, admin user, dev sample users
-- [ ] P1-B-03 Register, login, refresh (rotation), logout, logout-all, me, change-password
-- [ ] P1-B-04 Login rate limit and lockout; audit events
-- [ ] P1-B-05 require_permission and core/scope.py
-- [ ] P1-B-06 Users CRUD, activate/deactivate, assign manager, manager MR list
-- [ ] P1-B-07 Profile endpoints and file upload with StorageProvider
-- [ ] P1-B-08 Tests (permission, scope) and openapi export
+- [x] P1-B-01 Tables: roles, permissions, role_permissions, users, refresh_tokens, manager_mr_assignments, audit_logs, files
+- [x] P1-B-02 Seed roles, permissions, admin user, dev sample users
+- [x] P1-B-03 Register, login, refresh (rotation), logout, logout-all, me, change-password
+- [x] P1-B-04 Login rate limit and lockout; audit events
+- [x] P1-B-05 require_permission and core/scope.py
+- [x] P1-B-06 Users CRUD, activate/deactivate, assign manager, manager MR list
+- [x] P1-B-07 Profile endpoints and file upload with StorageProvider
+- [x] P1-B-08 Tests (permission, scope) and openapi export
 Mobile
-- [ ] P1-M-01 Splash, login, forced change password
-- [ ] P1-M-02 Session restore, refresh flow, permissions hook
-- [ ] P1-M-03 Role-based tabs with Coming Soon screens
-- [ ] P1-M-04 Profile screen with photo upload, logout, logout-all
-- [ ] P1-M-05 Users list/detail/create/edit, assign manager, My Team
-- [ ] P1-M-06 Tests, typecheck, lint; real-phone test of token expiry
+- [x] P1-M-01 Splash, login, forced change password
+- [x] P1-M-02 Session restore, refresh flow, permissions hook
+- [x] P1-M-03 Role-based tabs with Coming Soon screens
+- [x] P1-M-04 Profile screen with photo upload, logout, logout-all
+- [x] P1-M-05 Users list/detail/create/edit, assign manager, My Team
+- [x] P1-M-06 Tests, typecheck, lint; real-phone test of token expiry
 
 ## Phase 2: Masters and Customers (features 5, 29, 4, 3, 10, 11)
 Backend

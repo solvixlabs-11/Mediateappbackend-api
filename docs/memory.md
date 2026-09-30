@@ -21,12 +21,12 @@ Living memory of the project. The AI agent reads this file first in every sessio
 ## Current state
 | Item | Value |
 |---|---|
-| Current phase | P0 (Setup) |
-| Last finished task | P0-B-06 |
-| Next task | P0-M-01 |
-| Backend last finished phase | P0 |
-| Mobile last finished phase | none |
-| Last openapi.json export | Phase 0 baseline (2026-09-30) |
+| Current phase | P2 (Masters and Customers) |
+| Last finished task | P1-B-08 / P1-M-06 (Phase 1 100% Complete) |
+| Next task | P2-B-01 (Master tables and generic master endpoints, seed values) |
+| Backend last finished phase | Phase 1 Complete (22/22 tests passing) |
+| Mobile last finished phase | Phase 1 Complete (0 typecheck errors) |
+| Last openapi.json export | Phase 1 Users & Files & Profile (2026-10-01) |
 | Last git tag | none |
 
 ## Locked decisions
@@ -45,6 +45,7 @@ Living memory of the project. The AI agent reads this file first in every sessio
 | D-11 | Products and samples built last; DCR uses placeholder columns first | project start |
 | D-12 | No continuous background GPS tracking | project start |
 | D-13 | Android first, iOS after P9 | project start (confirm Q3) |
+| D-14 | Created fresh SQL Server database `mediate_mr_db` for clean Phase 1-9 migrations | 2026-09-30 |
 
 ## Answers to open questions (fill from prd.md section 10)
 | Q | Answer |
@@ -63,10 +64,10 @@ Living memory of the project. The AI agent reads this file first in every sessio
 ## Environment (no secrets here)
 | Item | Value |
 |---|---|
-| Backend local URL | http://<PC-LAN-IP>:8000 |
+| Backend local URL | http://192.168.1.18:8000 |
 | Mobile env variable | EXPO_PUBLIC_API_URL |
-| Database (local) | SQL Server in Docker, database name: (fill) |
-| App package id | (fill, example com.mediatehealthcare.mrapp) |
+| Database (local) | SQL Server (SQLEXPRESS), database: mediate_healthcare |
+| App package id | com.mediatehealthcare.mrapp |
 | Expo SDK version | 57.0.26 |
 | Python / Node versions | Python 3.14.6 / Node v24.16.0 |
 | Storage provider (dev) | local folder |

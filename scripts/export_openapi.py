@@ -1,8 +1,8 @@
 """Export OpenAPI schema to openapi.json for mobile client code generation."""
 
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Ensure repository root is on PYTHONPATH
 root_dir = Path(__file__).resolve().parent.parent
@@ -19,6 +19,8 @@ def export_openapi() -> None:
     output_paths = [
         root_dir / "openapi.json",
         root_dir / "docs" / "openapi.json",
+        root_dir.parent / "openapi.json",
+        root_dir.parent / "Mediateappfrontent" / "openapi.json",
     ]
 
     for path in output_paths:

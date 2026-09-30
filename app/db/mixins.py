@@ -27,7 +27,11 @@ class StandardAuditMixin:
     - row_version: Concurrency counter
     """
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        primary_key=True,
+        autoincrement=True,
+    )
 
     client_uuid: Mapped[str | None] = mapped_column(
         String(36),

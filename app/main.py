@@ -10,7 +10,10 @@ from app.core.config import get_settings
 from app.core.errors import register_error_handlers
 from app.core.logging import get_logger, setup_logging
 from app.core.request_id import RequestIdMiddleware
+from app.modules.auth.router import router as auth_router
+from app.modules.files.router import router as files_router
 from app.modules.health.router import router as health_router
+from app.modules.users.router import router as users_router
 
 setup_logging()
 logger = get_logger(__name__)
@@ -57,3 +60,6 @@ register_error_handlers(app)
 app.include_router(health_router)
 # Versioned API routes
 app.include_router(health_router, prefix=settings.API_V1_PREFIX)
+app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
+app.include_router(users_router, prefix=settings.API_V1_PREFIX)
+app.include_router(files_router, prefix=settings.API_V1_PREFIX)

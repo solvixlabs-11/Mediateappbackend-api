@@ -8,9 +8,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
+import app.db  # noqa: F401
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
+from app.modules.users.seed import seed_database
 
 # In-memory SQLite engine for tests
 SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///:memory:"
@@ -25,8 +27,13 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_db() -> Generator[None, None, None]:
-    """Create all tables in memory for testing."""
+    """Create all tables in memory for testing and seed baseline data."""
     Base.metadata.create_all(bind=test_engine)
+    session = TestingSessionLocal()
+    try:
+        seed_database(session)
+    finally:
+        session.close()
     yield
     Base.metadata.drop_all(bind=test_engine)
 
