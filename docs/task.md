@@ -27,12 +27,12 @@ Backend
 - [x] P0-B-05 pytest setup with passing health test, ruff, mypy
 - [x] P0-B-06 export_openapi script (make openapi)
 Mobile
-- [ ] P0-M-01 Expo TypeScript project with dev-client, folder structure
-- [ ] P0-M-02 Theme tokens from design.md, shared components
-- [ ] P0-M-03 Axios client with refresh logic, auth store with SecureStore
-- [ ] P0-M-04 Navigation shell, role-based tab config, ErrorBoundary, Toast
-- [ ] P0-M-05 Offline foundation: sqlite init, outbox table, network hook
-- [ ] P0-M-06 gen:api script, lint, typecheck, jest
+- [x] P0-M-01 Expo TypeScript project with dev-client, folder structure
+- [x] P0-M-02 Theme tokens from design.md, shared components
+- [x] P0-M-03 Axios client with refresh logic, auth store with SecureStore
+- [x] P0-M-04 Navigation shell, role-based tab config, ErrorBoundary, Toast
+- [x] P0-M-05 Offline foundation: sqlite init, outbox table, network hook
+- [x] P0-M-06 gen:api script, lint, typecheck, jest
 - [ ] P0-M-07 Development build installed on real phone; app reaches backend /health over LAN
 
 ## Phase 1: Auth, Users, Profile (features 1, 2, 33)

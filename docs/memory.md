@@ -67,8 +67,8 @@ Living memory of the project. The AI agent reads this file first in every sessio
 | Mobile env variable | EXPO_PUBLIC_API_URL |
 | Database (local) | SQL Server in Docker, database name: (fill) |
 | App package id | (fill, example com.mediatehealthcare.mrapp) |
-| Expo SDK version | (fill after P0) |
-| Python / Node versions | (fill after P0) |
+| Expo SDK version | 57.0.26 |
+| Python / Node versions | Python 3.14.6 / Node v24.16.0 |
 | Storage provider (dev) | local folder |
 Secrets live in .env and EAS secrets only.
 
@@ -94,12 +94,19 @@ Secrets live in .env and EAS secrets only.
 Every native library added needs a new development build. Record it here.
 | Library | Added in phase | Dev build rebuilt |
 |---|---|---|
-| (none yet) | | |
+| expo-dev-client | P0 | pending dev build |
+| expo-secure-store | P0 | pending dev build |
+| expo-sqlite | P0 | pending dev build |
+| @react-native-community/netinfo | P0 | pending dev build |
+| react-native-screens | P0 | pending dev build |
+| react-native-safe-area-context | P0 | pending dev build |
 
 ## Session log
 Add one line per session: date, what was done, what is next.
 - 2026-09-30: Pre-start tasks P-1-01, P-1-02, P-1-03 completed. Phase 0 Backend (P0-B-01 to P0-B-06) completed: FastAPI modular monolith skeleton, settings, logging, standard exception handlers, request id middleware, db mixins & session, Alembic baseline, Dockerfile, docker-compose, Makefile, pytest tests passing, ruff & mypy clean, openapi.json exported. Next: Mobile Phase 0 (P0-M-01).
+- 2026-09-30: Phase 0 Mobile (P0-M-01 to P0-M-06) completed: Expo TypeScript project with dev-client, design system tokens (#0E8C7F teal, #12355B navy), shared UI components (Button, Card, StatusChip, ScreenContainer, Header, Toast, ErrorBoundary, StateViews), Axios client with single-flight token refresh, useAuthStore with SecureStore, 5-tab role-based navigators (MR, Manager, Admin) with ComingSoon placeholders, SQLite outbox table with WAL mode, useNetwork hook, and openapi-typescript type generation script passing strict typecheck. Next: P0-M-07 (LAN verification with phone).
 
 ## Changelog
 - v0.0 Context files created.
 - v0.1 Phase 0 Backend setup complete.
+- v0.2 Phase 0 Mobile setup complete.
