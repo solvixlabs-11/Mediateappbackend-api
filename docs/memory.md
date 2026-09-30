@@ -21,12 +21,12 @@ Living memory of the project. The AI agent reads this file first in every sessio
 ## Current state
 | Item | Value |
 |---|---|
-| Current phase | P-1 (pre-start) |
-| Last finished task | P-1-03 |
-| Next task | P-1-04 |
-| Backend last finished phase | none |
+| Current phase | P0 (Setup) |
+| Last finished task | P0-B-06 |
+| Next task | P0-M-01 |
+| Backend last finished phase | P0 |
 | Mobile last finished phase | none |
-| Last openapi.json export | none |
+| Last openapi.json export | Phase 0 baseline (2026-09-30) |
 | Last git tag | none |
 
 ## Locked decisions
@@ -82,7 +82,8 @@ Secrets live in .env and EAS secrets only.
 ## Dependencies between repos
 | Needed by | Needed from | What | Status |
 |---|---|---|---|
-| (example) mobile P1 | backend P1 | openapi.json with auth and users | pending |
+| mobile P0 | backend P0 | openapi.json exported | ready |
+| mobile P1 | backend P1 | openapi.json with auth and users | pending |
 
 ## Known issues and tech debt
 | ID | Issue | Phase found | Plan |
@@ -97,7 +98,8 @@ Every native library added needs a new development build. Record it here.
 
 ## Session log
 Add one line per session: date, what was done, what is next.
-- 2026-09-30: Analyzed all 6 context files. P-1-01 and P-1-02 completed (context files copied to backend and mobile docs/, repos verified). P-1-03 completed (Q1-Q10 answered with PRD defaults and locked in memory.md). Next: P-1-04 (Tools check/installation).
+- 2026-09-30: Pre-start tasks P-1-01, P-1-02, P-1-03 completed. Phase 0 Backend (P0-B-01 to P0-B-06) completed: FastAPI modular monolith skeleton, settings, logging, standard exception handlers, request id middleware, db mixins & session, Alembic baseline, Dockerfile, docker-compose, Makefile, pytest tests passing, ruff & mypy clean, openapi.json exported. Next: Mobile Phase 0 (P0-M-01).
 
 ## Changelog
 - v0.0 Context files created.
+- v0.1 Phase 0 Backend setup complete.

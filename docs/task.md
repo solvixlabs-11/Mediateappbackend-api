@@ -20,12 +20,12 @@ Legend: [ ] todo, [~] in progress, [x] done
 
 ## Phase 0: Setup
 Backend
-- [ ] P0-B-01 Project skeleton and folder structure from architecture.md
-- [ ] P0-B-02 Settings (.env), logging, error handlers, request id, /health
-- [ ] P0-B-03 DB base mixins, session, Alembic baseline
-- [ ] P0-B-04 Docker, docker-compose (API + SQL Server), Makefile, pyproject
-- [ ] P0-B-05 pytest setup with passing health test, ruff, mypy
-- [ ] P0-B-06 export_openapi script (make openapi)
+- [x] P0-B-01 Project skeleton and folder structure from architecture.md
+- [x] P0-B-02 Settings (.env), logging, error handlers, request id, /health
+- [x] P0-B-03 DB base mixins, session, Alembic baseline
+- [x] P0-B-04 Docker, docker-compose (API + SQL Server), Makefile, pyproject
+- [x] P0-B-05 pytest setup with passing health test, ruff, mypy
+- [x] P0-B-06 export_openapi script (make openapi)
 Mobile
 - [ ] P0-M-01 Expo TypeScript project with dev-client, folder structure
 - [ ] P0-M-02 Theme tokens from design.md, shared components
