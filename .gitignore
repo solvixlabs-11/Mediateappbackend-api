@@ -1,0 +1,29 @@
+# Virtual environment
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Local storage files
+storage/
+uploads/
+
+# Build and dist
+build/
+dist/
+*.egg-info/
