@@ -12,6 +12,7 @@ import app.db  # noqa: F401
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
+from app.modules.masters.seed import seed_masters
 from app.modules.users.seed import seed_database
 
 # In-memory SQLite engine for tests
@@ -32,6 +33,7 @@ def setup_test_db() -> Generator[None, None, None]:
     session = TestingSessionLocal()
     try:
         seed_database(session)
+        seed_masters(session)
     finally:
         session.close()
     yield

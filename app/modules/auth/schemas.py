@@ -88,4 +88,3 @@ class AuthConfigResponse(BaseModel):
     environment: str
     roles: list[str]
     demo_accounts: list[DemoAccount] = []
-

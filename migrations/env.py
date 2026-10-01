@@ -6,10 +6,7 @@ from sqlalchemy import create_engine, pool
 
 from app.core.config import get_settings
 from app.db.base import Base
-import app.modules.auth.models  # noqa: F401
-import app.modules.common.models  # noqa: F401
-import app.modules.files.models  # noqa: F401
-import app.modules.users.models  # noqa: F401
+import app.db  # noqa: F401
 
 # Interpret the config file for Python logging.
 config = context.config

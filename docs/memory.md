@@ -21,12 +21,12 @@ Living memory of the project. The AI agent reads this file first in every sessio
 ## Current state
 | Item | Value |
 |---|---|
-| Current phase | P2 (Masters and Customers) |
-| Last finished task | P1-B-08 / P1-M-06 (Phase 1 100% Complete) |
-| Next task | P2-B-01 (Master tables and generic master endpoints, seed values) |
-| Backend last finished phase | Phase 1 Complete (22/22 tests passing) |
-| Mobile last finished phase | Phase 1 Complete (0 typecheck errors) |
-| Last openapi.json export | Phase 1 Users & Files & Profile (2026-10-01) |
+| Current phase | P6 (Tasks, Chat, Notifications, Meetings) |
+| Last finished task | P5-B-05 / P5-M-05 (Phase 5 Approvals, Tour, Expense, Leave 100% Complete) |
+| Next task | P6-B-01 (Tasks, summary, overdue logic) |
+| Backend last finished phase | Phase 5 Complete (35/35 tests passing) |
+| Mobile last finished phase | Phase 5 Complete (0 typecheck errors) |
+| Last openapi.json export | Phase 5 Approvals, Tours, Expenses, Leaves (2026-10-02) |
 | Last git tag | none |
 
 ## Locked decisions

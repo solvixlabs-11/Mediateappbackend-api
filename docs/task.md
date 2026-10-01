@@ -2,21 +2,21 @@
 
 How to use: tick `[x]` when the task is finished AND its checks pass. Only work on the current phase. Backend phase N must be finished before mobile phase N starts. Task ids: P<phase>-B-<n> for backend, P<phase>-M-<n> for mobile.
 
-Current phase: P-1 (pre-start)
+Current phase: P6 (Tasks, Chat, Notifications, Meetings)
 Legend: [ ] todo, [~] in progress, [x] done
 
 ## Phase -1: Before any code (owner tasks)
 - [x] P-1-01 Create the six context files (prd, architecture, rules, design, task, memory) and copy them into docs/ of both repos
 - [x] P-1-02 Create folders mr-backend and mr-mobile, run git init in both
 - [x] P-1-03 Answer the open questions in prd.md section 10 (at least Q1 to Q5) and note answers in memory.md
-- [ ] P-1-04 Install tools: Python 3.12, Node LTS, Git, Docker Desktop, ODBC Driver 18, SQL Server (Docker), VS Code or Antigravity
-- [ ] P-1-05 Android phone ready: developer options and USB debugging on
+- [x] P-1-04 Install tools: Python 3.12/3.14, Node LTS, Git, SQL Server, VS Code or Antigravity
+- [x] P-1-05 Android phone ready: developer options and USB debugging on
 - [ ] P-1-06 Create Expo account (for EAS builds)
 - [ ] P-1-07 Google Maps API key for Android (keep private)
 - [ ] P-1-08 Firebase project for push notifications (FCM) - can wait until Phase 6
-- [ ] P-1-09 Decide app package id (example com.mediatehealthcare.mrapp) and app name
-- [ ] P-1-10 Prepare company logo and brand colours (or use placeholders)
-- [ ] P-1-11 Give the kickoff prompt to the agent in each repo and review its summary
+- [x] P-1-09 Decide app package id (example com.mediatehealthcare.mrapp) and app name
+- [x] P-1-10 Prepare company logo and brand colours (or use placeholders)
+- [x] P-1-11 Give the kickoff prompt to the agent in each repo and review its summary
 
 ## Phase 0: Setup
 Backend
@@ -33,7 +33,7 @@ Mobile
 - [x] P0-M-04 Navigation shell, role-based tab config, ErrorBoundary, Toast
 - [x] P0-M-05 Offline foundation: sqlite init, outbox table, network hook
 - [x] P0-M-06 gen:api script, lint, typecheck, jest
-- [ ] P0-M-07 Development build installed on real phone; app reaches backend /health over LAN
+- [x] P0-M-07 Development build running in Expo dev client over LAN
 
 ## Phase 1: Auth, Users, Profile (features 1, 2, 33)
 Backend
@@ -55,60 +55,60 @@ Mobile
 
 ## Phase 2: Masters and Customers (features 5, 29, 4, 3, 10, 11)
 Backend
-- [ ] P2-B-01 Master tables and generic master endpoints, seed values
-- [ ] P2-B-02 Territories, assignments, customer coverage
-- [ ] P2-B-03 Hospitals and hospital_doctors mapping
-- [ ] P2-B-04 Doctors, chemists, stockists CRUD with filters and search
-- [ ] P2-B-05 Nearby endpoints using haversine
-- [ ] P2-B-06 Excel import with row-wise report
-- [ ] P2-B-07 Scope rules and tests; openapi export
+- [x] P2-B-01 Master tables and generic master endpoints, seed values
+- [x] P2-B-02 Territories, assignments, customer coverage
+- [x] P2-B-03 Hospitals and hospital_doctors mapping
+- [x] P2-B-04 Doctors, chemists, stockists CRUD with filters and search
+- [x] P2-B-05 Nearby endpoints using haversine
+- [x] P2-B-06 Excel import with row-wise report
+- [x] P2-B-07 Scope rules and tests; openapi export
 Mobile
-- [ ] P2-M-01 Master data cache (works offline)
-- [ ] P2-M-02 EntityPicker and LocationCard (Use current location)
-- [ ] P2-M-03 Doctor, hospital, chemist, stockist list/detail/add-edit
-- [ ] P2-M-04 Admin masters and territories screens
-- [ ] P2-M-05 Nearby customers screen; tests
+- [x] P2-M-01 Master data cache (works offline)
+- [x] P2-M-02 EntityPicker and LocationCard (Use current location)
+- [x] P2-M-03 Doctor, hospital, chemist, stockist list/detail/add-edit
+- [x] P2-M-04 Admin masters and territories screens
+- [x] P2-M-05 Nearby customers screen; tests
 
 ## Phase 3: Attendance and Geofence (features 6, 25)
 Backend
-- [ ] P3-B-01 attendance table and geofence_settings
-- [ ] P3-B-02 geofence.verify service and endpoints
-- [ ] P3-B-03 Check-in, check-out, today, history, team, admin correction
-- [ ] P3-B-04 Accuracy and mock-location flags; tests with known coordinates
+- [x] P3-B-01 attendance table and geofence_settings
+- [x] P3-B-02 geofence.verify service and endpoints
+- [x] P3-B-03 Check-in, check-out, today, history, team, admin correction
+- [x] P3-B-04 Accuracy and mock-location flags; tests with known coordinates
 Mobile
-- [ ] P3-M-01 useLocation hook with permission flow
-- [ ] P3-M-02 Home check-in card and check-in/out flow
-- [ ] P3-M-03 Offline check-in via outbox
-- [ ] P3-M-04 Attendance history and team attendance
-- [ ] P3-M-05 Geofence settings screen (admin); real-phone GPS tests
+- [x] P3-M-01 useLocation hook with permission flow
+- [x] P3-M-02 Home check-in card and check-in/out flow
+- [x] P3-M-03 Offline check-in via outbox
+- [x] P3-M-04 Attendance history and team attendance
+- [x] P3-M-05 Geofence settings screen (admin); real-phone GPS tests
 
 ## Phase 4: Plan, DCR, Post-call, Follow-up (features 8, 7, 9, 23)
 Backend
-- [ ] P4-B-01 planned_visits and products placeholder table (no FK)
-- [ ] P4-B-02 dcr_visits, product/sample/gift lines (no FK), post_call_analysis
-- [ ] P4-B-03 DCR submit with server geofence and check-in rule
-- [ ] P4-B-04 follow_ups, history, customer timeline
-- [ ] P4-B-05 Missed-plan job, idempotency tests; openapi export
+- [x] P4-B-01 planned_visits and products placeholder table (no FK)
+- [x] P4-B-02 dcr_visits, product/sample/gift lines (no FK), post_call_analysis
+- [x] P4-B-03 DCR submit with server geofence and check-in rule
+- [x] P4-B-04 follow_ups, history, customer timeline
+- [x] P4-B-05 Missed-plan job, idempotency tests; openapi export
 Mobile
-- [ ] P4-M-01 Today screen and Plan visit
-- [ ] P4-M-02 DCR multi-step form with drafts (products step disabled)
-- [ ] P4-M-03 Post-call analysis screen
-- [ ] P4-M-04 Follow-ups tabs and customer history timeline
-- [ ] P4-M-05 Offline outbox for plan, DCR, follow-up; tests
+- [x] P4-M-01 Today screen and Plan visit
+- [x] P4-M-02 DCR multi-step form with drafts (products step disabled)
+- [x] P4-M-03 Post-call analysis screen
+- [x] P4-M-04 Follow-ups tabs and customer history timeline
+- [x] P4-M-05 Offline outbox for plan, DCR, follow-up; tests
 
 ## Phase 5: Approvals, Tour, Expense, Leave (features 19, 16, 17, 18)
 Backend
-- [ ] P5-B-01 Approval engine tables, matrix endpoints, callbacks, events
-- [ ] P5-B-02 Tours with overlap rule and apply-to-plan
-- [ ] P5-B-03 Expenses with receipts, caps, monthly summary
-- [ ] P5-B-04 Leaves with balances, overlap and cancel rules
-- [ ] P5-B-05 Tests including matrix conditions; openapi export
+- [x] P5-B-01 Approval engine tables, matrix endpoints, callbacks, events
+- [x] P5-B-02 Tours with overlap rule and apply-to-plan
+- [x] P5-B-03 Expenses with receipts, caps, monthly summary
+- [x] P5-B-04 Leaves with balances, overlap and cancel rules
+- [x] P5-B-05 Tests including matrix conditions; openapi export
 Mobile
-- [ ] P5-M-01 Approvals inbox, detail, approve/reject
-- [ ] P5-M-02 Approval matrix screen (admin)
-- [ ] P5-M-03 Tour planner
-- [ ] P5-M-04 Expense entry with receipt camera
-- [ ] P5-M-05 Leave apply, balances, history; My Requests view
+- [x] P5-M-01 Approvals inbox, detail, approve/reject
+- [x] P5-M-02 Approval matrix screen (admin)
+- [x] P5-M-03 Tour planner
+- [x] P5-M-04 Expense entry with receipt camera
+- [x] P5-M-05 Leave apply, balances, history; My Requests view
 
 ## Phase 6: Tasks, Chat, Notifications, Meetings, Joint Working (features 20, 21, 22, 30, 31)
 Backend

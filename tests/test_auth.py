@@ -202,4 +202,3 @@ def test_get_auth_config(client: TestClient) -> None:
     assert "ADMIN" in data["roles"]
     assert "demo_accounts" in data
     assert len(data["demo_accounts"]) >= 3
-

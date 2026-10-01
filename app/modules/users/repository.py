@@ -98,9 +98,7 @@ class UserRepository:
     ) -> int:
         """Count total matching users for pagination."""
         query = (
-            self.db.query(User)
-            .join(User.role)
-            .filter(User.is_deleted == False)  # noqa: E712
+            self.db.query(User).join(User.role).filter(User.is_deleted == False)  # noqa: E712
         )
 
         if accessible_user_ids is not None:

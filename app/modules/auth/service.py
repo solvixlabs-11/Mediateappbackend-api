@@ -166,8 +166,7 @@ class AuthService:
                 action=AUTH_LOGIN_FAILED,
                 user_id=user.id,
                 details=(
-                    f"Login failed: bad password "
-                    f"(attempt {attempts}/{MAX_FAILED_LOGIN_ATTEMPTS})"
+                    f"Login failed: bad password (attempt {attempts}/{MAX_FAILED_LOGIN_ATTEMPTS})"
                 ),
                 ip_address=ip_address,
                 user_agent=user_agent,
@@ -255,8 +254,7 @@ class AuthService:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=(
-                    "Security alert: Token reuse detected. "
-                    "All active sessions have been revoked."
+                    "Security alert: Token reuse detected. All active sessions have been revoked."
                 ),
             )
 
@@ -475,4 +473,3 @@ class AuthService:
             roles=role_codes,
             demo_accounts=demo_accounts,
         )
-
