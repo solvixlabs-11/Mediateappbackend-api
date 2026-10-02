@@ -56,6 +56,11 @@ These rules apply to every person and every AI agent working on this project, in
 - M-15 Install libraries only with `npx expo install`. New native library means a new development build; note it in memory.md.
 - M-16 Never edit android/ or ios/ by hand. Use config plugins and app.config.ts.
 - M-17 Never show raw server errors. Show friendly text.
+- M-18 Every screen is a registered route in navigation/routes.ts with typed params. Modals only for dialogs and bottom sheets.
+- M-19 No mock, demo or simulated data in production paths. Mocks only in src/mocks behind a flag and listed in docs/audit/missing-endpoints.md.
+- M-20 Before and after screenshots in docs/ui-baseline/ for any screen touched; the UI look is frozen (frontend-spec section 2).
+- M-21 Native library added: update the native library log and rebuild the development build the same day.
+- M-22 A task is "done" only with evidence: command output, screenshot or device test note.
 
 ## 4. API rules
 - A-01 Prefix /api/v1. Plural nouns. Correct status codes.

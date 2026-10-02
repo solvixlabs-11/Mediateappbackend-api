@@ -73,20 +73,23 @@ class ApprovalRepository:
 
     def get_inbox_for_manager(self, manager_id: int) -> list[ApprovalRequest]:
         """Fetch pending approval requests for all MRs reporting to this manager."""
-        subquery = (
-            self.db.query(ManagerMRAssignment.mr_id)
+        mr_ids = [
+            row[0]
+            for row in self.db.query(ManagerMRAssignment.mr_id)
             .filter(
                 ManagerMRAssignment.manager_id == manager_id,
-                ManagerMRAssignment.is_active.is_(True),
+                ManagerMRAssignment.is_active == True,  # noqa: E712
             )
-            .subquery()
-        )
+            .all()
+        ]
+        if not mr_ids:
+            return []
 
         return (
             self.db.query(ApprovalRequest)
             .filter(
                 ApprovalRequest.status == "PENDING",
-                ApprovalRequest.requester_id.in_(subquery),
+                ApprovalRequest.requester_id.in_(mr_ids),
             )
             .order_by(ApprovalRequest.created_at.desc())
             .all()

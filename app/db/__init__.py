@@ -10,6 +10,8 @@ import app.modules.expenses.models  # noqa: F401
 import app.modules.files.models  # noqa: F401
 import app.modules.leaves.models  # noqa: F401
 import app.modules.masters.models  # noqa: F401
+import app.modules.notifications.models  # noqa: F401
+import app.modules.tasks.models  # noqa: F401
 import app.modules.territories.models  # noqa: F401
 import app.modules.tours.models  # noqa: F401
 import app.modules.users.models  # noqa: F401

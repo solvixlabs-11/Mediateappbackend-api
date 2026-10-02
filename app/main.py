@@ -14,12 +14,15 @@ from app.modules.approvals.router import router as approvals_router
 from app.modules.attendance.router import router as attendance_router
 from app.modules.auth.router import router as auth_router
 from app.modules.customers.router import router as customers_router
+from app.modules.dashboard.router import router as dashboard_router
 from app.modules.dcr.router import router as dcr_router
 from app.modules.expenses.router import router as expenses_router
 from app.modules.files.router import router as files_router
 from app.modules.health.router import router as health_router
 from app.modules.leaves.router import router as leaves_router
 from app.modules.masters.router import router as masters_router
+from app.modules.notifications.router import router as notifications_router
+from app.modules.tasks.router import router as tasks_router
 from app.modules.territories.router import router as territories_router
 from app.modules.tours.router import router as tours_router
 from app.modules.users.router import router as users_router
@@ -76,8 +79,11 @@ app.include_router(masters_router, prefix=settings.API_V1_PREFIX)
 app.include_router(territories_router, prefix=settings.API_V1_PREFIX)
 app.include_router(customers_router, prefix=settings.API_V1_PREFIX)
 app.include_router(attendance_router, prefix=settings.API_V1_PREFIX)
+app.include_router(dashboard_router, prefix=settings.API_V1_PREFIX)
 app.include_router(dcr_router, prefix=settings.API_V1_PREFIX)
 app.include_router(approvals_router, prefix=settings.API_V1_PREFIX)
 app.include_router(tours_router, prefix=settings.API_V1_PREFIX)
 app.include_router(expenses_router, prefix=settings.API_V1_PREFIX)
 app.include_router(leaves_router, prefix=settings.API_V1_PREFIX)
+app.include_router(tasks_router, prefix=settings.API_V1_PREFIX)
+app.include_router(notifications_router, prefix=settings.API_V1_PREFIX)

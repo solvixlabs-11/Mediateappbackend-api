@@ -215,3 +215,96 @@ def test_customer_csv_import(client: TestClient) -> None:
     result = import_resp.json()
     assert result["imported_count"] == 2
     assert result["failed_count"] == 0
+
+
+def test_chemist_hospital_stockist_details_and_updates(client: TestClient) -> None:
+    """Verify GET and PUT endpoints for Hospital, Chemist, and Stockist details."""
+    admin_token = get_token(client, "admin")
+    mr_token = get_token(client, "mr")
+
+    # 1. Create Territory & Assign MR
+    t_resp = client.post(
+        "/api/v1/territories",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"name": "Kothrud Central", "code": "KOTH_01", "headquarters": "Pune"},
+    )
+    assert t_resp.status_code == 201
+    territory_id = t_resp.json()["id"]
+
+    mr_profile = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {mr_token}"}).json()
+    client.post(
+        f"/api/v1/territories/{territory_id}/assign",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"user_id": mr_profile["id"]},
+    )
+
+    # 2. Hospital GET & PUT
+    h_resp = client.post(
+        "/api/v1/customers/hospitals",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"name": "Sahyadri Super Specialty", "territory_id": territory_id, "bed_count": 120},
+    )
+    assert h_resp.status_code == 201
+    hosp_id = h_resp.json()["id"]
+
+    # MR retrieves hospital detail
+    get_hosp = client.get(f"/api/v1/customers/hospitals/{hosp_id}", headers={"Authorization": f"Bearer {mr_token}"})
+    assert get_hosp.status_code == 200
+    assert get_hosp.json()["name"] == "Sahyadri Super Specialty"
+    assert get_hosp.json()["bed_count"] == 120
+
+    # Admin updates hospital
+    put_hosp = client.put(
+        f"/api/v1/customers/hospitals/{hosp_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"bed_count": 150, "contact_person": "Dr. Patwardhan"},
+    )
+    assert put_hosp.status_code == 200
+    assert put_hosp.json()["bed_count"] == 150
+    assert put_hosp.json()["contact_person"] == "Dr. Patwardhan"
+
+    # 3. Chemist GET & PUT
+    c_resp = client.post(
+        "/api/v1/customers/chemists",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"shop_name": "Apollo Pharmacy Kothrud", "territory_id": territory_id, "phone": "9822001122"},
+    )
+    assert c_resp.status_code == 201
+    chemist_id = c_resp.json()["id"]
+
+    get_chem = client.get(f"/api/v1/customers/chemists/{chemist_id}", headers={"Authorization": f"Bearer {mr_token}"})
+    assert get_chem.status_code == 200
+    assert get_chem.json()["shop_name"] == "Apollo Pharmacy Kothrud"
+
+    put_chem = client.put(
+        f"/api/v1/customers/chemists/{chemist_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"contact_person": "Ramesh Joshi", "gstin": "27AABCP1234D1Z2"},
+    )
+    assert put_chem.status_code == 200
+    assert put_chem.json()["contact_person"] == "Ramesh Joshi"
+    assert put_chem.json()["gstin"] == "27AABCP1234D1Z2"
+
+    # 4. Stockist GET & PUT
+    s_resp = client.post(
+        "/api/v1/customers/stockists",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"agency_name": "Pune Pharma Distributors", "territory_id": territory_id, "credit_days": 45},
+    )
+    assert s_resp.status_code == 201
+    stockist_id = s_resp.json()["id"]
+
+    get_stk = client.get(f"/api/v1/customers/stockists/{stockist_id}", headers={"Authorization": f"Bearer {mr_token}"})
+    assert get_stk.status_code == 200
+    assert get_stk.json()["agency_name"] == "Pune Pharma Distributors"
+    assert get_stk.json()["credit_days"] == 45
+
+    put_stk = client.put(
+        f"/api/v1/customers/stockists/{stockist_id}",
+        headers={"Authorization": f"Bearer {admin_token}"},
+        json={"credit_days": 60, "contact_person": "Sunil Agrawal"},
+    )
+    assert put_stk.status_code == 200
+    assert put_stk.json()["credit_days"] == 60
+    assert put_stk.json()["contact_person"] == "Sunil Agrawal"
+

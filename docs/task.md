@@ -2,7 +2,7 @@
 
 How to use: tick `[x]` when the task is finished AND its checks pass. Only work on the current phase. Backend phase N must be finished before mobile phase N starts. Task ids: P<phase>-B-<n> for backend, P<phase>-M-<n> for mobile.
 
-Current phase: P6 (Tasks, Chat, Notifications, Meetings)
+Current phase: Phase R (mobile repair)
 Legend: [ ] todo, [~] in progress, [x] done
 
 ## Phase -1: Before any code (owner tasks)
@@ -46,12 +46,12 @@ Backend
 - [x] P1-B-07 Profile endpoints and file upload with StorageProvider
 - [x] P1-B-08 Tests (permission, scope) and openapi export
 Mobile
-- [x] P1-M-01 Splash, login, forced change password
+- [~] P1-M-01 Splash, login, forced change password
 - [x] P1-M-02 Session restore, refresh flow, permissions hook
-- [x] P1-M-03 Role-based tabs with Coming Soon screens
+- [~] P1-M-03 Role-based tabs with Coming Soon screens
 - [x] P1-M-04 Profile screen with photo upload, logout, logout-all
-- [x] P1-M-05 Users list/detail/create/edit, assign manager, My Team
-- [x] P1-M-06 Tests, typecheck, lint; real-phone test of token expiry
+- [~] P1-M-05 Users list/detail/create/edit, assign manager, My Team
+- [~] P1-M-06 Tests, typecheck, lint; real-phone test of token expiry
 
 ## Phase 2: Masters and Customers (features 5, 29, 4, 3, 10, 11)
 Backend
@@ -63,11 +63,11 @@ Backend
 - [x] P2-B-06 Excel import with row-wise report
 - [x] P2-B-07 Scope rules and tests; openapi export
 Mobile
-- [x] P2-M-01 Master data cache (works offline)
-- [x] P2-M-02 EntityPicker and LocationCard (Use current location)
-- [x] P2-M-03 Doctor, hospital, chemist, stockist list/detail/add-edit
-- [x] P2-M-04 Admin masters and territories screens
-- [x] P2-M-05 Nearby customers screen; tests
+- [~] P2-M-01 Master data cache (works offline)
+- [~] P2-M-02 EntityPicker and LocationCard (Use current location)
+- [~] P2-M-03 Doctor, hospital, chemist, stockist list/detail/add-edit
+- [~] P2-M-04 Admin masters and territories screens
+- [~] P2-M-05 Nearby customers screen; tests
 
 ## Phase 3: Attendance and Geofence (features 6, 25)
 Backend
@@ -78,9 +78,9 @@ Backend
 Mobile
 - [x] P3-M-01 useLocation hook with permission flow
 - [x] P3-M-02 Home check-in card and check-in/out flow
-- [x] P3-M-03 Offline check-in via outbox
-- [x] P3-M-04 Attendance history and team attendance
-- [x] P3-M-05 Geofence settings screen (admin); real-phone GPS tests
+- [~] P3-M-03 Offline check-in via outbox
+- [~] P3-M-04 Attendance history and team attendance
+- [~] P3-M-05 Geofence settings screen (admin); real-phone GPS tests
 
 ## Phase 4: Plan, DCR, Post-call, Follow-up (features 8, 7, 9, 23)
 Backend
@@ -92,9 +92,9 @@ Backend
 Mobile
 - [x] P4-M-01 Today screen and Plan visit
 - [x] P4-M-02 DCR multi-step form with drafts (products step disabled)
-- [x] P4-M-03 Post-call analysis screen
-- [x] P4-M-04 Follow-ups tabs and customer history timeline
-- [x] P4-M-05 Offline outbox for plan, DCR, follow-up; tests
+- [~] P4-M-03 Post-call analysis screen
+- [~] P4-M-04 Follow-ups tabs and customer history timeline
+- [~] P4-M-05 Offline outbox for plan, DCR, follow-up; tests
 
 ## Phase 5: Approvals, Tour, Expense, Leave (features 19, 16, 17, 18)
 Backend
@@ -104,11 +104,22 @@ Backend
 - [x] P5-B-04 Leaves with balances, overlap and cancel rules
 - [x] P5-B-05 Tests including matrix conditions; openapi export
 Mobile
-- [x] P5-M-01 Approvals inbox, detail, approve/reject
-- [x] P5-M-02 Approval matrix screen (admin)
+- [~] P5-M-01 Approvals inbox, detail, approve/reject
+- [~] P5-M-02 Approval matrix screen (admin)
 - [x] P5-M-03 Tour planner
 - [x] P5-M-04 Expense entry with receipt camera
-- [x] P5-M-05 Leave apply, balances, history; My Requests view
+- [~] P5-M-05 Leave apply, balances, history; My Requests view
+
+## Phase R: Mobile repair (before Phase 6)
+- [x] R0 Freeze, tag pre-repair, baseline and audit files
+- [x] R1 Environment and native modules, new dev build if needed
+- [x] R2 Contract sync with latest openapi.json
+- [x] R3 Auth and session cleanup
+- [x] R4 Navigation refactor (modals to screens)
+- [ ] R5 Screen audit and fixes
+- [ ] R6 Build missing screens of Phases 1-5
+- [ ] R7 Real-phone test pass
+- [ ] R8 Close out docs and tag mobile-repair-1
 
 ## Phase 6: Tasks, Chat, Notifications, Meetings, Joint Working (features 20, 21, 22, 30, 31)
 Backend
@@ -129,13 +140,13 @@ Mobile
 ## Phase 7: Dashboard, Reports, Export, Maps (features 26, 27, 28, 24)
 Backend
 - [ ] P7-B-01 targets table and endpoints
-- [ ] P7-B-02 Dashboard endpoints (MR, manager, admin)
+- [x] P7-B-02 Dashboard endpoints (MR, manager, admin)
 - [ ] P7-B-03 Report registry and core reports
 - [ ] P7-B-04 Excel and PDF export
 - [ ] P7-B-05 Maps endpoints (team, route, customers, visits)
 - [ ] P7-B-06 Tests; openapi export
 Mobile
-- [ ] P7-M-01 Dashboards per role
+- [x] P7-M-01 Dashboards per role (Admin/Manager Live Field Activity Section 8.2 & MR Dashboard)
 - [ ] P7-M-02 Reports screens with filters
 - [ ] P7-M-03 Export download and share
 - [ ] P7-M-04 Team map, route map, customers map, visits map

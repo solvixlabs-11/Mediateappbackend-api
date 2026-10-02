@@ -14,6 +14,7 @@ from app.main import app  # noqa: E402
 
 def export_openapi() -> None:
     """Generate openapi.json in repository root and docs."""
+    app.openapi_schema = None
     openapi_schema = app.openapi()
 
     output_paths = [

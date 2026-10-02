@@ -8,16 +8,20 @@ from app.db.session import get_db
 from app.modules.customers.schemas import (
     ChemistCreate,
     ChemistResponse,
+    ChemistUpdate,
     DoctorCreate,
     DoctorResponse,
     DoctorUpdate,
     HospitalCreate,
     HospitalDoctorMapRequest,
     HospitalResponse,
+    HospitalUpdate,
     ImportReportResponse,
+    ImportRowError,
     NearbyCustomerItem,
     StockistCreate,
     StockistResponse,
+    StockistUpdate,
 )
 from app.modules.customers.service import CustomerService
 from app.modules.users.models import User
@@ -192,6 +196,37 @@ def create_hospital(
     return service.create_hospital(payload, current_user)
 
 
+@router.get(
+    "/hospitals/{hospital_id}",
+    response_model=HospitalResponse,
+    summary="Get hospital details by ID",
+)
+def get_hospital(
+    hospital_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> HospitalResponse:
+    """Get hospital details."""
+    service = CustomerService(db)
+    return service.get_hospital_by_id(hospital_id, current_user)
+
+
+@router.put(
+    "/hospitals/{hospital_id}",
+    response_model=HospitalResponse,
+    summary="Update hospital details",
+)
+def update_hospital(
+    hospital_id: int,
+    payload: HospitalUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("customers:write")),
+) -> HospitalResponse:
+    """Update hospital details."""
+    service = CustomerService(db)
+    return service.update_hospital(hospital_id, payload, current_user)
+
+
 @router.post(
     "/hospitals/map-doctor",
     summary="Map doctor to hospital",
@@ -247,6 +282,37 @@ def create_chemist(
     return service.create_chemist(payload, current_user)
 
 
+@router.get(
+    "/chemists/{chemist_id}",
+    response_model=ChemistResponse,
+    summary="Get chemist details by ID",
+)
+def get_chemist(
+    chemist_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> ChemistResponse:
+    """Get chemist details."""
+    service = CustomerService(db)
+    return service.get_chemist_by_id(chemist_id, current_user)
+
+
+@router.put(
+    "/chemists/{chemist_id}",
+    response_model=ChemistResponse,
+    summary="Update chemist details",
+)
+def update_chemist(
+    chemist_id: int,
+    payload: ChemistUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("customers:write")),
+) -> ChemistResponse:
+    """Update chemist details."""
+    service = CustomerService(db)
+    return service.update_chemist(chemist_id, payload, current_user)
+
+
 # STOCKISTS
 @router.get(
     "/stockists",
@@ -286,3 +352,34 @@ def create_stockist(
     """Create a new stockist."""
     service = CustomerService(db)
     return service.create_stockist(payload, current_user)
+
+
+@router.get(
+    "/stockists/{stockist_id}",
+    response_model=StockistResponse,
+    summary="Get stockist details by ID",
+)
+def get_stockist(
+    stockist_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> StockistResponse:
+    """Get stockist details."""
+    service = CustomerService(db)
+    return service.get_stockist_by_id(stockist_id, current_user)
+
+
+@router.put(
+    "/stockists/{stockist_id}",
+    response_model=StockistResponse,
+    summary="Update stockist details",
+)
+def update_stockist(
+    stockist_id: int,
+    payload: StockistUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("customers:write")),
+) -> StockistResponse:
+    """Update stockist details."""
+    service = CustomerService(db)
+    return service.update_stockist(stockist_id, payload, current_user)

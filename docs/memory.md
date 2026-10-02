@@ -16,17 +16,17 @@ Living memory of the project. The AI agent reads this file first in every sessio
 | Stack | Python FastAPI + SQL Server, React Native + Expo (dev build) + TypeScript |
 | Roles | ADMIN, MANAGER, MR |
 | Build order | Phases P0 to P9, products and samples last |
-| Context files | prd.md, architecture.md, rules.md, design.md, task.md, memory.md |
+| Context files | prd.md, architecture.md, rules.md, design.md, task.md, memory.md, frontend-spec.md |
 
 ## Current state
 | Item | Value |
 |---|---|
-| Current phase | P6 (Tasks, Chat, Notifications, Meetings) |
-| Last finished task | P5-B-05 / P5-M-05 (Phase 5 Approvals, Tour, Expense, Leave 100% Complete) |
-| Next task | P6-B-01 (Tasks, summary, overdue logic) |
-| Backend last finished phase | Phase 5 Complete (35/35 tests passing) |
-| Mobile last finished phase | Phase 5 Complete (0 typecheck errors) |
-| Last openapi.json export | Phase 5 Approvals, Tours, Expenses, Leaves (2026-10-02) |
+| Current phase | Phase R (mobile repair) |
+| Last finished task | R4 (Navigation refactor: converted modals to registered stack screens) |
+| Next task | R5 (Screen audit and fixes) |
+| Backend last finished phase | Phase 5 + Live Field Activity / Dashboard & Customer Details (39/39 tests passing) |
+| Mobile last finished phase | Phases 1-5 built, under repair (see docs/audit) |
+| Last openapi.json export | Phase 5 Approvals, Tours, Expenses, Leaves + Dashboard Live Activity (2026-10-02) |
 | Last git tag | none |
 
 ## Locked decisions
@@ -66,10 +66,10 @@ Living memory of the project. The AI agent reads this file first in every sessio
 |---|---|
 | Backend local URL | http://192.168.1.18:8000 |
 | Mobile env variable | EXPO_PUBLIC_API_URL |
-| Database (local) | SQL Server (SQLEXPRESS), database: mediate_healthcare |
+| Database (local) | SQL Server (SQLEXPRESS), database: mediate_mr_db |
 | App package id | com.mediatehealthcare.mrapp |
 | Expo SDK version | 57.0.26 |
-| Python / Node versions | Python 3.14.6 / Node v24.16.0 |
+| Python / Node versions | Python 3.14.6 (system; rules specify 3.12, verify wheels) / Node v24.16.0 |
 | Storage provider (dev) | local folder |
 Secrets live in .env and EAS secrets only.
 
@@ -84,7 +84,9 @@ Secrets live in .env and EAS secrets only.
 | Needed by | Needed from | What | Status |
 |---|---|---|---|
 | mobile P0 | backend P0 | openapi.json exported | ready |
-| mobile P1 | backend P1 | openapi.json with auth and users | pending |
+| mobile P1 | backend P1 | openapi.json with auth and users | ready |
+| mobile repair R2 | backend P5 | openapi.json (Phase 5 export) | ready |
+| mobile P7 | backend P7 | Admin Home live activity endpoint /dashboard/admin/live-activity | ready |
 
 ## Known issues and tech debt
 | ID | Issue | Phase found | Plan |
@@ -101,13 +103,20 @@ Every native library added needs a new development build. Record it here.
 | @react-native-community/netinfo | P0 | pending dev build |
 | react-native-screens | P0 | pending dev build |
 | react-native-safe-area-context | P0 | pending dev build |
+| expo-image-picker | P1/P5 | pending dev build |
+| expo-font | P0/R1 | pending dev build |
+| expo-location | P3/R1 | pending dev build |
 
 ## Session log
 Add one line per session: date, what was done, what is next.
 - 2026-09-30: Pre-start tasks P-1-01, P-1-02, P-1-03 completed. Phase 0 Backend (P0-B-01 to P0-B-06) completed: FastAPI modular monolith skeleton, settings, logging, standard exception handlers, request id middleware, db mixins & session, Alembic baseline, Dockerfile, docker-compose, Makefile, pytest tests passing, ruff & mypy clean, openapi.json exported. Next: Mobile Phase 0 (P0-M-01).
 - 2026-09-30: Phase 0 Mobile (P0-M-01 to P0-M-06) completed: Expo TypeScript project with dev-client, design system tokens (#0E8C7F teal, #12355B navy), shared UI components (Button, Card, StatusChip, ScreenContainer, Header, Toast, ErrorBoundary, StateViews), Axios client with single-flight token refresh, useAuthStore with SecureStore, 5-tab role-based navigators (MR, Manager, Admin) with ComingSoon placeholders, SQLite outbox table with WAL mode, useNetwork hook, and openapi-typescript type generation script passing strict typecheck. Next: P0-M-07 (LAN verification with phone).
+- 2026-10-01: Phase 1 & Phase 2 implementation. Masters and Customers features built.
+- 2026-10-02: Phase 3 (Attendance & Geofence), Phase 4 (Planning, DCR, Visit Reports), Phase 5 (Approvals, Tours, Expenses, Leaves) implemented. Backend 35/35 pytest tests pass. Frontend UI baseline established; modals used for full screens.
+- 2026-10-02: Phase R initiated per Frontend Spec (Audit, Repair and Build Guide). Current step: R0 audit and context document alignment.
 
 ## Changelog
 - v0.0 Context files created.
 - v0.1 Phase 0 Backend setup complete.
 - v0.2 Phase 0 Mobile setup complete.
+- v0.3 Phase 1-5 Backend complete; Frontend under Phase R repair.

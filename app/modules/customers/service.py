@@ -19,6 +19,7 @@ from app.modules.customers.repository import CustomerRepository
 from app.modules.customers.schemas import (
     ChemistCreate,
     ChemistResponse,
+    ChemistUpdate,
     DoctorCreate,
     DoctorResponse,
     DoctorUpdate,
@@ -26,11 +27,13 @@ from app.modules.customers.schemas import (
     HospitalDoctorMapRequest,
     HospitalResponse,
     HospitalSummary,
+    HospitalUpdate,
     ImportReportResponse,
     ImportRowError,
     NearbyCustomerItem,
     StockistCreate,
     StockistResponse,
+    StockistUpdate,
 )
 from app.modules.territories.repository import TerritoryRepository
 from app.modules.users.models import User
@@ -63,10 +66,13 @@ class CustomerService:
 
     def get_user_accessible_territories(self, current_user: User) -> Sequence[int] | None:
         """Resolve accessible territory IDs based on user role."""
-        if current_user.role and current_user.role.code == "ADMIN":
-            return None  # Unrestricted access for admin
+        if current_user.role and current_user.role.code in ("ADMIN", "MANAGER"):
+            return None  # Unrestricted access for admin and manager
 
         territories = self.territory_repo.get_user_territories(current_user.id)
+        if not territories:
+            # Fallback: if user has no assigned territory yet, allow access to all territories
+            return None
         return [t.id for t in territories]
 
     # DOCTORS
@@ -243,6 +249,39 @@ class CustomerService:
         self.db.commit()
         return {"message": "Doctor mapped to hospital successfully"}
 
+    def get_hospital_by_id(self, hospital_id: int, current_user: User) -> HospitalResponse:
+        """Get hospital by ID with territory scoping."""
+        hsp = self.repo.get_hospital_by_id(hospital_id)
+        if not hsp:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Hospital with ID {hospital_id} not found",
+            )
+        t_ids = self.get_user_accessible_territories(current_user)
+        if t_ids is not None and hsp.territory_id is not None and hsp.territory_id not in t_ids:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Hospital is outside your assigned territory scope",
+            )
+        return HospitalResponse.model_validate(hsp)
+
+    def update_hospital(
+        self, hospital_id: int, payload: HospitalUpdate, current_user: User
+    ) -> HospitalResponse:
+        """Update hospital details."""
+        hsp = self.repo.get_hospital_by_id(hospital_id)
+        if not hsp:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Hospital with ID {hospital_id} not found",
+            )
+        for key, value in payload.model_dump(exclude_unset=True).items():
+            setattr(hsp, key, value)
+        hsp.updated_by = current_user.id
+        self.db.commit()
+        self.db.refresh(hsp)
+        return HospitalResponse.model_validate(hsp)
+
     # CHEMISTS
     def list_chemists(
         self,
@@ -280,6 +319,39 @@ class CustomerService:
             longitude=payload.longitude,
             created_by_user_id=current_user.id,
         )
+        self.db.commit()
+        self.db.refresh(chm)
+        return ChemistResponse.model_validate(chm)
+
+    def get_chemist_by_id(self, chemist_id: int, current_user: User) -> ChemistResponse:
+        """Get chemist by ID with territory scoping."""
+        chm = self.repo.get_chemist_by_id(chemist_id)
+        if not chm:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Chemist with ID {chemist_id} not found",
+            )
+        t_ids = self.get_user_accessible_territories(current_user)
+        if t_ids is not None and chm.territory_id is not None and chm.territory_id not in t_ids:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Chemist is outside your assigned territory scope",
+            )
+        return ChemistResponse.model_validate(chm)
+
+    def update_chemist(
+        self, chemist_id: int, payload: ChemistUpdate, current_user: User
+    ) -> ChemistResponse:
+        """Update chemist details."""
+        chm = self.repo.get_chemist_by_id(chemist_id)
+        if not chm:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Chemist with ID {chemist_id} not found",
+            )
+        for key, value in payload.model_dump(exclude_unset=True).items():
+            setattr(chm, key, value)
+        chm.updated_by = current_user.id
         self.db.commit()
         self.db.refresh(chm)
         return ChemistResponse.model_validate(chm)
@@ -322,6 +394,39 @@ class CustomerService:
             credit_days=payload.credit_days,
             created_by_user_id=current_user.id,
         )
+        self.db.commit()
+        self.db.refresh(stk)
+        return StockistResponse.model_validate(stk)
+
+    def get_stockist_by_id(self, stockist_id: int, current_user: User) -> StockistResponse:
+        """Get stockist by ID with territory scoping."""
+        stk = self.repo.get_stockist_by_id(stockist_id)
+        if not stk:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Stockist with ID {stockist_id} not found",
+            )
+        t_ids = self.get_user_accessible_territories(current_user)
+        if t_ids is not None and stk.territory_id is not None and stk.territory_id not in t_ids:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Stockist is outside your assigned territory scope",
+            )
+        return StockistResponse.model_validate(stk)
+
+    def update_stockist(
+        self, stockist_id: int, payload: StockistUpdate, current_user: User
+    ) -> StockistResponse:
+        """Update stockist details."""
+        stk = self.repo.get_stockist_by_id(stockist_id)
+        if not stk:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Stockist with ID {stockist_id} not found",
+            )
+        for key, value in payload.model_dump(exclude_unset=True).items():
+            setattr(stk, key, value)
+        stk.updated_by = current_user.id
         self.db.commit()
         self.db.refresh(stk)
         return StockistResponse.model_validate(stk)

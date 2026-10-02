@@ -165,4 +165,10 @@ class TerritoryRepository:
             )
             .all()
         )
-        return [a.territory for a in assignments if a.territory and a.territory.is_active]
+        seen_ids: set[int] = set()
+        unique_territories: list[Territory] = []
+        for a in assignments:
+            if a.territory and a.territory.is_active and a.territory.id not in seen_ids:
+                seen_ids.add(a.territory.id)
+                unique_territories.append(a.territory)
+        return unique_territories

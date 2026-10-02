@@ -73,6 +73,7 @@ Bottom tabs, maximum 5 per role. Extra items live under a More or Profile screen
 | ADMIN | Home | Users | Masters | Reports | More |
 More contains: Profile, Notifications, Attendance history, Tour, Expense, Leave, Orders, Stock, Meetings, Reports, Maps, Sync status, Settings, Logout (items depend on role).
 Notifications bell with unread badge sits in the Home header for every role.
+A tab or More item for an unbuilt feature shows a named ComingSoon screen. Tabs never crash or stay blank.
 
 ## 5. Screen inventory
 ### Common
@@ -118,6 +119,21 @@ Full-screen map with filter chips (type, date). Bottom sheet lists items; tappin
 
 ### 6.7 E-Detailing viewer
 Full screen, swipe between slides, pinch to zoom, tap to show a slim control bar, exit button always reachable. Time per slide tracked silently. Works from downloaded package.
+
+### 6.8 Admin Home: Live Field Activity (owner requirement)
+The first thing an Admin sees is the live state of all MRs in the field. Style: like the MR Buddy admin panel, with the current app tokens.
+Layout (top to bottom):
+1. Header: greeting, date chip (Today), notification bell with badge.
+2. Summary strip (horizontal scroll): MRs in field (for example 38/52), Total calls, Doctors visited, Chemists visited, Attendance %, Not checked in.
+3. Section "Live Field Activity" with a List | Map toggle, search, filter chips: All, Visiting, Checked in, Idle, Not checked in, On leave.
+4. MR cards: round profile photo with a status ring (green active, amber idle 2+ hours, grey not checked in), name, employee code, territory, check-in time, stat pills (Calls, Doctors, Chemists, Samples), thin progress bar (calls vs target), line "Last activity: Visited <customer>, <time> (<n> min ago)" with a Verified or Not verified chip, map-pin button to open the MR location.
+5. Pending approvals card with a small donut by type (Tour, Expense, Leave) and View all.
+6. Quick links row: Users, Masters, Territories, Approval Matrix, Geofence Settings, Stock Allocation.
+Rules:
+- "Live" means last activity from check-in and visit events. No continuous background tracking (D-12, S-05). If the owner later wants moving dots, that is a new decision with MR consent.
+- Data needs a backend endpoint (suggested: GET /dashboard/admin/live-activity with per-MR check-in time, today counts, last activity, target, status). Record it in memory.md Dependencies and in the backend P7 task list. Until it exists, build the UI with a mock adapter under src/mocks (section 5.4) and flag it clearly.
+- Paginate or virtualize the list (FlatList). Pull-to-refresh; auto refresh every 60 seconds only while the screen is focused.
+- Tapping a card opens MrDetail (S44). Scope: Admin sees all MRs.
 
 ## 7. Feedback and state patterns
 | State | Pattern |
