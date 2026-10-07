@@ -5908,6 +5908,150 @@
             "description": "Filter by status (e.g. Verified, Approved)"
           },
           {
+            "name": "specialization",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by specialization",
+              "title": "Specialization"
+            },
+            "description": "Filter by specialization"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by category",
+              "title": "Category"
+            },
+            "description": "Filter by category"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by active status",
+              "title": "Active"
+            },
+            "description": "Filter by active status"
+          },
+          {
+            "name": "work_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by work type",
+              "title": "Work Type"
+            },
+            "description": "Filter by work type"
+          },
+          {
+            "name": "visit_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by visit type",
+              "title": "Visit Type"
+            },
+            "description": "Filter by visit type"
+          },
+          {
+            "name": "verified",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by geofence verified",
+              "title": "Verified"
+            },
+            "description": "Filter by geofence verified"
+          },
+          {
+            "name": "deviation_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by deviation type",
+              "title": "Deviation Type"
+            },
+            "description": "Filter by deviation type"
+          },
+          {
+            "name": "days_not_seen",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by days not seen threshold",
+              "title": "Days Not Seen"
+            },
+            "description": "Filter by days not seen threshold"
+          },
+          {
             "name": "page",
             "in": "query",
             "required": false,
@@ -6155,6 +6299,150 @@
               "title": "Status"
             },
             "description": "Filter by status"
+          },
+          {
+            "name": "specialization",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by specialization",
+              "title": "Specialization"
+            },
+            "description": "Filter by specialization"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by category",
+              "title": "Category"
+            },
+            "description": "Filter by category"
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by active status",
+              "title": "Active"
+            },
+            "description": "Filter by active status"
+          },
+          {
+            "name": "work_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by work type",
+              "title": "Work Type"
+            },
+            "description": "Filter by work type"
+          },
+          {
+            "name": "visit_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by visit type",
+              "title": "Visit Type"
+            },
+            "description": "Filter by visit type"
+          },
+          {
+            "name": "verified",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by geofence verified",
+              "title": "Verified"
+            },
+            "description": "Filter by geofence verified"
+          },
+          {
+            "name": "deviation_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by deviation type",
+              "title": "Deviation Type"
+            },
+            "description": "Filter by deviation type"
+          },
+          {
+            "name": "days_not_seen",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by days not seen threshold",
+              "title": "Days Not Seen"
+            },
+            "description": "Filter by days not seen threshold"
           }
         ],
         "responses": {
@@ -12811,6 +13099,38 @@
             },
             "type": "array",
             "title": "Available Formats"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "NOW"
+          },
+          "is_ready": {
+            "type": "boolean",
+            "title": "Is Ready",
+            "default": true
+          },
+          "coming_soon_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Coming Soon Reason"
+          },
+          "report_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Number"
           }
         },
         "type": "object",
@@ -12925,6 +13245,53 @@
             },
             "type": "array",
             "title": "Status Options"
+          },
+          "specialization_picker": {
+            "type": "boolean",
+            "title": "Specialization Picker",
+            "default": false
+          },
+          "category_picker": {
+            "type": "boolean",
+            "title": "Category Picker",
+            "default": false
+          },
+          "category_options": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Category Options"
+          },
+          "active_picker": {
+            "type": "boolean",
+            "title": "Active Picker",
+            "default": false
+          },
+          "work_type_picker": {
+            "type": "boolean",
+            "title": "Work Type Picker",
+            "default": false
+          },
+          "visit_type_picker": {
+            "type": "boolean",
+            "title": "Visit Type Picker",
+            "default": false
+          },
+          "verified_picker": {
+            "type": "boolean",
+            "title": "Verified Picker",
+            "default": false
+          },
+          "deviation_type_picker": {
+            "type": "boolean",
+            "title": "Deviation Type Picker",
+            "default": false
+          },
+          "days_not_seen_picker": {
+            "type": "boolean",
+            "title": "Days Not Seen Picker",
+            "default": false
           }
         },
         "type": "object",
@@ -12979,6 +13346,11 @@
             "type": "integer",
             "title": "Total Records",
             "default": 0
+          },
+          "landscape": {
+            "type": "boolean",
+            "title": "Landscape",
+            "default": false
           }
         },
         "type": "object",

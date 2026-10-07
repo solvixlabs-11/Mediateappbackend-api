@@ -154,8 +154,8 @@ class ReportPdfGenerator:
         # 4. Table / Content
         if not items:
             story.append(self._build_empty_state(printable_width))
-        elif self.meta.key == "dcr_detailed":
-            # R01 Grouped date-wise with day subtotals
+        elif self.meta.key in ["dcr_detailed", "mr_wise_visits"]:
+            # Grouped date-wise with day subtotals (Report 7)
             story.extend(self._build_grouped_dcr_tables(items, printable_width))
         else:
             story.append(self._build_data_table(items, printable_width))

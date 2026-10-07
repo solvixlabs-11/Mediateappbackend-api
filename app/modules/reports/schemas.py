@@ -26,6 +26,15 @@ class ReportFilterSchema(BaseModel):
     customer_type_picker: bool = False
     status_picker: bool = False
     status_options: list[str] = Field(default_factory=list)
+    specialization_picker: bool = False
+    category_picker: bool = False
+    category_options: list[str] = Field(default_factory=lambda: ["All", "A", "B", "C"])
+    active_picker: bool = False
+    work_type_picker: bool = False
+    visit_type_picker: bool = False
+    verified_picker: bool = False
+    deviation_type_picker: bool = False
+    days_not_seen_picker: bool = False
 
 
 class ReportCatalogItem(BaseModel):
@@ -33,10 +42,14 @@ class ReportCatalogItem(BaseModel):
 
     key: str
     title: str
-    group: str  # Activity, Customers, HR and Expense, Approvals, Sales
+    group: str  # Master Lists, Attendance and Daily Work, Visits, Doctor Analysis, Stock and Orders, Sales and Finance, Other
     description: str
     filter_schema: ReportFilterSchema
     available_formats: list[str] = Field(default_factory=lambda: ["json", "xlsx", "pdf"])
+    status: str = "NOW"  # "NOW", "P8", "SALES", "ASK"
+    is_ready: bool = True
+    coming_soon_reason: str | None = None
+    report_number: int | None = None
 
 
 class ReportCatalogResponse(BaseModel):
@@ -58,6 +71,14 @@ class ReportFilterParams(BaseModel):
     territory_id: int | None = None
     customer_type: str | None = None
     status: str | None = None
+    specialization: str | None = None
+    category: str | None = None
+    active: bool | None = None
+    work_type: str | None = None
+    visit_type: str | None = None
+    verified: bool | None = None
+    deviation_type: str | None = None
+    days_not_seen: int | None = None
     page: int = 1
     page_size: int = 50
 
@@ -75,6 +96,7 @@ class ReportMeta(BaseModel):
     generated_at: str
     columns: list[ReportColumn] = Field(default_factory=list)
     total_records: int = 0
+    landscape: bool = False
 
 
 class ReportResponse(BaseModel):

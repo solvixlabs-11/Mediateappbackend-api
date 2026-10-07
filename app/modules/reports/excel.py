@@ -128,7 +128,13 @@ class ReportExcelGenerator:
 
     def _populate_data_sheet(self, ws: Any, items: list[dict[str, Any]]) -> None:
         ws.views.sheetView[0].showGridLines = True
-        ws.freeze_panes = "A2"
+        if self.meta.key in ["mr_wise_attendance_report"]:
+            ws.freeze_panes = "B2"
+        else:
+            ws.freeze_panes = "A2"
+
+        if getattr(self.meta, "landscape", False):
+            ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE
 
         # Header Row
         for col_idx, col in enumerate(self.columns, start=1):

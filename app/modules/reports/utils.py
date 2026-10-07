@@ -10,6 +10,26 @@ from fastapi import HTTPException
 IST = ZoneInfo("Asia/Kolkata")
 
 
+def parse_date_string(date_str: str) -> date:
+    """Parse date string flexibly supporting YYYY-MM-DD, YYYY-M-D, DD-MM-YYYY, etc."""
+    s = date_str.strip()
+    if "-" in s:
+        parts = s.split("-")
+        if len(parts) == 3:
+            if len(parts[0]) == 4:
+                return date(int(parts[0]), int(parts[1]), int(parts[2]))
+            elif len(parts[2]) == 4:
+                return date(int(parts[2]), int(parts[1]), int(parts[0]))
+    elif "/" in s:
+        parts = s.split("/")
+        if len(parts) == 3:
+            if len(parts[0]) == 4:
+                return date(int(parts[0]), int(parts[1]), int(parts[2]))
+            elif len(parts[2]) == 4:
+                return date(int(parts[2]), int(parts[1]), int(parts[0]))
+    return date.fromisoformat(s)
+
+
 def resolve_date_range(
     from_date_str: str | None,
     to_date_str: str | None,
@@ -19,8 +39,8 @@ def resolve_date_range(
     now_ist = datetime.now(IST)
 
     try:
-        to_date = date.fromisoformat(to_date_str) if to_date_str else now_ist.date()
-    except ValueError as err:
+        to_date = parse_date_string(to_date_str) if to_date_str else now_ist.date()
+    except Exception as err:
         raise HTTPException(
             status_code=400,
             detail="Invalid to_date format, expected YYYY-MM-DD",
@@ -29,9 +49,9 @@ def resolve_date_range(
 
     try:
         from_date = (
-            date.fromisoformat(from_date_str) if from_date_str else (to_date - timedelta(days=30))
+            parse_date_string(from_date_str) if from_date_str else (to_date - timedelta(days=30))
         )
-    except ValueError as err:
+    except Exception as err:
         raise HTTPException(
             status_code=400,
             detail="Invalid from_date format, expected YYYY-MM-DD",

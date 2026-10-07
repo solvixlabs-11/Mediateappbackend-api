@@ -26,6 +26,10 @@ class BaseReport(ABC):
     landscape: bool = False
     allowed_roles: list[str] = ["ADMIN", "MANAGER", "MR"]
     filter_schema: ReportFilterSchema = ReportFilterSchema()
+    status: str = "NOW"  # "NOW", "P8", "SALES", "ASK"
+    is_ready: bool = True
+    coming_soon_reason: str | None = None
+    report_number: int | None = None
 
     @abstractmethod
     def get_columns(self) -> list[ReportColumn]:
@@ -53,7 +57,7 @@ class BaseReport(ABC):
         """Return visual hints for PDF and Excel rendering."""
         return {
             "landscape": self.landscape,
-            "group_by_date": self.key == "dcr_detailed",
+            "group_by_date": self.key in ["dcr_detailed", "mr_wise_visits"],
         }
 
 
@@ -86,11 +90,15 @@ class ReportRegistry:
                         group=report_cls.group,
                         description=report_cls.description,
                         filter_schema=report_cls.filter_schema,
-                        available_formats=["json", "xlsx", "pdf"],
+                        available_formats=["json", "xlsx", "pdf"] if report_cls.is_ready else [],
+                        status=report_cls.status,
+                        is_ready=report_cls.is_ready,
+                        coming_soon_reason=report_cls.coming_soon_reason,
+                        report_number=report_cls.report_number,
                     )
                 )
-        # Order by group and title
-        catalog.sort(key=lambda r: (r.group, r.title))
+        # Order by report_number (1 to 26)
+        catalog.sort(key=lambda r: (r.report_number or 999, r.title))
         return catalog
 
     @classmethod

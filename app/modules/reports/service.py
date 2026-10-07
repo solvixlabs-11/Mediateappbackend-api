@@ -130,6 +130,13 @@ class ReportService:
                 headers={"X-Error-Code": "REPORT_SCOPE_DENIED"},
             )
 
+        if not report.is_ready:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Report '{key}' is scheduled for a future release: {report.coming_soon_reason or 'Coming soon'}",
+                headers={"X-Error-Code": "REPORT_COMING_SOON"},
+            )
+
         # Scoping check
         user_ids, scope_label = self._resolve_scope_user_ids(
             context,
@@ -170,6 +177,7 @@ class ReportService:
             generated_at=datetime.now(IST).strftime("%d-%b-%Y %I:%M %p"),
             columns=report.get_columns(),
             total_records=len(items),
+            landscape=report.landscape,
         )
 
         return report, items, summary, meta
