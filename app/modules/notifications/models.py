@@ -1,4 +1,3 @@
-
 """SQLAlchemy models for in-app notifications and push device tokens."""
 
 from __future__ import annotations
@@ -36,7 +35,9 @@ class Notification(Base):
     reference_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
     read_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.utcnow, nullable=False, index=True
+    )
 
     user: Mapped[User] = relationship("User", foreign_keys=[user_id])
 

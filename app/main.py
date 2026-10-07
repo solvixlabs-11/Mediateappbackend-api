@@ -22,6 +22,10 @@ from app.modules.health.router import router as health_router
 from app.modules.leaves.router import router as leaves_router
 from app.modules.masters.router import router as masters_router
 from app.modules.notifications.router import router as notifications_router
+from app.modules.orders.router import router as orders_router
+from app.modules.products.router import router as products_router
+from app.modules.reports.router import router as reports_router
+from app.modules.targets.router import router as targets_router
 from app.modules.tasks.router import router as tasks_router
 from app.modules.territories.router import router as territories_router
 from app.modules.tours.router import router as tours_router
@@ -87,3 +91,7 @@ app.include_router(expenses_router, prefix=settings.API_V1_PREFIX)
 app.include_router(leaves_router, prefix=settings.API_V1_PREFIX)
 app.include_router(tasks_router, prefix=settings.API_V1_PREFIX)
 app.include_router(notifications_router, prefix=settings.API_V1_PREFIX)
+app.include_router(reports_router, prefix=settings.API_V1_PREFIX)
+app.include_router(products_router, prefix=settings.API_V1_PREFIX)
+app.include_router(orders_router, prefix=settings.API_V1_PREFIX)
+app.include_router(targets_router, prefix=settings.API_V1_PREFIX)

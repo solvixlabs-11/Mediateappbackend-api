@@ -113,4 +113,4 @@ class ExpenseService:
             year=target_year,
             month=target_month,
         )
-        return MonthlyExpenseSummaryResponse(**summary_dict)
+        return MonthlyExpenseSummaryResponse(**summary_dict)  # type: ignore[arg-type]

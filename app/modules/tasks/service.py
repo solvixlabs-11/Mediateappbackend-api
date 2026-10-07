@@ -88,7 +88,7 @@ class TaskService:
         """List tasks accessible by the active user."""
         accessible_ids = get_accessible_user_ids(context)
         tasks = self.repo.list_tasks(
-            accessible_user_ids=accessible_ids,
+            accessible_user_ids=list(accessible_ids) if accessible_ids is not None else None,
             status=status_filter,
             priority=priority,
             due_date=due_date,
@@ -159,13 +159,10 @@ class TaskService:
             client_uuid=payload.client_uuid,
         )
         self.db.commit()
-        # Reload with relations
-        task = self.repo.get_by_id(task.id)
-        return self._to_task_response(task)  # type: ignore
+        reloaded = self.repo.get_by_id(task.id)
+        return self._to_task_response(reloaded or task)
 
-    def update_task(
-        self, context: ScopeContext, task_id: int, payload: TaskUpdate
-    ) -> TaskResponse:
+    def update_task(self, context: ScopeContext, task_id: int, payload: TaskUpdate) -> TaskResponse:
         """Update task details."""
         task = self.repo.get_by_id(task_id)
         if not task:
@@ -283,5 +280,7 @@ class TaskService:
     def get_summary(self, context: ScopeContext) -> TaskSummaryResponse:
         """Get summary badge counts."""
         accessible_ids = get_accessible_user_ids(context)
-        data = self.repo.get_summary(accessible_user_ids=accessible_ids)
+        data = self.repo.get_summary(
+            accessible_user_ids=list(accessible_ids) if accessible_ids is not None else None
+        )
         return TaskSummaryResponse(**data)

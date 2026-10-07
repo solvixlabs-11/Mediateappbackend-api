@@ -30,13 +30,10 @@ class TaskRepository:
         limit: int = 50,
     ) -> list[Task]:
         """Fetch tasks respecting user hierarchy and filters."""
-        query = (
-            self.db.query(Task)
-            .options(
-                joinedload(Task.assigned_to),
-                joinedload(Task.created_by),
-                selectinload(Task.comments).joinedload(TaskComment.user),
-            )
+        query = self.db.query(Task).options(
+            joinedload(Task.assigned_to),
+            joinedload(Task.created_by),
+            selectinload(Task.comments).joinedload(TaskComment.user),
         )
 
         if accessible_user_ids is not None:
@@ -161,9 +158,15 @@ class TaskRepository:
                 )
             )
 
-        today_count = base_query.filter(Task.due_date == now_date, Task.status != "COMPLETED").count()
-        upcoming_count = base_query.filter(Task.due_date > now_date, Task.status != "COMPLETED").count()
-        overdue_count = base_query.filter(Task.due_date < now_date, Task.status != "COMPLETED").count()
+        today_count = base_query.filter(
+            Task.due_date == now_date, Task.status != "COMPLETED"
+        ).count()
+        upcoming_count = base_query.filter(
+            Task.due_date > now_date, Task.status != "COMPLETED"
+        ).count()
+        overdue_count = base_query.filter(
+            Task.due_date < now_date, Task.status != "COMPLETED"
+        ).count()
         completed_count = base_query.filter(Task.status == "COMPLETED").count()
 
         return {

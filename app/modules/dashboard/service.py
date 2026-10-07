@@ -18,7 +18,7 @@ from app.modules.dashboard.schemas import (
     MrLiveActivityItem,
     PendingApprovalsSummary,
 )
-from app.modules.dcr.models import FollowUp, DcrVisit
+from app.modules.dcr.models import DcrVisit, FollowUp
 from app.modules.leaves.models import LeaveRequest
 from app.modules.territories.models import Territory, UserTerritoryAssignment
 from app.modules.users.models import ManagerMRAssignment, Role, User
@@ -113,9 +113,7 @@ class DashboardService:
 
         # 6. Fetch pending approvals
         pending_requests = (
-            self.db.query(ApprovalRequest)
-            .filter(ApprovalRequest.status == "PENDING")
-            .all()
+            self.db.query(ApprovalRequest).filter(ApprovalRequest.status == "PENDING").all()
         )
         tours_count = sum(1 for r in pending_requests if r.entity_type == "TOUR")
         expenses_count = sum(1 for r in pending_requests if r.entity_type == "EXPENSE")
@@ -148,11 +146,15 @@ class DashboardService:
                 status_str = "NOT_CHECKED_IN"
             elif user_visits:
                 latest_call = user_visits[0].call_time
-                minutes_since_call = int((now - latest_call).total_seconds() / 60) if latest_call else 999
+                minutes_since_call = (
+                    int((now - latest_call).total_seconds() / 60) if latest_call else 999
+                )
                 status_str = "VISITING" if minutes_since_call <= 120 else "IDLE"
             else:
                 minutes_since_checkin = (
-                    int((now - att.check_in_time).total_seconds() / 60) if att and att.check_in_time else 999
+                    int((now - att.check_in_time).total_seconds() / 60)
+                    if att and att.check_in_time
+                    else 999
                 )
                 status_str = "CHECKED_IN" if minutes_since_checkin <= 120 else "IDLE"
 

@@ -38,6 +38,8 @@ from app.modules.leaves.models import LeaveBalance, LeaveRequest
 from app.modules.masters.models import Area, City, MasterItem, State
 from app.modules.masters.seed import seed_masters
 from app.modules.notifications.models import DeviceToken, Notification
+from app.modules.orders.models import Order, OrderItem
+from app.modules.products.models import Product, ProductVisualAid
 from app.modules.tasks.models import Task, TaskComment
 from app.modules.territories.models import Territory, UserTerritoryAssignment
 from app.modules.tours.models import TourProgram
@@ -494,6 +496,7 @@ def seed_rich_data():
                     check_in_address="Near Lilavati Hospital, Bandra West, Mumbai",
                     check_in_accuracy=12.5,
                     check_in_mock_flag=False,
+                    client_uuid=f"att-mr-today-{today.strftime('%Y%m%d')}",
                 )
             )
             db.commit()
@@ -1026,6 +1029,120 @@ def seed_rich_data():
                         created_at=datetime.utcnow() - timedelta(hours=i * 3),
                     )
                 )
+
+        # 18. Seed Pharmaceutical Products & E-Detailing Visual Aids
+        if db.query(Product).count() < 5:
+            logger.info("Seeding 25 Pharmaceutical Products with E-Detailing Visual Aids...")
+            products_seed_data = [
+                ("DIA-001", "Diabex 500", "Diabetology", "Metformin Hydrochloride 500mg", "500mg", "10x10 Tablets", 65.0, 48.0, 44.0, "Type-2 Diabetes Mellitus, Insulin Resistance", "One tablet twice daily with meals"),
+                ("DIA-002", "Diabex-M 1/500", "Diabetology", "Glimepiride 1mg + Metformin 500mg", "1mg/500mg", "10x10 Tablets", 110.0, 82.0, 75.0, "Uncontrolled Type-2 Diabetes Mellitus", "One tablet once daily before breakfast"),
+                ("DIA-003", "Glipten 50", "Diabetology", "Vildagliptin 50mg", "50mg", "10x14 Tablets", 195.0, 145.0, 132.0, "Dual therapy in adults with Type-2 Diabetes", "One tablet twice daily morning & evening"),
+                ("DIA-004", "Empasure 10", "Diabetology", "Empagliflozin 10mg", "10mg", "10x10 Tablets", 240.0, 180.0, 165.0, "Type-2 Diabetes with cardiovascular disease risk", "One tablet once daily with or without food"),
+                ("CAR-001", "Cardipres 5", "Cardiology", "Amlodipine Besylate 5mg", "5mg", "10x10 Tablets", 55.0, 40.0, 36.0, "Essential Hypertension, Chronic Stable Angina", "5mg once daily, titrate if needed"),
+                ("CAR-002", "Cardipres-AT", "Cardiology", "Amlodipine 5mg + Atenolol 50mg", "5mg/50mg", "10x10 Tablets", 98.0, 72.0, 65.0, "Moderate to Severe Hypertension", "One tablet once daily in the morning"),
+                ("CAR-003", "Telmipres 40", "Cardiology", "Telmisartan 40mg", "40mg", "10x10 Tablets", 125.0, 92.0, 84.0, "Hypertension & Cardiovascular Risk Reduction", "40mg once daily with water"),
+                ("CAR-004", "Rosuvast 10", "Cardiology", "Rosuvastatin Calcium 10mg", "10mg", "10x10 Tablets", 160.0, 120.0, 110.0, "Primary Hypercholesterolemia, Dyslipidemia", "One tablet once daily at bedtime"),
+                ("ANT-001", "Amoxyclav 625", "Antibiotics", "Amoxicillin 500mg + Potassium Clavulanate 125mg", "625mg", "10x6 Tablets", 210.0, 160.0, 145.0, "RTI, UTI, Skin & Soft Tissue Infections", "One tablet every 12 hours after food"),
+                ("ANT-002", "Cefurox 500", "Antibiotics", "Cefuroxime Axetil 500mg", "500mg", "10x10 Tablets", 450.0, 340.0, 310.0, "Upper & Lower Respiratory Tract Infections", "One tablet twice daily for 5 to 7 days"),
+                ("ANT-003", "Azikem 500", "Antibiotics", "Azithromycin Dihydrate 500mg", "500mg", "10x3 Tablets", 130.0, 95.0, 86.0, "Community Acquired Pneumonia, Pharyngitis", "One tablet once daily for 3 days"),
+                ("ORT-001", "Orthovita Max", "Orthopedics", "Glucosamine Sulphate 750mg + Chondroitin 100mg", "850mg", "10x10 Tablets", 280.0, 210.0, 190.0, "Osteoarthritis of knee and hip joints", "One tablet twice daily with meals"),
+                ("ORT-002", "Aceclo-SP", "Orthopedics", "Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg", "Triple Action", "10x10 Tablets", 115.0, 85.0, 77.0, "Post-traumatic pain, Rheumatoid arthritis, Dental pain", "One tablet twice daily after meals"),
+                ("ORT-003", "Calcitop D3", "Orthopedics", "Calcium Carbonate 1250mg + Vitamin D3 2000 IU", "Forte", "10x15 Tablets", 175.0, 130.0, 118.0, "Osteoporosis, Calcium deficiency in elderly", "One tablet daily after breakfast"),
+                ("NEU-001", "Neurocalm Plus", "Neurology", "Pregabalin 75mg + Methylcobalamin 750mcg", "75mg/750mcg", "10x10 Capsules", 220.0, 165.0, 150.0, "Diabetic Peripheral Neuropathy, Sciatica", "One capsule at bedtime"),
+                ("NEU-002", "Gabamax 300", "Neurology", "Gabapentin 300mg + Mecobalamin 500mcg", "300mg", "10x10 Tablets", 260.0, 195.0, 178.0, "Post-herpetic Neuralgia, Neuropathic Pain", "One tablet three times daily"),
+                ("GAS-001", "Pantop 40", "Gastroenterology", "Pantoprazole Sodium 40mg", "40mg", "10x10 Tablets", 95.0, 70.0, 63.0, "GERD, Erosive Esophagitis, Peptic Ulcers", "One tablet daily before breakfast"),
+                ("GAS-002", "Pantop-DSR", "Gastroenterology", "Pantoprazole 40mg + Domperidone 30mg SR", "Sustained Release", "10x10 Capsules", 165.0, 125.0, 112.0, "Acid Reflux with Nausea, Dyspepsia", "One capsule early morning on empty stomach"),
+                ("GAS-003", "Sucraheal-O", "Gastroenterology", "Sucralfate 1000mg + Oxetacaine 20mg Suspension", "1000mg/20mg", "200ml Bottle", 185.0, 140.0, 126.0, "Duodenal ulcer, Stress ulcer, Gastric burn", "Two teaspoons 1 hour before meals"),
+                ("RES-001", "Montair-LC", "Respiratory", "Montelukast 10mg + Levocetirizine 5mg", "10mg/5mg", "10x10 Tablets", 175.0, 130.0, 118.0, "Allergic Rhinitis, Seasonal Allergies", "One tablet at bedtime"),
+            ]
+
+            created_products: list[Product] = []
+            for code, name, cat, comp, strn, pkg, mrp, ptr, pts, ind, dose in products_seed_data:
+                p = Product(
+                    code=code,
+                    name=name,
+                    brand="Mediate Healthcare",
+                    category=cat,
+                    composition=comp,
+                    strength=strn,
+                    packaging=pkg,
+                    mrp=mrp,
+                    ptr=ptr,
+                    pts=pts,
+                    gst_rate=12.0,
+                    indications=ind,
+                    dosage_guidelines=dose,
+                    is_sample_available=True,
+                    is_active=True,
+                )
+                db.add(p)
+                db.flush()
+                created_products.append(p)
+
+                # Add 2 visual aid presentation slides per product
+                slide1 = ProductVisualAid(
+                    product_id=p.id,
+                    title=f"Clinical Efficacy & Action of {name}",
+                    image_url=None,
+                    slide_order=1,
+                    key_talk_points=f"• Proven 24-hr clinical effectiveness\n• Superior bioavailability: {comp}\n• Indicated for {ind}",
+                )
+                slide2 = ProductVisualAid(
+                    product_id=p.id,
+                    title=f"Dosage & Patient Safety Profile - {name}",
+                    image_url=None,
+                    slide_order=2,
+                    key_talk_points=f"• Standard prescription: {dose}\n• Well tolerated in clinical trials with high compliance",
+                )
+                db.add(slide1)
+                db.add(slide2)
+
+        # 19. Seed Commercial Orders
+        if db.query(Order).count() < 5 and db.query(Product).count() > 0:
+            logger.info("Seeding 20 Commercial Orders...")
+            all_prods = db.query(Product).all()
+            for idx in range(20):
+                is_chemist = idx % 2 == 0
+                ctype = "CHEMIST" if is_chemist else "STOCKIST"
+                cid = chemists[idx % len(chemists)].id if is_chemist and chemists else stockists[idx % len(stockists)].id
+                
+                # Pick 2-4 products
+                num_items = random.randint(2, 4)
+                chosen_prods = random.sample(all_prods, min(num_items, len(all_prods)))
+                
+                order_num = f"ORD-202610-{(1000 + idx)}"
+                st = "CONFIRMED" if idx % 3 == 0 else ("DELIVERED" if idx % 4 == 0 else "SUBMITTED")
+                
+                tot = 0.0
+                order_items_to_add = []
+                for pr in chosen_prods:
+                    qty = random.randint(5, 30) * 10
+                    unit_p = pr.ptr if is_chemist else pr.pts
+                    l_tot = round(qty * unit_p, 2)
+                    tot += l_tot
+                    order_items_to_add.append(
+                        OrderItem(
+                            product_id=pr.id,
+                            quantity=qty,
+                            unit_price=unit_p,
+                            total_price=l_tot,
+                            free_quantity=qty // 10,
+                        )
+                    )
+
+                ord_obj = Order(
+                    order_number=order_num,
+                    customer_type=ctype,
+                    customer_id=cid,
+                    user_id=mr_user.id if idx % 3 != 0 else mgr_user.id,
+                    total_amount=round(tot, 2),
+                    status=st,
+                    expected_delivery_date=today + timedelta(days=random.randint(2, 7)),
+                    payment_terms="Net 30 Days" if not is_chemist else "Cheque on Delivery",
+                    notes=f"Primary order for Q4 stock replenishment. Dispatch via local courier.",
+                    items=order_items_to_add,
+                )
+                db.add(ord_obj)
 
         db.commit()
 

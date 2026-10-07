@@ -5617,6 +5617,1204 @@
           }
         ]
       }
+    },
+    "/api/v1/reports": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Get reports catalog available for caller's role",
+        "description": "Return reports catalog with titles, groups, filter schemas, and scope info.",
+        "operationId": "get_reports_catalog_api_v1_reports_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportCatalogResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/reports/dashboard": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Get aggregate field performance and coverage dashboard KPIs",
+        "description": "Compute and return operational field KPIs, leaderboard, and customer coverage.",
+        "operationId": "get_reports_dashboard_api_v1_reports_dashboard_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start date for reporting window",
+              "title": "Start Date"
+            },
+            "description": "Start date for reporting window"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End date for reporting window",
+              "title": "End Date"
+            },
+            "description": "End date for reporting window"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportsDashboardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/{key}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Get paged JSON report with summary and metadata",
+        "description": "Execute dynamic report query with server-enforced scoping and return paged results.",
+        "operationId": "get_report_api_v1_reports__key__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start date in YYYY-MM-DD (Asia/Kolkata)",
+              "title": "From Date"
+            },
+            "description": "Start date in YYYY-MM-DD (Asia/Kolkata)"
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End date in YYYY-MM-DD (Asia/Kolkata)",
+              "title": "To Date"
+            },
+            "description": "End date in YYYY-MM-DD (Asia/Kolkata)"
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Alias for from_date",
+              "title": "Start Date"
+            },
+            "description": "Alias for from_date"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Alias for to_date",
+              "title": "End Date"
+            },
+            "description": "Alias for to_date"
+          },
+          {
+            "name": "mr_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by Medical Representative user ID",
+              "title": "Mr Id"
+            },
+            "description": "Filter by Medical Representative user ID"
+          },
+          {
+            "name": "manager_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by Reporting Manager user ID",
+              "title": "Manager Id"
+            },
+            "description": "Filter by Reporting Manager user ID"
+          },
+          {
+            "name": "territory_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by territory ID",
+              "title": "Territory Id"
+            },
+            "description": "Filter by territory ID"
+          },
+          {
+            "name": "customer_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by customer type (DOCTOR, CHEMIST, etc.)",
+              "title": "Customer Type"
+            },
+            "description": "Filter by customer type (DOCTOR, CHEMIST, etc.)"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by status (e.g. Verified, Approved)",
+              "title": "Status"
+            },
+            "description": "Filter by status (e.g. Verified, Approved)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Page number",
+              "default": 1,
+              "title": "Page"
+            },
+            "description": "Page number"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Page size",
+              "default": 50,
+              "title": "Page Size"
+            },
+            "description": "Page size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports/{key}/export": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Export report file as PDF or Excel (XLSX)",
+        "description": "Stream report as PDF or Excel workbook with audit log tracking.",
+        "operationId": "export_report_api_v1_reports__key__export_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Export format: 'xlsx' or 'pdf'",
+              "default": "xlsx",
+              "title": "Format"
+            },
+            "description": "Export format: 'xlsx' or 'pdf'"
+          },
+          {
+            "name": "from_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Start date in YYYY-MM-DD (Asia/Kolkata)",
+              "title": "From Date"
+            },
+            "description": "Start date in YYYY-MM-DD (Asia/Kolkata)"
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "End date in YYYY-MM-DD (Asia/Kolkata)",
+              "title": "To Date"
+            },
+            "description": "End date in YYYY-MM-DD (Asia/Kolkata)"
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Alias for from_date",
+              "title": "Start Date"
+            },
+            "description": "Alias for from_date"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Alias for to_date",
+              "title": "End Date"
+            },
+            "description": "Alias for to_date"
+          },
+          {
+            "name": "mr_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by Medical Representative user ID",
+              "title": "Mr Id"
+            },
+            "description": "Filter by Medical Representative user ID"
+          },
+          {
+            "name": "manager_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by Reporting Manager user ID",
+              "title": "Manager Id"
+            },
+            "description": "Filter by Reporting Manager user ID"
+          },
+          {
+            "name": "territory_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by territory ID",
+              "title": "Territory Id"
+            },
+            "description": "Filter by territory ID"
+          },
+          {
+            "name": "customer_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by customer type",
+              "title": "Customer Type"
+            },
+            "description": "Filter by customer type"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by status",
+              "title": "Status"
+            },
+            "description": "Filter by status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streamed report file download",
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "application/pdf": {},
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products/categories": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "List available product therapy categories",
+        "description": "Get distinct categories.",
+        "operationId": "get_categories_api_v1_products_categories_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "title": "Response Get Categories Api V1 Products Categories Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "List products with category and keyword search",
+        "description": "List products.",
+        "operationId": "list_products_api_v1_products_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Therapy category filter",
+              "title": "Category"
+            },
+            "description": "Therapy category filter"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search by name, composition, brand, or SKU",
+              "title": "Search"
+            },
+            "description": "Search by name, composition, brand, or SKU"
+          },
+          {
+            "name": "is_sample_available",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter products with samples available",
+              "title": "Is Sample Available"
+            },
+            "description": "Filter products with samples available"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductResponse"
+                  },
+                  "title": "Response List Products Api V1 Products Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create a new pharmaceutical product",
+        "description": "Create product.",
+        "operationId": "create_product_api_v1_products_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products/{product_id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get detailed product specs and visual aids",
+        "description": "Get single product with detailing visual aid slides.",
+        "operationId": "get_product_api_v1_products__product_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Product Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products/{product_id}/visual-aids": {
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Add an E-Detailing visual aid slide to a product",
+        "description": "Add visual aid slide.",
+        "operationId": "add_visual_aid_api_v1_products__product_id__visual_aids_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Product Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VisualAidCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductVisualAidResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "List booked orders with scoping and filters",
+        "description": "List orders.",
+        "operationId": "list_orders_api_v1_orders_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "customer_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "CHEMIST or STOCKIST",
+              "title": "Customer Type"
+            },
+            "description": "CHEMIST or STOCKIST"
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Specific customer ID",
+              "title": "Customer Id"
+            },
+            "description": "Specific customer ID"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "SUBMITTED, CONFIRMED, DELIVERED, CANCELLED",
+              "title": "Status"
+            },
+            "description": "SUBMITTED, CONFIRMED, DELIVERED, CANCELLED"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderResponse"
+                  },
+                  "title": "Response List Orders Api V1 Orders Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Book a new commercial order",
+        "description": "Create order.",
+        "operationId": "create_order_api_v1_orders_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{order_id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get order details with line items",
+        "description": "Get single order.",
+        "operationId": "get_order_api_v1_orders__order_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Order Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/targets": {
+      "get": {
+        "tags": [
+          "Targets"
+        ],
+        "summary": "Get monthly targets (ADMIN and MANAGER)",
+        "description": "Fetch monthly targets scoped to caller's team.",
+        "operationId": "get_targets_api_v1_targets_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Year (defaults to current year)",
+              "title": "Year"
+            },
+            "description": "Year (defaults to current year)"
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Month (defaults to current month)",
+              "title": "Month"
+            },
+            "description": "Month (defaults to current month)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetsListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Targets"
+        ],
+        "summary": "Set or update an MR's monthly target (ADMIN and MANAGER)",
+        "description": "Upsert monthly target for an MR.",
+        "operationId": "set_target_api_v1_targets_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetCreateOrUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6880,6 +8078,39 @@
         ],
         "title": "CityResponse",
         "description": "City / District response."
+      },
+      "CustomerCoverageReportItem": {
+        "properties": {
+          "customer_type": {
+            "type": "string",
+            "title": "Customer Type"
+          },
+          "total_customers": {
+            "type": "integer",
+            "title": "Total Customers",
+            "default": 0
+          },
+          "visited_customers": {
+            "type": "integer",
+            "title": "Visited Customers",
+            "default": 0
+          },
+          "coverage_percentage": {
+            "type": "number",
+            "title": "Coverage Percentage",
+            "default": 0.0
+          },
+          "pending_follow_ups": {
+            "type": "integer",
+            "title": "Pending Follow Ups",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "customer_type"
+        ],
+        "title": "CustomerCoverageReportItem"
       },
       "DcrDailySummary": {
         "properties": {
@@ -9645,6 +10876,70 @@
         "title": "LogoutRequest",
         "description": "Optional payload to explicitly specify the refresh token to revoke."
       },
+      "MRPerformanceReportItem": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "user_name": {
+            "type": "string",
+            "title": "User Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "territory_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Territory Name"
+          },
+          "total_calls": {
+            "type": "integer",
+            "title": "Total Calls",
+            "default": 0
+          },
+          "total_pob": {
+            "type": "number",
+            "title": "Total Pob",
+            "default": 0.0
+          },
+          "call_average": {
+            "type": "number",
+            "title": "Call Average",
+            "default": 0.0
+          },
+          "geofence_verified_calls": {
+            "type": "integer",
+            "title": "Geofence Verified Calls",
+            "default": 0
+          },
+          "geofence_compliance": {
+            "type": "number",
+            "title": "Geofence Compliance",
+            "default": 0.0
+          },
+          "attendance_days": {
+            "type": "integer",
+            "title": "Attendance Days",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "user_name",
+          "email"
+        ],
+        "title": "MRPerformanceReportItem"
+      },
       "ManagerDashboardResponse": {
         "properties": {
           "team_size": {
@@ -10482,6 +11777,288 @@
         "title": "NotificationSummaryResponse",
         "description": "Unread badge counter."
       },
+      "OrderCreate": {
+        "properties": {
+          "customer_type": {
+            "type": "string",
+            "title": "Customer Type",
+            "description": "CHEMIST or STOCKIST"
+          },
+          "customer_id": {
+            "type": "integer",
+            "title": "Customer Id"
+          },
+          "expected_delivery_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Delivery Date"
+          },
+          "payment_terms": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payment Terms",
+            "default": "Net 30 Days"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderItemCreate"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "customer_type",
+          "customer_id",
+          "items"
+        ],
+        "title": "OrderCreate",
+        "description": "Payload to create and book a commercial order."
+      },
+      "OrderItemCreate": {
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Quantity"
+          },
+          "unit_price": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Unit Price"
+          },
+          "free_quantity": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Free Quantity",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "quantity",
+          "unit_price"
+        ],
+        "title": "OrderItemCreate",
+        "description": "Payload to add an item to an order."
+      },
+      "OrderItemResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "order_id": {
+            "type": "integer",
+            "title": "Order Id"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "product_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Code"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "unit_price": {
+            "type": "number",
+            "title": "Unit Price"
+          },
+          "total_price": {
+            "type": "number",
+            "title": "Total Price"
+          },
+          "free_quantity": {
+            "type": "integer",
+            "title": "Free Quantity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "order_id",
+          "product_id",
+          "quantity",
+          "unit_price",
+          "total_price",
+          "free_quantity"
+        ],
+        "title": "OrderItemResponse",
+        "description": "Line item representation."
+      },
+      "OrderResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "order_number": {
+            "type": "string",
+            "title": "Order Number"
+          },
+          "customer_type": {
+            "type": "string",
+            "title": "Customer Type"
+          },
+          "customer_id": {
+            "type": "integer",
+            "title": "Customer Id"
+          },
+          "customer_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Name"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Name"
+          },
+          "total_amount": {
+            "type": "number",
+            "title": "Total Amount"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "expected_delivery_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Delivery Date"
+          },
+          "payment_terms": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payment Terms"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OrderItemResponse"
+            },
+            "type": "array",
+            "title": "Items",
+            "default": []
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "order_number",
+          "customer_type",
+          "customer_id",
+          "user_id",
+          "total_amount",
+          "status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "OrderResponse",
+        "description": "Full order details response."
+      },
       "PendingApprovalsSummary": {
         "properties": {
           "tours_count": {
@@ -10749,6 +12326,306 @@
         "title": "PlannedVisitResponse",
         "description": "Planned visit details response."
       },
+      "ProductCreate": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 2,
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 2,
+            "title": "Name"
+          },
+          "brand": {
+            "type": "string",
+            "title": "Brand",
+            "default": "Mediate Pharma"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "composition": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Composition"
+          },
+          "strength": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strength"
+          },
+          "packaging": {
+            "type": "string",
+            "title": "Packaging",
+            "default": "10x10 Tablets"
+          },
+          "mrp": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Mrp"
+          },
+          "ptr": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Ptr"
+          },
+          "pts": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Pts"
+          },
+          "gst_rate": {
+            "type": "number",
+            "title": "Gst Rate",
+            "default": 12.0
+          },
+          "indications": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indications"
+          },
+          "dosage_guidelines": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dosage Guidelines"
+          },
+          "is_sample_available": {
+            "type": "boolean",
+            "title": "Is Sample Available",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "category",
+          "mrp",
+          "ptr",
+          "pts"
+        ],
+        "title": "ProductCreate",
+        "description": "Payload to add a new product."
+      },
+      "ProductResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "brand": {
+            "type": "string",
+            "title": "Brand"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "composition": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Composition"
+          },
+          "strength": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Strength"
+          },
+          "packaging": {
+            "type": "string",
+            "title": "Packaging"
+          },
+          "mrp": {
+            "type": "number",
+            "title": "Mrp"
+          },
+          "ptr": {
+            "type": "number",
+            "title": "Ptr"
+          },
+          "pts": {
+            "type": "number",
+            "title": "Pts"
+          },
+          "gst_rate": {
+            "type": "number",
+            "title": "Gst Rate"
+          },
+          "indications": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Indications"
+          },
+          "dosage_guidelines": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dosage Guidelines"
+          },
+          "is_sample_available": {
+            "type": "boolean",
+            "title": "Is Sample Available"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "visual_aids": {
+            "items": {
+              "$ref": "#/components/schemas/ProductVisualAidResponse"
+            },
+            "type": "array",
+            "title": "Visual Aids",
+            "default": []
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "name",
+          "brand",
+          "category",
+          "packaging",
+          "mrp",
+          "ptr",
+          "pts",
+          "gst_rate",
+          "is_sample_available",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "ProductResponse",
+        "description": "Full pharmaceutical product response."
+      },
+      "ProductVisualAidResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "slide_order": {
+            "type": "integer",
+            "title": "Slide Order"
+          },
+          "key_talk_points": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key Talk Points"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "product_id",
+          "title",
+          "slide_order",
+          "created_at"
+        ],
+        "title": "ProductVisualAidResponse",
+        "description": "Visual aid slide response."
+      },
       "ProfileUpdateRequest": {
         "properties": {
           "full_name": {
@@ -10906,6 +12783,364 @@
         ],
         "title": "RegisterRequest",
         "description": "Self-registration request for new personnel."
+      },
+      "ReportCatalogItem": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "filter_schema": {
+            "$ref": "#/components/schemas/ReportFilterSchema"
+          },
+          "available_formats": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Available Formats"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "group",
+          "description",
+          "filter_schema"
+        ],
+        "title": "ReportCatalogItem",
+        "description": "Metadata item in the reports catalog."
+      },
+      "ReportCatalogResponse": {
+        "properties": {
+          "role": {
+            "type": "string",
+            "title": "Role",
+            "default": ""
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "reports": {
+            "items": {
+              "$ref": "#/components/schemas/ReportCatalogItem"
+            },
+            "type": "array",
+            "title": "Reports"
+          },
+          "scope_label": {
+            "type": "string",
+            "title": "Scope Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reports",
+          "scope_label"
+        ],
+        "title": "ReportCatalogResponse",
+        "description": "List of accessible reports for caller's role."
+      },
+      "ReportColumn": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "default": "string"
+          },
+          "align": {
+            "type": "string",
+            "title": "Align",
+            "default": "left"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "label"
+        ],
+        "title": "ReportColumn",
+        "description": "Column definition for report tabular views and exports."
+      },
+      "ReportFilterSchema": {
+        "properties": {
+          "date_range": {
+            "type": "boolean",
+            "title": "Date Range",
+            "default": true
+          },
+          "mr_picker": {
+            "type": "boolean",
+            "title": "Mr Picker",
+            "default": true
+          },
+          "manager_picker": {
+            "type": "boolean",
+            "title": "Manager Picker",
+            "default": false
+          },
+          "territory_picker": {
+            "type": "boolean",
+            "title": "Territory Picker",
+            "default": false
+          },
+          "customer_type_picker": {
+            "type": "boolean",
+            "title": "Customer Type Picker",
+            "default": false
+          },
+          "status_picker": {
+            "type": "boolean",
+            "title": "Status Picker",
+            "default": false
+          },
+          "status_options": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Status Options"
+          }
+        },
+        "type": "object",
+        "title": "ReportFilterSchema",
+        "description": "Declarative filter options supported by a specific report."
+      },
+      "ReportMeta": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "report_key": {
+            "type": "string",
+            "title": "Report Key",
+            "default": ""
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "group": {
+            "type": "string",
+            "title": "Group"
+          },
+          "filters": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Filters"
+          },
+          "scope_label": {
+            "type": "string",
+            "title": "Scope Label"
+          },
+          "user_scope": {
+            "type": "string",
+            "title": "User Scope",
+            "default": ""
+          },
+          "generated_at": {
+            "type": "string",
+            "title": "Generated At"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/components/schemas/ReportColumn"
+            },
+            "type": "array",
+            "title": "Columns"
+          },
+          "total_records": {
+            "type": "integer",
+            "title": "Total Records",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "group",
+          "filters",
+          "scope_label",
+          "generated_at"
+        ],
+        "title": "ReportMeta",
+        "description": "Header metadata for a report generation result."
+      },
+      "ReportResponse": {
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/ReportMeta"
+          },
+          "columns": {
+            "items": {
+              "$ref": "#/components/schemas/ReportColumn"
+            },
+            "type": "array",
+            "title": "Columns"
+          },
+          "summary": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Summary"
+          },
+          "items": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "total_records": {
+            "type": "integer",
+            "title": "Total Records",
+            "default": 0
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page",
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size",
+            "default": 50
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "meta",
+          "summary",
+          "items",
+          "total"
+        ],
+        "title": "ReportResponse",
+        "description": "Standard JSON response for a paged report."
+      },
+      "ReportsDashboardResponse": {
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/ReportsSummaryResponse"
+          },
+          "mr_performances": {
+            "items": {
+              "$ref": "#/components/schemas/MRPerformanceReportItem"
+            },
+            "type": "array",
+            "title": "Mr Performances"
+          },
+          "customer_coverage": {
+            "items": {
+              "$ref": "#/components/schemas/CustomerCoverageReportItem"
+            },
+            "type": "array",
+            "title": "Customer Coverage"
+          }
+        },
+        "type": "object",
+        "required": [
+          "summary",
+          "mr_performances",
+          "customer_coverage"
+        ],
+        "title": "ReportsDashboardResponse"
+      },
+      "ReportsSummaryResponse": {
+        "properties": {
+          "total_calls": {
+            "type": "integer",
+            "title": "Total Calls",
+            "default": 0
+          },
+          "doctor_calls": {
+            "type": "integer",
+            "title": "Doctor Calls",
+            "default": 0
+          },
+          "chemist_calls": {
+            "type": "integer",
+            "title": "Chemist Calls",
+            "default": 0
+          },
+          "hospital_calls": {
+            "type": "integer",
+            "title": "Hospital Calls",
+            "default": 0
+          },
+          "stockist_calls": {
+            "type": "integer",
+            "title": "Stockist Calls",
+            "default": 0
+          },
+          "total_pob": {
+            "type": "number",
+            "title": "Total Pob",
+            "default": 0.0
+          },
+          "average_calls_per_day": {
+            "type": "number",
+            "title": "Average Calls Per Day",
+            "default": 0.0
+          },
+          "total_attendance_days": {
+            "type": "integer",
+            "title": "Total Attendance Days",
+            "default": 0
+          },
+          "geofence_compliance_rate": {
+            "type": "number",
+            "title": "Geofence Compliance Rate",
+            "default": 0.0
+          },
+          "pending_approvals_count": {
+            "type": "integer",
+            "title": "Pending Approvals Count",
+            "default": 0
+          },
+          "active_mrs_count": {
+            "type": "integer",
+            "title": "Active Mrs Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "ReportsSummaryResponse"
       },
       "RoleResponse": {
         "properties": {
@@ -11462,6 +13697,164 @@
         "type": "object",
         "title": "StockistUpdate",
         "description": "Payload to update a Stockist."
+      },
+      "TargetCreateOrUpdate": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id",
+            "description": "Target MR user ID"
+          },
+          "year": {
+            "type": "integer",
+            "maximum": 2050.0,
+            "minimum": 2020.0,
+            "title": "Year",
+            "description": "Target year"
+          },
+          "month": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month",
+            "description": "Target month (1-12)"
+          },
+          "visit_target": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Visit Target",
+            "description": "Monthly call/visit target",
+            "default": 0
+          },
+          "doctor_call_target": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Doctor Call Target",
+            "description": "Doctor visit target",
+            "default": 0
+          },
+          "chemist_call_target": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Chemist Call Target",
+            "description": "Chemist visit target",
+            "default": 0
+          },
+          "primary_sales_target": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Primary Sales Target",
+            "description": "Primary sales target (Rs)",
+            "default": 0.0
+          },
+          "secondary_sales_target": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Secondary Sales Target",
+            "description": "Secondary sales / POB target (Rs)",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "year",
+          "month"
+        ],
+        "title": "TargetCreateOrUpdate",
+        "description": "Payload to create or update an MR's monthly target."
+      },
+      "TargetResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Name"
+          },
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "month": {
+            "type": "integer",
+            "title": "Month"
+          },
+          "visit_target": {
+            "type": "integer",
+            "title": "Visit Target"
+          },
+          "doctor_call_target": {
+            "type": "integer",
+            "title": "Doctor Call Target"
+          },
+          "chemist_call_target": {
+            "type": "integer",
+            "title": "Chemist Call Target"
+          },
+          "primary_sales_target": {
+            "type": "number",
+            "title": "Primary Sales Target"
+          },
+          "secondary_sales_target": {
+            "type": "number",
+            "title": "Secondary Sales Target"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "year",
+          "month",
+          "visit_target",
+          "doctor_call_target",
+          "chemist_call_target",
+          "primary_sales_target",
+          "secondary_sales_target"
+        ],
+        "title": "TargetResponse",
+        "description": "Response representation of a target."
+      },
+      "TargetsListResponse": {
+        "properties": {
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "month": {
+            "type": "integer",
+            "title": "Month"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TargetResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "year",
+          "month",
+          "items"
+        ],
+        "title": "TargetsListResponse",
+        "description": "List of targets returned for a month/year query."
       },
       "TaskCommentCreate": {
         "properties": {
@@ -12746,6 +15139,50 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "VisualAidCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 2,
+            "title": "Title"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "slide_order": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Slide Order",
+            "default": 1
+          },
+          "key_talk_points": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key Talk Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "title": "VisualAidCreate",
+        "description": "Payload to add visual aid slide."
       }
     },
     "securitySchemes": {

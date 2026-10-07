@@ -30,12 +30,7 @@ class NotificationRepository:
         if notification_type:
             query = query.filter(Notification.notification_type == notification_type.upper())
 
-        return (
-            query.order_by(Notification.created_at.desc())
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+        return query.order_by(Notification.created_at.desc()).offset(skip).limit(limit).all()
 
     def count_summary(self, user_id: int) -> dict[str, int]:
         """Count unread and total notifications."""

@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import date, datetime
 
 from sqlalchemy import (
-    Boolean,
     Date,
     DateTime,
     ForeignKey,
@@ -60,7 +59,10 @@ class Task(Base):
     assigned_to: Mapped[User] = relationship("User", foreign_keys=[assigned_to_id])
     created_by: Mapped[User | None] = relationship("User", foreign_keys=[created_by_id])
     comments: Mapped[list[TaskComment]] = relationship(
-        "TaskComment", back_populates="task", cascade="all, delete-orphan", order_by="TaskComment.created_at.asc()"
+        "TaskComment",
+        back_populates="task",
+        cascade="all, delete-orphan",
+        order_by="TaskComment.created_at.asc()",
     )
 
 

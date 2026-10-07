@@ -1,0 +1,500 @@
+"""PDF generation engine conforming to Section 6 of Reports Spec."""
+
+from __future__ import annotations
+
+import io
+from pathlib import Path
+from typing import Any
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, landscape, portrait
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
+from reportlab.platypus import (
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
+
+from app.modules.reports.schemas import ReportColumn, ReportMeta
+
+FONT_DIR = Path(__file__).parent / "fonts"
+REG_FONT_PATH = FONT_DIR / "UnicodeSans.ttf"
+BOLD_FONT_PATH = FONT_DIR / "UnicodeSansBold.ttf"
+
+
+def ensure_fonts_registered() -> None:
+    """Register Unicode TrueType fonts for rupee symbol and multi-script support."""
+    registered = pdfmetrics.getRegisteredFontNames()
+    if "UnicodeSans" not in registered:
+        if REG_FONT_PATH.exists():
+            pdfmetrics.registerFont(TTFont("UnicodeSans", str(REG_FONT_PATH)))
+        elif Path("C:/Windows/Fonts/segoeui.ttf").exists():
+            pdfmetrics.registerFont(TTFont("UnicodeSans", "C:/Windows/Fonts/segoeui.ttf"))
+        else:
+            pdfmetrics.registerFont(TTFont("UnicodeSans", "Helvetica"))
+
+    if "UnicodeSans-Bold" not in registered:
+        if BOLD_FONT_PATH.exists():
+            pdfmetrics.registerFont(TTFont("UnicodeSans-Bold", str(BOLD_FONT_PATH)))
+        elif Path("C:/Windows/Fonts/segoeuib.ttf").exists():
+            pdfmetrics.registerFont(TTFont("UnicodeSans-Bold", "C:/Windows/Fonts/segoeuib.ttf"))
+        else:
+            pdfmetrics.registerFont(TTFont("UnicodeSans-Bold", "Helvetica-Bold"))
+
+
+class NumberedCanvas(canvas.Canvas):  # type: ignore[misc]
+    """Two-pass canvas that paints 'Page x of y' and confidential footer."""
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self._saved_page_states: list[dict[str, Any]] = []
+
+    def showPage(self) -> None:
+        self._saved_page_states.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self) -> None:
+        num_pages = len(self._saved_page_states)
+        for state in self._saved_page_states:
+            self.__dict__.update(state)
+            self.draw_page_decorations(num_pages)
+            super().showPage()
+        super().save()
+
+    def draw_page_decorations(self, page_count: int) -> None:
+        self.saveState()
+        ensure_fonts_registered()
+        self.setFont("UnicodeSans", 8)
+        self.setFillColor(colors.HexColor("#64748B"))
+
+        page_width, page_height = self._pagesize
+
+        # Footer divider line
+        self.setStrokeColor(colors.HexColor("#EDEEF6"))
+        self.setLineWidth(0.75)
+        self.line(36, 32, page_width - 36, 32)
+
+        # Footer Left: Confidential
+        self.drawString(36, 20, "Confidential • Mediate Healthcare Field Operations")
+
+        # Footer Center: Page x of y
+        page_str = f"Page {self._pageNumber} of {page_count}"
+        self.drawCentredString(page_width / 2.0, 20, page_str)
+
+        # Footer Right: Report Key
+        report_key = getattr(self, "report_key", "MEDIATE-REPORT")
+        self.drawRightString(page_width - 36, 20, str(report_key).upper())
+
+        self.restoreState()
+
+
+class ReportPdfGenerator:
+    """Builds enterprise PDF reports matching Section 6 visual specifications."""
+
+    DEEP_GREEN = colors.HexColor("#0C5D46")
+    SOFT_GREEN = colors.HexColor("#DCFCE7")
+    BG_LIGHT = colors.HexColor("#F3F7FA")
+    BORDER_COLOR = colors.HexColor("#EDEEF6")
+    NAVY_DARK = colors.HexColor("#0F172A")
+    GREY_SLATE = colors.HexColor("#64748B")
+
+    STATUS_GREEN = colors.HexColor("#19A14D")
+    STATUS_AMBER = colors.HexColor("#F2A900")
+    STATUS_RED = colors.HexColor("#E22122")
+
+    def __init__(
+        self, meta: ReportMeta, columns: list[ReportColumn], landscape_mode: bool = False
+    ) -> None:
+        ensure_fonts_registered()
+        self.meta = meta
+        self.columns = columns
+        self.landscape_mode = landscape_mode
+        self.styles = getSampleStyleSheet()
+
+    def generate(self, items: list[dict[str, Any]], summary: dict[str, Any]) -> bytes:
+        """Render report into PDF binary bytes."""
+        buffer = io.BytesIO()
+        page_size = landscape(A4) if self.landscape_mode else portrait(A4)
+
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=page_size,
+            leftMargin=36,
+            rightMargin=36,
+            topMargin=36,
+            bottomMargin=45,
+        )
+
+        printable_width = page_size[0] - 72
+
+        story: list[Any] = []
+
+        # 1. Header Band in Deep Green (#0C5D46)
+        header_table = self._build_header_band(printable_width)
+        story.append(header_table)
+        story.append(Spacer(1, 10))
+
+        # 2. Info Block (Date range, scope, generated by, timestamp)
+        info_block = self._build_info_block(printable_width)
+        story.append(info_block)
+        story.append(Spacer(1, 10))
+
+        # 3. KPI Summary Strip (Light green #DCFCE7 boxes)
+        if summary:
+            kpi_strip = self._build_kpi_strip(summary, printable_width)
+            if kpi_strip:
+                story.append(kpi_strip)
+                story.append(Spacer(1, 12))
+
+        # 4. Table / Content
+        if not items:
+            story.append(self._build_empty_state(printable_width))
+        elif self.meta.key == "dcr_detailed":
+            # R01 Grouped date-wise with day subtotals
+            story.extend(self._build_grouped_dcr_tables(items, printable_width))
+        else:
+            story.append(self._build_data_table(items, printable_width))
+
+        # Custom canvas with report key for footer
+        def canvas_maker(*args: Any, **kwargs: Any) -> NumberedCanvas:
+            canv = NumberedCanvas(*args, **kwargs)
+            canv.report_key = self.meta.key
+            return canv
+
+        doc.build(story, canvasmaker=canvas_maker)
+        return buffer.getvalue()
+
+    def _build_header_band(self, width: float) -> Table:
+        title_style = ParagraphStyle(
+            "HeaderTitle",
+            fontName="UnicodeSans-Bold",
+            fontSize=16,
+            textColor=colors.white,
+            leading=18,
+        )
+        sub_style = ParagraphStyle(
+            "HeaderSub",
+            fontName="UnicodeSans",
+            fontSize=10,
+            textColor=colors.HexColor("#DCFCE7"),
+            leading=12,
+        )
+
+        left_para = Paragraph(
+            f"<b>Mediate Healthcare</b><br/><font size=9>{self.meta.title}</font>",
+            title_style,
+        )
+        right_para = Paragraph(
+            f"<align right><b>Field Force Analytics</b><br/>{self.meta.group}</align>",
+            sub_style,
+        )
+
+        tbl = Table([[left_para, right_para]], colWidths=[width * 0.65, width * 0.35])
+        tbl.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), self.DEEP_GREEN),
+                    ("PADDING", (0, 0), (-1, -1), 10),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+                ]
+            )
+        )
+        return tbl
+
+    def _build_info_block(self, width: float) -> Table:
+        label_style = ParagraphStyle(
+            "InfoLabel",
+            fontName="UnicodeSans",
+            fontSize=8,
+            textColor=self.GREY_SLATE,
+            leading=10,
+        )
+        val_style = ParagraphStyle(
+            "InfoVal",
+            fontName="UnicodeSans-Bold",
+            fontSize=8.5,
+            textColor=self.NAVY_DARK,
+            leading=11,
+        )
+
+        date_range_str = (
+            f"{self.meta.filters.get('from_date', '-')} to {self.meta.filters.get('to_date', '-')}"
+        )
+        scope_str = self.meta.scope_label or "All Representatives"
+        gen_by = self.meta.filters.get("generated_by", "Authorized Personnel")
+        gen_at = self.meta.generated_at
+
+        row1 = [
+            Paragraph("<b>Reporting Range:</b>", label_style),
+            Paragraph(date_range_str, val_style),
+            Paragraph("<b>Target Scope:</b>", label_style),
+            Paragraph(scope_str, val_style),
+        ]
+        row2 = [
+            Paragraph("<b>Generated By:</b>", label_style),
+            Paragraph(gen_by, val_style),
+            Paragraph("<b>Generated On:</b>", label_style),
+            Paragraph(gen_at, val_style),
+        ]
+
+        w = width / 4.0
+        tbl = Table([row1, row2], colWidths=[w * 0.7, w * 1.3, w * 0.7, w * 1.3])
+        tbl.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), self.BG_LIGHT),
+                    ("BOX", (0, 0), (-1, -1), 0.5, self.BORDER_COLOR),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, self.BORDER_COLOR),
+                    ("PADDING", (0, 0), (-1, -1), 5),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ]
+            )
+        )
+        return tbl
+
+    def _build_kpi_strip(self, summary: dict[str, Any], width: float) -> Table | None:
+        # Display top 4-6 KPIs
+        kpi_items = list(summary.items())[:6]
+        if not kpi_items:
+            return None
+
+        col_w = width / len(kpi_items)
+        cells = []
+
+        kpi_val_style = ParagraphStyle(
+            "KpiVal",
+            fontName="UnicodeSans-Bold",
+            fontSize=13,
+            textColor=self.DEEP_GREEN,
+            alignment=1,  # Center
+            leading=15,
+        )
+
+        for key, val in kpi_items:
+            lbl = key.replace("_", " ").title()
+            val_str = (
+                f"₹ {val:,.2f}"
+                if "amount" in key or "claimed" in key
+                else f"{val}%"
+                if "pct" in key
+                else str(val)
+            )
+            p = Paragraph(f"<b>{val_str}</b><br/><font color='#475569'>{lbl}</font>", kpi_val_style)
+            cells.append(p)
+
+        tbl = Table([cells], colWidths=[col_w] * len(kpi_items))
+        tbl.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), self.SOFT_GREEN),
+                    ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#86EFAC")),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#BBF7D0")),
+                    ("PADDING", (0, 0), (-1, -1), 6),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ]
+            )
+        )
+        return tbl
+
+    def _build_empty_state(self, width: float) -> Table:
+        empty_style = ParagraphStyle(
+            "EmptyNotice",
+            fontName="UnicodeSans",
+            fontSize=11,
+            textColor=self.GREY_SLATE,
+            alignment=1,
+            leading=14,
+        )
+        p = Paragraph(
+            "<b>No records for the selected filters</b><br/><font size=9>Try expanding the date window or adjusting scope filters.</font>",
+            empty_style,
+        )
+        tbl = Table([[p]], colWidths=[width])
+        tbl.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), self.BG_LIGHT),
+                    ("BOX", (0, 0), (-1, -1), 1, self.BORDER_COLOR),
+                    ("PADDING", (0, 0), (-1, -1), 30),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ]
+            )
+        )
+        return tbl
+
+    def _build_data_table(self, items: list[dict[str, Any]], width: float) -> Table:
+        # Calculate dynamic column widths
+        num_cols = len(self.columns)
+        base_w = width / num_cols
+
+        # Adjust column widths based on column types
+        col_widths: list[float] = []
+        for col in self.columns:
+            if col.key in ["remarks", "products_promoted", "places", "description", "reason"]:
+                col_widths.append(base_w * 1.8)
+            elif col.type in ["date", "time", "status", "category"]:
+                col_widths.append(base_w * 0.75)
+            elif col.type in ["number", "currency", "percent"]:
+                col_widths.append(base_w * 0.8)
+            else:
+                col_widths.append(base_w * 1.0)
+
+        # Normalize total width
+        scale = width / sum(col_widths)
+        col_widths = [w * scale for w in col_widths]
+
+        header_style = ParagraphStyle(
+            "HeaderCell",
+            fontName="UnicodeSans-Bold",
+            fontSize=7.5,
+            textColor=colors.white,
+            alignment=1,
+            leading=9,
+        )
+
+        body_style = ParagraphStyle(
+            "BodyCell",
+            fontName="UnicodeSans",
+            fontSize=7.5,
+            textColor=self.NAVY_DARK,
+            leading=9,
+        )
+
+        # Header Row
+        data_rows: list[list[Any]] = [
+            [Paragraph(f"<b>{col.label}</b>", header_style) for col in self.columns]
+        ]
+
+        # Data Rows
+        for it in items:
+            row_cells: list[Any] = []
+            for col in self.columns:
+                raw_val = it.get(col.key, "-")
+                val_str = str(raw_val) if raw_val is not None else "-"
+
+                # Alignments & Status coloring
+                style_for_cell = ParagraphStyle(
+                    f"cell_{col.key}",
+                    parent=body_style,
+                )
+                if col.align == "right":
+                    style_for_cell.alignment = 2
+                elif col.align == "center":
+                    style_for_cell.alignment = 1
+
+                if col.type == "status":
+                    v_low = val_str.lower()
+                    if v_low in ["verified", "approved", "completed", "present", "on track"]:
+                        val_str = f"<font color='#19A14D'><b>{val_str}</b></font>"
+                    elif v_low in ["pending", "due", "draft"]:
+                        val_str = f"<font color='#F2A900'><b>{val_str}</b></font>"
+                    elif v_low in [
+                        "rejected",
+                        "not verified",
+                        "overdue",
+                        "missed",
+                        "absent",
+                        "yes",
+                    ]:
+                        val_str = f"<font color='#E22122'><b>{val_str}</b></font>"
+
+                elif col.type == "currency" and isinstance(raw_val, (int, float)):
+                    val_str = f"₹ {raw_val:,.2f}"
+
+                row_cells.append(Paragraph(val_str, style_for_cell))
+            data_rows.append(row_cells)
+
+        tbl = Table(data_rows, colWidths=col_widths, repeatRows=1)
+        tbl.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), self.DEEP_GREEN),
+                    ("BOX", (0, 0), (-1, -1), 0.5, self.BORDER_COLOR),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, self.BORDER_COLOR),
+                    ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, self.BG_LIGHT]),
+                    ("PADDING", (0, 0), (-1, -1), 3.5),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ]
+            )
+        )
+        return tbl
+
+    def _build_grouped_dcr_tables(self, items: list[dict[str, Any]], width: float) -> list[Any]:
+        """R01 DCR Detailed: Grouped date-wise with day subtotals."""
+        # Group items by date
+        grouped: dict[str, list[dict[str, Any]]] = {}
+        for it in items:
+            d = it.get("date", "Unknown Date")
+            grouped.setdefault(d, []).append(it)
+
+        flowables: list[Any] = []
+
+        date_hdr_style = ParagraphStyle(
+            "DateHdr",
+            fontName="UnicodeSans-Bold",
+            fontSize=9.5,
+            textColor=self.DEEP_GREEN,
+            leading=12,
+        )
+
+        subtotal_style = ParagraphStyle(
+            "Subtotal",
+            fontName="UnicodeSans-Bold",
+            fontSize=8,
+            textColor=self.NAVY_DARK,
+            alignment=2,
+            leading=10,
+        )
+
+        for date_str, day_items in grouped.items():
+            # Day header
+            calls_cnt = len(day_items)
+            ver_cnt = sum(1 for x in day_items if x.get("_raw_verified"))
+            docs_cnt = sum(
+                1 for x in day_items if str(x.get("_raw_customer_type", "")).upper() == "DOCTOR"
+            )
+            chem_cnt = sum(
+                1 for x in day_items if str(x.get("_raw_customer_type", "")).upper() == "CHEMIST"
+            )
+            stock_cnt = sum(
+                1 for x in day_items if str(x.get("_raw_customer_type", "")).upper() == "STOCKIST"
+            )
+
+            p_hdr = Paragraph(
+                f"📅 <b>Date: {date_str}</b>  ({calls_cnt} Calls • {docs_cnt} Doctors • {chem_cnt} Chemists)",
+                date_hdr_style,
+            )
+            flowables.append(p_hdr)
+            flowables.append(Spacer(1, 4))
+
+            # Table for day items
+            day_tbl = self._build_data_table(day_items, width)
+            flowables.append(day_tbl)
+            flowables.append(Spacer(1, 3))
+
+            # Day Subtotal Bar
+            sub_text = (
+                f"<b>Subtotal for {date_str}:</b> {calls_cnt} Calls | "
+                f"Doctors: {docs_cnt} | Chemists: {chem_cnt} | Stockists: {stock_cnt} | "
+                f"Verified: {ver_cnt}/{calls_cnt} ({round(ver_cnt / calls_cnt * 100, 1) if calls_cnt else 0}%)"
+            )
+            sub_tbl = Table([[Paragraph(sub_text, subtotal_style)]], colWidths=[width])
+            sub_tbl.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, -1), self.SOFT_GREEN),
+                        ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#86EFAC")),
+                        ("PADDING", (0, 0), (-1, -1), 4),
+                    ]
+                )
+            )
+            flowables.append(sub_tbl)
+            flowables.append(Spacer(1, 10))
+
+        return flowables

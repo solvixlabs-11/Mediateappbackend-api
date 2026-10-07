@@ -18,15 +18,12 @@ Living memory of the project. The AI agent reads this file first in every sessio
 | Build order | Phases P0 to P9, products and samples last |
 | Context files | prd.md, architecture.md, rules.md, design.md, task.md, memory.md, frontend-spec.md |
 
-## Current state
-| Item | Value |
-|---|---|
-| Current phase | Phase R (mobile repair) |
-| Last finished task | R4 (Navigation refactor: converted modals to registered stack screens) |
-| Next task | R5 (Screen audit and fixes) |
-| Backend last finished phase | Phase 5 + Live Field Activity / Dashboard & Customer Details (39/39 tests passing) |
-| Mobile last finished phase | Phases 1-5 built, under repair (see docs/audit) |
-| Last openapi.json export | Phase 5 Approvals, Tours, Expenses, Leaves + Dashboard Live Activity (2026-10-02) |
+| Current phase | Phase 7 (Reports Engine & Exports Completed) |
+| Last finished task | Report Engine (R01-R14), PDF & Excel exports with branding/rupee font, Targets CRUD with migration, Scoping via core/scope.py |
+| Next task | Mobile integration of reports & targets, Client Demo Showcase |
+| Backend last finished phase | Phase 7 Complete (54/54 tests passing 100%, mypy & ruff green) |
+| Mobile last finished phase | Phase 8 Complete (0 TypeScript errors) |
+| Last openapi.json export | Phase 7 Reports & Targets endpoints exported |
 | Last git tag | none |
 
 ## Locked decisions
@@ -114,6 +111,7 @@ Add one line per session: date, what was done, what is next.
 - 2026-10-01: Phase 1 & Phase 2 implementation. Masters and Customers features built.
 - 2026-10-02: Phase 3 (Attendance & Geofence), Phase 4 (Planning, DCR, Visit Reports), Phase 5 (Approvals, Tours, Expenses, Leaves) implemented. Backend 35/35 pytest tests pass. Frontend UI baseline established; modals used for full screens.
 - 2026-10-02: Phase R initiated per Frontend Spec (Audit, Repair and Build Guide). Current step: R0 audit and context document alignment.
+- 2026-10-04: Phase 7 Report Engine with PDF and Excel export built according to docs/reports-spec.md. Implemented ReportRegistry with 14 production reports (R01-R14), targets table with Alembic migration, role-based scoping (MR self, Manager team, Admin all; 403 on REPORT_SCOPE_DENIED), ReportLab PDF export (#0C5D46 green branding, Unicode TTF Rupee font, NumberedCanvas, R01 date-wise grouping with subtotals), OpenPyXL Excel export (Summary, Data, By Date sheets, formulas), audit logging on export, and 54/54 passing tests. Next: Mobile reports integration & client demo.
 
 ## Changelog
 - v0.0 Context files created.

@@ -41,7 +41,9 @@ def get_notification_summary(
 )
 def list_notifications(
     unread_only: bool = Query(False, description="Filter only unread notifications"),
-    notification_type: str | None = Query(None, description="APPROVAL, TASK, LEAVE, TOUR, EXPENSE, SYSTEM"),
+    notification_type: str | None = Query(
+        None, description="APPROVAL, TASK, LEAVE, TOUR, EXPENSE, SYSTEM"
+    ),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
     db: Session = Depends(get_db),

@@ -114,7 +114,8 @@ def register_error_handlers(app: FastAPI) -> None:
             status.HTTP_405_METHOD_NOT_ALLOWED: "METHOD_NOT_ALLOWED",
             status.HTTP_409_CONFLICT: "CONFLICT",
         }
-        code = code_map.get(exc.status_code, "HTTP_ERROR")
+        headers = dict(exc.headers) if exc.headers else {}
+        code = headers.get("X-Error-Code", code_map.get(exc.status_code, "HTTP_ERROR"))
         return JSONResponse(
             status_code=exc.status_code,
             content={
@@ -122,6 +123,7 @@ def register_error_handlers(app: FastAPI) -> None:
                 "code": code,
                 "errors": [],
             },
+            headers=headers,
         )
 
     @app.exception_handler(Exception)

@@ -1,5 +1,61 @@
 # Changelog - Mediate Healthcare MR Backend API
 
+## [Phase 7] - Reports Engine & Export Infrastructure (2026-10-04)
+
+### Added
+- **Report Registry Engine (`app/modules/reports/`)**:
+  - Modular class-based registry (`BaseReport`, `ReportRegistry`) with 14 production reports registered:
+    - R01: `dcr_detailed` (DCR Detailed Report, date-wise grouping with subtotals)
+    - R02: `daily_activity` (MR Daily Activity Summary)
+    - R03: `customer_visits` (Customer-wise Visit History)
+    - R04: `customer_coverage` (Customer Coverage Report, A/B/C tier reach)
+    - R05: `mr_performance` (MR Monthly Performance vs Targets)
+    - R06: `pending_late_dcr` (Pending & Late DCR Report)
+    - R07: `geo_verification` (Geo-verification & Geofence Audit)
+    - R08: `planned_vs_actual` (Planned vs Actual Route Analysis)
+    - R09: `attendance` (Attendance & Shift Punctuality Report)
+    - R10: `leave_report` (Leave Utilisation & Entitlement Report)
+    - R11: `expense_report` (Expense Claims & Receipt Audit Report)
+    - R12: `tour_plan_report` (Tour Plan & Route Deviation Report)
+    - R13: `follow_up_report` (Customer Follow-up Task Aging Report)
+    - R14: `approval_turnaround` (Managerial Decision & SLA Turnaround Report)
+- **Targets Module (`app/modules/targets/`)**:
+  - `targets` table for monthly field performance quotas (visits, doctor calls, chemist calls, primary and secondary sales).
+  - Alembic migration `a1b2c3d4e5f6_phase7_targets.py` applied on SQL Server database.
+  - Endpoints: `GET /api/v1/targets` and `PUT /api/v1/targets` (ADMIN and MANAGER).
+- **Reports Endpoints (`app/modules/reports/router.py`)**:
+  - `GET /api/v1/reports`: dynamic catalog filtered by caller role (`ADMIN`, `MANAGER`, `MR`).
+  - `GET /api/v1/reports/{key}`: paged JSON with meta, columns, summary, items, and pagination.
+  - `GET /api/v1/reports/{key}/export`: streaming file export (`?format=pdf` or `?format=xlsx`).
+  - Backward-compatible dashboard endpoint `GET /api/v1/reports/dashboard`.
+- **Strict Role Scoping (`core/scope.py`)**:
+  - MR forced to self data only (`mr_id = user_id`); requesting other IDs returns `403` with code `REPORT_SCOPE_DENIED`.
+  - MANAGER restricted to assigned team members; requesting outside team returns `403` with code `REPORT_SCOPE_DENIED`.
+  - ADMIN has unrestricted global operational scope.
+  - Audit logging row (`REPORT_EXPORT`) recorded on every file export.
+- **Export Engines**:
+  - **PDF Export (`app/modules/reports/pdf.py`)**: ReportLab generator with deep green `#0C5D46` header band, filter block, light green `#DCFCE7` KPI strip, zebra table with repeated headers, two-pass `NumberedCanvas` ("Page X of Y"), and bundled Unicode TTF font for Indian Rupee symbol (`₹`). Landscape orientation enabled for wide tables. R01 date-wise grouping with subtotals.
+  - **Excel Export (`app/modules/reports/excel.py`)**: OpenPyXL generator with "Summary" and "Data" sheets (and "By Date" for R01), deep green header styling, freeze panes `A2`, auto-filters, custom column widths, and live Excel `SUM` formulas.
+- **Validation**:
+  - Maximum 92 days date range validation (`REPORT_RANGE_TOO_LARGE`).
+  - Start date > end date validation (`INVALID_FILTER`).
+  - Export row limit 50,000 records (`EXPORT_TOO_LARGE`).
+  - Asia/Kolkata timezone normalization to exact UTC range.
+- **Testing**:
+  - Added comprehensive test suite `tests/test_report_engine_and_exports.py` covering registry, catalog, scoping, validations, JSON execution, PDF & Excel exports, empty results, targets CRUD, and 23:30 IST boundary.
+  - 54 total passing pytest tests; mypy and ruff 100% green.
+
+---
+
+## [Phase 6] - Tasks, Notifications & Commercial Orders (2026-10-03)
+
+### Added
+- Tasks management with attachments and comments (`tasks`, `task_attachments`, `task_comments`).
+- In-app notification center and real-time alerts (`notifications`).
+- Product catalog and commercial order bookings (`products`, `orders`, `order_items`).
+
+---
+
 ## [Phase 5] - Approvals, Tour Program, Expenses & Leaves (2026-10-02)
 
 ### Added

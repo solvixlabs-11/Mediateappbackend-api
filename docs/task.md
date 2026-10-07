@@ -139,12 +139,12 @@ Mobile
 
 ## Phase 7: Dashboard, Reports, Export, Maps (features 26, 27, 28, 24)
 Backend
-- [ ] P7-B-01 targets table and endpoints
+- [x] P7-B-01 targets table and endpoints (GET/PUT /api/v1/targets, alembic migration applied)
 - [x] P7-B-02 Dashboard endpoints (MR, manager, admin)
-- [ ] P7-B-03 Report registry and core reports
-- [ ] P7-B-04 Excel and PDF export
+- [x] P7-B-03 Report registry and core reports (Modular class-based engine, all 14 reports R01-R14 registered, scoping enforced)
+- [x] P7-B-04 Excel and PDF export (ReportLab #0C5D46 green branded PDF with Unicode TTF rupee support, OpenPyXL XLSX with formulas)
 - [ ] P7-B-05 Maps endpoints (team, route, customers, visits)
-- [ ] P7-B-06 Tests; openapi export
+- [x] P7-B-06 Tests; openapi export (54/54 pytest passing, mypy 0 errors, ruff 0 errors, openapi exported)
 Mobile
 - [x] P7-M-01 Dashboards per role (Admin/Manager Live Field Activity Section 8.2 & MR Dashboard)
 - [ ] P7-M-02 Reports screens with filters

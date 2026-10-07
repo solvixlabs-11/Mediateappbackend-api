@@ -17,7 +17,6 @@ from app.modules.customers.schemas import (
     HospitalResponse,
     HospitalUpdate,
     ImportReportResponse,
-    ImportRowError,
     NearbyCustomerItem,
     StockistCreate,
     StockistResponse,
