@@ -462,7 +462,8 @@ def test_dynamic_filters_affect_results(client: TestClient, db_session: Session)
     assert len(all_docs) >= 1
 
     # 2. Filter doctor list by territory
-    terr = db_session.query(Territory).first()
+    terr = db_session.query(Territory).filter(Territory.code == "TERR-PUN-01").first()
+    assert terr is not None
     r_terr = client.get(f"/api/v1/reports/doctor_list?territory_id={terr.id}", headers=headers)
     assert r_terr.status_code == 200
     terr_docs = r_terr.json()["items"]

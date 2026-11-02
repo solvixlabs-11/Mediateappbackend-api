@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.modules.customers.models import Chemist, Doctor, Hospital, HospitalDoctor, Stockist
@@ -72,7 +72,9 @@ class DoctorListReport(BaseReport):
         if user_ids is not None:
             assigns = db.execute(
                 select(UserTerritoryAssignment.territory_id).where(
-                    UserTerritoryAssignment.user_id.in_(user_ids)
+                    UserTerritoryAssignment.user_id.in_(user_ids),
+                    UserTerritoryAssignment.unassigned_at.is_(None),
+                    UserTerritoryAssignment.is_deleted.is_(False),
                 )
             ).scalars().all()
             allowed_terr_ids = set(assigns)
@@ -81,6 +83,7 @@ class DoctorListReport(BaseReport):
                 select(DcrVisit.doctor_id).where(
                     DcrVisit.user_id.in_(user_ids),
                     DcrVisit.doctor_id.isnot(None),
+                    DcrVisit.is_deleted.is_(False),
                 )
             ).scalars().all()
             mr_doc_ids = set(visited)
@@ -89,10 +92,16 @@ class DoctorListReport(BaseReport):
         user_assigns = db.execute(
             select(UserTerritoryAssignment.territory_id, User.full_name)
             .join(User, UserTerritoryAssignment.user_id == User.id)
+            .where(
+                UserTerritoryAssignment.unassigned_at.is_(None),
+                UserTerritoryAssignment.is_deleted.is_(False),
+                User.is_deleted.is_(False),
+            )
         ).all()
         terr_mr_map: dict[int, list[str]] = {}
         for tid, mr_name in user_assigns:
-            terr_mr_map.setdefault(tid, []).append(mr_name)
+            if tid is not None and mr_name:
+                terr_mr_map.setdefault(tid, []).append(mr_name)
 
         stmt = (
             select(Doctor)
@@ -101,16 +110,18 @@ class DoctorListReport(BaseReport):
                 selectinload(Doctor.area),
                 selectinload(Doctor.hospital_doctors).selectinload(HospitalDoctor.hospital),
             )
+            .where(Doctor.is_deleted.is_(False))
             .order_by(Doctor.full_name.asc())
         )
 
         if user_ids is not None:
+            conds = []
             if allowed_terr_ids:
-                stmt = stmt.where(
-                    (Doctor.territory_id.in_(allowed_terr_ids)) | (Doctor.id.in_(mr_doc_ids))
-                )
-            elif mr_doc_ids:
-                stmt = stmt.where(Doctor.id.in_(mr_doc_ids))
+                conds.append(Doctor.territory_id.in_(allowed_terr_ids))
+            if mr_doc_ids:
+                conds.append(Doctor.id.in_(mr_doc_ids))
+            if conds:
+                stmt = stmt.where(or_(*conds))
             else:
                 stmt = stmt.where(Doctor.id == -1)
 
@@ -121,7 +132,7 @@ class DoctorListReport(BaseReport):
             stmt = stmt.where(Doctor.specialization.ilike(f"%{filters.specialization}%"))
 
         if filters.category and filters.category != "All":
-            stmt = stmt.where(Doctor.category == filters.category.upper())
+            stmt = stmt.where(Doctor.category.ilike(filters.category))
 
         if filters.active is not None:
             stmt = stmt.where(Doctor.is_active.is_(filters.active))
@@ -131,7 +142,11 @@ class DoctorListReport(BaseReport):
 
         target_mrs = []
         if user_ids:
-            target_mrs = list(db.scalars(select(User.full_name).where(User.id.in_(user_ids))).all())
+            target_mrs = list(
+                db.scalars(
+                    select(User.full_name).where(User.id.in_(user_ids), User.is_deleted.is_(False))
+                ).all()
+            )
 
         for d in doctors:
             assigned_mrs = terr_mr_map.get(d.territory_id or 0, [])
@@ -143,21 +158,27 @@ class DoctorListReport(BaseReport):
 
             hosp_name = d.clinic_name or "-"
             if d.hospital_doctors:
-                primary = next((hd for hd in d.hospital_doctors if hd.is_primary), d.hospital_doctors[0])
-                if primary.hospital:
-                    hosp_name = primary.hospital.name
+                active_hds = [hd for hd in d.hospital_doctors if not getattr(hd, "is_deleted", False)]
+                if active_hds:
+                    primary = next((hd for hd in active_hds if hd.is_primary), active_hds[0])
+                    if primary.hospital and not getattr(primary.hospital, "is_deleted", False):
+                        hosp_name = primary.hospital.name
 
             city_name = d.territory.headquarters if d.territory else "-"
             area_name = d.area.name if d.area else "-"
             terr_name = d.territory.name if d.territory else "-"
 
-            doc_name = d.full_name if d.full_name.lower().startswith("dr") else f"Dr. {d.full_name}"
+            full_name = (d.full_name or "").strip()
+            doc_name = full_name if full_name.lower().startswith(("dr.", "dr ")) else f"Dr. {full_name}" if full_name else "-"
+            cat = (d.category or "A").strip().upper()
+            is_act = bool(getattr(d, "is_active", True))
+
             results.append({
                 "name": doc_name,
-                "code": d.code,
+                "code": d.code or "-",
                 "specialization": d.specialization or d.qualification or "General",
-                "category": d.category or "A",
-                "priority": "HIGH" if (d.category == "A") else ("MEDIUM" if d.category == "B" else "STANDARD"),
+                "category": cat,
+                "priority": "HIGH" if cat == "A" else ("MEDIUM" if cat == "B" else "STANDARD"),
                 "qualification": d.qualification or "-",
                 "hospital_clinic": hosp_name,
                 "area": area_name,
@@ -165,7 +186,7 @@ class DoctorListReport(BaseReport):
                 "territory": terr_name,
                 "phone": d.phone or "-",
                 "assigned_mr": mr_display,
-                "active": "Active" if getattr(d, "is_active", True) else "Inactive",
+                "active": "Active" if is_act else "Inactive",
             })
 
         return results
@@ -175,12 +196,13 @@ class DoctorListReport(BaseReport):
         cat_a = sum(1 for it in items if it.get("category") == "A")
         cat_b = sum(1 for it in items if it.get("category") == "B")
         cat_c = sum(1 for it in items if it.get("category") == "C")
+        active_count = sum(1 for it in items if it.get("active") == "Active")
         return {
             "total_doctors": total,
             "category_a": cat_a,
             "category_b": cat_b,
             "category_c": cat_c,
-            "active_doctors": total,
+            "active_doctors": active_count,
         }
 
 
@@ -232,7 +254,9 @@ class ChemistListReport(BaseReport):
         if user_ids is not None:
             assigns = db.execute(
                 select(UserTerritoryAssignment.territory_id).where(
-                    UserTerritoryAssignment.user_id.in_(user_ids)
+                    UserTerritoryAssignment.user_id.in_(user_ids),
+                    UserTerritoryAssignment.unassigned_at.is_(None),
+                    UserTerritoryAssignment.is_deleted.is_(False),
                 )
             ).scalars().all()
             allowed_terr_ids = set(assigns)
@@ -241,6 +265,7 @@ class ChemistListReport(BaseReport):
                 select(DcrVisit.chemist_id).where(
                     DcrVisit.user_id.in_(user_ids),
                     DcrVisit.chemist_id.isnot(None),
+                    DcrVisit.is_deleted.is_(False),
                 )
             ).scalars().all()
             mr_chem_ids = set(visited)
@@ -248,10 +273,16 @@ class ChemistListReport(BaseReport):
         user_assigns = db.execute(
             select(UserTerritoryAssignment.territory_id, User.full_name)
             .join(User, UserTerritoryAssignment.user_id == User.id)
+            .where(
+                UserTerritoryAssignment.unassigned_at.is_(None),
+                UserTerritoryAssignment.is_deleted.is_(False),
+                User.is_deleted.is_(False),
+            )
         ).all()
         terr_mr_map: dict[int, list[str]] = {}
         for tid, mr_name in user_assigns:
-            terr_mr_map.setdefault(tid, []).append(mr_name)
+            if tid is not None and mr_name:
+                terr_mr_map.setdefault(tid, []).append(mr_name)
 
         stmt = (
             select(Chemist)
@@ -259,16 +290,18 @@ class ChemistListReport(BaseReport):
                 selectinload(Chemist.territory),
                 selectinload(Chemist.area),
             )
+            .where(Chemist.is_deleted.is_(False))
             .order_by(Chemist.shop_name.asc())
         )
 
         if user_ids is not None:
+            conds = []
             if allowed_terr_ids:
-                stmt = stmt.where(
-                    (Chemist.territory_id.in_(allowed_terr_ids)) | (Chemist.id.in_(mr_chem_ids))
-                )
-            elif mr_chem_ids:
-                stmt = stmt.where(Chemist.id.in_(mr_chem_ids))
+                conds.append(Chemist.territory_id.in_(allowed_terr_ids))
+            if mr_chem_ids:
+                conds.append(Chemist.id.in_(mr_chem_ids))
+            if conds:
+                stmt = stmt.where(or_(*conds))
             else:
                 stmt = stmt.where(Chemist.id == -1)
 
@@ -283,7 +316,11 @@ class ChemistListReport(BaseReport):
 
         target_mrs = []
         if user_ids:
-            target_mrs = list(db.scalars(select(User.full_name).where(User.id.in_(user_ids))).all())
+            target_mrs = list(
+                db.scalars(
+                    select(User.full_name).where(User.id.in_(user_ids), User.is_deleted.is_(False))
+                ).all()
+            )
 
         for c in chemists:
             assigned_mrs = terr_mr_map.get(c.territory_id or 0, [])
@@ -293,16 +330,17 @@ class ChemistListReport(BaseReport):
             else:
                 mr_display = ", ".join(assigned_mrs) if assigned_mrs else "Unassigned"
 
+            is_act = bool(getattr(c, "is_active", True))
             results.append({
-                "name": c.shop_name,
-                "code": c.code,
+                "name": c.shop_name or "-",
+                "code": c.code or "-",
                 "owner": c.contact_person or "-",
                 "phone": c.phone or "-",
                 "address": c.address or "-",
                 "area": c.area.name if c.area else "-",
                 "territory": c.territory.name if c.territory else "-",
                 "assigned_mr": mr_display,
-                "active": "Active" if getattr(c, "is_active", True) else "Inactive",
+                "active": "Active" if is_act else "Inactive",
             })
 
         return results
@@ -310,7 +348,7 @@ class ChemistListReport(BaseReport):
     def calculate_summary(self, items: list[dict[str, Any]]) -> dict[str, Any]:
         return {
             "total_chemists": len(items),
-            "active_chemists": len(items),
+            "active_chemists": sum(1 for it in items if it.get("active") == "Active"),
         }
 
 
@@ -364,6 +402,12 @@ class MrWiseRouteMasterReport(BaseReport):
                 selectinload(UserTerritoryAssignment.user),
                 selectinload(UserTerritoryAssignment.territory).selectinload(Territory.areas),
             )
+            .where(
+                UserTerritoryAssignment.unassigned_at.is_(None),
+                UserTerritoryAssignment.is_deleted.is_(False),
+                User.is_deleted.is_(False),
+                Territory.is_deleted.is_(False),
+            )
             .order_by(User.full_name.asc())
         )
 
@@ -378,25 +422,40 @@ class MrWiseRouteMasterReport(BaseReport):
 
         # Count doctors, chemists, stockists per territory
         doc_counts = dict(
-            db.execute(select(Doctor.territory_id, func.count(Doctor.id)).group_by(Doctor.territory_id)).all()
+            db.execute(
+                select(Doctor.territory_id, func.count(Doctor.id))
+                .where(Doctor.is_deleted.is_(False))
+                .group_by(Doctor.territory_id)
+            ).all()
         )
         chem_counts = dict(
-            db.execute(select(Chemist.territory_id, func.count(Chemist.id)).group_by(Chemist.territory_id)).all()
+            db.execute(
+                select(Chemist.territory_id, func.count(Chemist.id))
+                .where(Chemist.is_deleted.is_(False))
+                .group_by(Chemist.territory_id)
+            ).all()
         )
         stock_counts = dict(
-            db.execute(select(Stockist.territory_id, func.count(Stockist.id)).group_by(Stockist.territory_id)).all()
+            db.execute(
+                select(Stockist.territory_id, func.count(Stockist.id))
+                .where(Stockist.is_deleted.is_(False))
+                .group_by(Stockist.territory_id)
+            ).all()
         )
 
         for a in assignments:
             tid = a.territory_id
             t = a.territory
-            areas_str = ", ".join(ar.name for ar in t.areas) if t.areas else t.headquarters
+            if not t:
+                continue
+            active_areas = [ar.name for ar in (t.areas or []) if not getattr(ar, "is_deleted", False)]
+            areas_str = ", ".join(active_areas) if active_areas else (t.headquarters or "-")
 
             results.append({
                 "mr_name": a.user.full_name if a.user else f"MR #{a.user_id}",
                 "territory_route": t.name,
                 "area": areas_str,
-                "city": t.headquarters,
+                "city": t.headquarters or "-",
                 "assigned_from": a.assigned_at.strftime("%d-%b-%Y") if a.assigned_at else "-",
                 "doctors_count": doc_counts.get(tid, 0),
                 "chemists_count": chem_counts.get(tid, 0),

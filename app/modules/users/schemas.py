@@ -15,6 +15,27 @@ class RoleResponse(BaseModel):
     description: str | None = None
 
 
+class LiveTrackingCoordinates(BaseModel):
+    """Latitude and Longitude GPS pair."""
+
+    latitude: float
+    longitude: float
+
+
+class LiveTrackingItem(BaseModel):
+    """Real-time live telemetry item for MR staff."""
+
+    id: int
+    name: str
+    hq: str
+    avatar_url: str | None = None
+    status: str
+    address: str
+    coordinates: LiveTrackingCoordinates
+    last_updated: str
+    route_history: list[LiveTrackingCoordinates] = []
+
+
 class ManagerSummary(BaseModel):
     """Manager summary response."""
 

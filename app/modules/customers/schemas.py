@@ -1,8 +1,9 @@
 """Customer Pydantic schemas (Doctors, Hospitals, Chemists, Stockists)."""
 
 from datetime import date, datetime
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class HospitalSummary(BaseModel):
@@ -63,6 +64,13 @@ class DoctorCreate(BaseModel):
     date_of_birth: date | None = None
     anniversary_date: date | None = None
 
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, v: Any) -> Any:
+        if v == "" or v is None:
+            return None
+        return v
+
 
 class DoctorUpdate(BaseModel):
     """Payload to update a Doctor."""
@@ -83,6 +91,13 @@ class DoctorUpdate(BaseModel):
     date_of_birth: date | None = None
     anniversary_date: date | None = None
     is_active: bool | None = None
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, v: Any) -> Any:
+        if v == "" or v is None:
+            return None
+        return v
 
 
 # Hospitals
@@ -125,6 +140,13 @@ class HospitalCreate(BaseModel):
     longitude: float | None = None
     bed_count: int | None = None
 
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, v: Any) -> Any:
+        if v == "" or v is None:
+            return None
+        return v
+
 
 class HospitalUpdate(BaseModel):
     """Payload to update a Hospital."""
@@ -142,6 +164,13 @@ class HospitalUpdate(BaseModel):
     longitude: float | None = None
     bed_count: int | None = None
     is_active: bool | None = None
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, v: Any) -> Any:
+        if v == "" or v is None:
+            return None
+        return v
 
 
 class HospitalDoctorMapRequest(BaseModel):
@@ -194,6 +223,13 @@ class ChemistCreate(BaseModel):
     latitude: float | None = None
     longitude: float | None = None
 
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, v: Any) -> Any:
+        if v == "" or v is None:
+            return None
+        return v
+
 
 class ChemistUpdate(BaseModel):
     """Payload to update a Chemist."""
@@ -211,6 +247,13 @@ class ChemistUpdate(BaseModel):
     latitude: float | None = None
     longitude: float | None = None
     is_active: bool | None = None
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, v: Any) -> Any:
+        if v == "" or v is None:
+            return None
+        return v
 
 
 # Stockists
@@ -254,6 +297,13 @@ class StockistCreate(BaseModel):
     latitude: float | None = None
     longitude: float | None = None
     credit_days: int = 30
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, v: Any) -> Any:
+        if v == "" or v is None:
+            return None
+        return v
 
 
 class StockistUpdate(BaseModel):

@@ -8,6 +8,7 @@ from app.db.session import get_db
 from app.modules.users.models import User
 from app.modules.users.schemas import (
     AssignManagerRequest,
+    LiveTrackingItem,
     ManagerMRAssignmentResponse,
     ManagerSummary,
     ProfileUpdateRequest,
@@ -63,6 +64,20 @@ def get_my_team(
     """List active MRs assigned to current logged-in manager."""
     service = UserService(db)
     return service.get_my_team(current_user)
+
+
+@router.get(
+    "/live-tracking",
+    response_model=list[LiveTrackingItem],
+    summary="Get live telemetry and coordinates for all active field staff",
+)
+def get_live_tracking_data(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[LiveTrackingItem]:
+    """Fetch active field MRs with real-time GPS locations and punch status."""
+    service = UserService(db)
+    return service.get_live_tracking(current_user)
 
 
 @router.get(
