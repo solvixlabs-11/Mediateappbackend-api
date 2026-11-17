@@ -489,6 +489,37 @@
         ]
       }
     },
+    "/api/v1/users/live-tracking": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get live telemetry and coordinates for all active field staff",
+        "description": "Fetch active field MRs with real-time GPS locations and punch status.",
+        "operationId": "get_live_tracking_data_api_v1_users_live_tracking_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LiveTrackingItem"
+                  },
+                  "type": "array",
+                  "title": "Response Get Live Tracking Data Api V1 Users Live Tracking Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/api/v1/users/me/profile": {
       "get": {
         "tags": [
@@ -11123,6 +11154,87 @@
         ],
         "title": "LiveActivitySummary",
         "description": "Summary strip metrics for Admin Home."
+      },
+      "LiveTrackingCoordinates": {
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "title": "Longitude"
+          }
+        },
+        "type": "object",
+        "required": [
+          "latitude",
+          "longitude"
+        ],
+        "title": "LiveTrackingCoordinates",
+        "description": "Latitude and Longitude GPS pair."
+      },
+      "LiveTrackingItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "hq": {
+            "type": "string",
+            "title": "Hq"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "address": {
+            "type": "string",
+            "title": "Address"
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/LiveTrackingCoordinates"
+          },
+          "last_updated": {
+            "type": "string",
+            "title": "Last Updated"
+          },
+          "route_history": {
+            "items": {
+              "$ref": "#/components/schemas/LiveTrackingCoordinates"
+            },
+            "type": "array",
+            "title": "Route History",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "hq",
+          "status",
+          "address",
+          "coordinates",
+          "last_updated"
+        ],
+        "title": "LiveTrackingItem",
+        "description": "Real-time live telemetry item for MR staff."
       },
       "LoginRequest": {
         "properties": {
