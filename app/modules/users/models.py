@@ -11,6 +11,7 @@ from app.db.mixins import StandardAuditMixin, utc_now
 
 if TYPE_CHECKING:
     from app.modules.auth.models import RefreshToken
+    from app.modules.territories.models import UserTerritoryAssignment
 
 
 class Role(Base, StandardAuditMixin):
@@ -93,6 +94,27 @@ class User(Base, StandardAuditMixin):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    territory_assignments: Mapped[list["UserTerritoryAssignment"]] = relationship(
+        "UserTerritoryAssignment",
+        back_populates="user",
+        foreign_keys="UserTerritoryAssignment.user_id",
+        lazy="selectin",
+    )
+
+    @property
+    def employee_code(self) -> str:
+        """Standardized formatted employee code."""
+        return f"EMP-{self.id:04d}"
+
+    @property
+    def avatar_url(self) -> str | None:
+        """Dynamic profile picture URL if set."""
+        return f"/api/v1/files/{self.profile_picture_file_id}" if self.profile_picture_file_id else None
+
+    @property
+    def profile_picture_url(self) -> str | None:
+        """Alias for avatar URL."""
+        return self.avatar_url
 
 
 class ManagerMRAssignment(Base, StandardAuditMixin):

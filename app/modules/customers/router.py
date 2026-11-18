@@ -152,6 +152,20 @@ def update_doctor(
     return service.update_doctor(doctor_id, payload, current_user)
 
 
+@router.delete(
+    "/doctors/{doctor_id}",
+    summary="Delete doctor",
+)
+def delete_doctor(
+    doctor_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("customers:write")),
+) -> dict[str, str]:
+    """Soft-delete doctor."""
+    service = CustomerService(db)
+    return service.delete_doctor(doctor_id, current_user)
+
+
 # HOSPITALS
 @router.get(
     "/hospitals",
@@ -224,6 +238,20 @@ def update_hospital(
     """Update hospital details."""
     service = CustomerService(db)
     return service.update_hospital(hospital_id, payload, current_user)
+
+
+@router.delete(
+    "/hospitals/{hospital_id}",
+    summary="Delete hospital",
+)
+def delete_hospital(
+    hospital_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("customers:write")),
+) -> dict[str, str]:
+    """Soft-delete hospital."""
+    service = CustomerService(db)
+    return service.delete_hospital(hospital_id, current_user)
 
 
 @router.post(
@@ -312,6 +340,20 @@ def update_chemist(
     return service.update_chemist(chemist_id, payload, current_user)
 
 
+@router.delete(
+    "/chemists/{chemist_id}",
+    summary="Delete chemist",
+)
+def delete_chemist(
+    chemist_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("customers:write")),
+) -> dict[str, str]:
+    """Soft-delete chemist."""
+    service = CustomerService(db)
+    return service.delete_chemist(chemist_id, current_user)
+
+
 # STOCKISTS
 @router.get(
     "/stockists",
@@ -382,3 +424,17 @@ def update_stockist(
     """Update stockist details."""
     service = CustomerService(db)
     return service.update_stockist(stockist_id, payload, current_user)
+
+
+@router.delete(
+    "/stockists/{stockist_id}",
+    summary="Delete stockist",
+)
+def delete_stockist(
+    stockist_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("customers:write")),
+) -> dict[str, str]:
+    """Soft-delete stockist."""
+    service = CustomerService(db)
+    return service.delete_stockist(stockist_id, current_user)

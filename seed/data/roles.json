@@ -1,0 +1,6 @@
+[
+  {"code": "ERP ADMIN", "name": "ERP ADMIN", "description": "System ERP Admin (Protected)", "is_system": true},
+  {"code": "ADMIN", "name": "System Administrator", "description": "Full Administrative Privileges", "is_system": true},
+  {"code": "MANAGER", "name": "Area Sales Manager", "description": "Team Leadership and Regional Approvals", "is_system": false},
+  {"code": "MR", "name": "Medical Representative", "description": "Field Sales and Customer Coverage", "is_system": false}
+]

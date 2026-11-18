@@ -1,0 +1,11 @@
+[
+  {"code": "DGO", "name": "DGO", "description": "Diploma in Gynecology and Obstetrics", "sort_order": 1},
+  {"code": "MBBS_MS", "name": "MBBS MS", "description": "MBBS with Master of Surgery", "sort_order": 2},
+  {"code": "MBBS_DGO", "name": "MBBS, DGO", "description": "MBBS with DGO", "sort_order": 3},
+  {"code": "MD", "name": "MD", "description": "Doctor of Medicine", "sort_order": 4},
+  {"code": "MS", "name": "MS", "description": "Master of Surgery", "sort_order": 5},
+  {"code": "MBBS_MD", "name": "MBBA-MD", "description": "MBBS MD combined", "sort_order": 6},
+  {"code": "MS_DCO", "name": "MS DCO", "description": "MS DCO", "sort_order": 7},
+  {"code": "BAMS", "name": "BAMS", "description": "Ayurvedic Medicine & Surgery", "sort_order": 8},
+  {"code": "BAMS_GYN", "name": "BAMS GYN", "description": "BAMS Gynecology", "sort_order": 9}
+]

@@ -23,11 +23,12 @@ class MasterItemResponse(BaseModel):
 class MasterItemCreate(BaseModel):
     """Payload to create a generic master item."""
 
-    type: str = Field(..., max_length=50, description="e.g. SPECIALIZATION, CUSTOMER_CATEGORY")
-    code: str = Field(..., max_length=50, description="Unique code within type")
+    type: str | None = Field(default=None, max_length=50, description="e.g. SPECIALIZATION, CUSTOMER_CATEGORY")
+    code: str | None = Field(default=None, max_length=50, description="Unique code within type")
     name: str = Field(..., max_length=100)
     description: str | None = Field(default=None, max_length=255)
     sort_order: int = 0
+    is_active: bool = True
 
 
 class MasterItemUpdate(BaseModel):
@@ -57,6 +58,14 @@ class StateCreate(BaseModel):
     code: str = Field(..., max_length=10)
 
 
+class StateUpdate(BaseModel):
+    """Payload to update a State."""
+
+    name: str | None = Field(default=None, max_length=100)
+    code: str | None = Field(default=None, max_length=10)
+    is_active: bool | None = None
+
+
 class CityResponse(BaseModel):
     """City / District response."""
 
@@ -75,6 +84,15 @@ class CityCreate(BaseModel):
     state_id: int
     name: str = Field(..., max_length=100)
     code: str | None = Field(default=None, max_length=10)
+
+
+class CityUpdate(BaseModel):
+    """Payload to update a City."""
+
+    state_id: int | None = None
+    name: str | None = Field(default=None, max_length=100)
+    code: str | None = Field(default=None, max_length=10)
+    is_active: bool | None = None
 
 
 class AreaResponse(BaseModel):
@@ -97,10 +115,32 @@ class AreaCreate(BaseModel):
     pincode: str | None = Field(default=None, max_length=10)
 
 
+class AreaUpdate(BaseModel):
+    """Payload to update an Area."""
+
+    city_id: int | None = None
+    name: str | None = Field(default=None, max_length=100)
+    pincode: str | None = Field(default=None, max_length=10)
+    is_active: bool | None = None
+
+
 class MasterBulkDropdownsResponse(BaseModel):
     """Combined masters response for offline cache & dropdowns."""
 
-    specializations: list[MasterItemResponse]
-    categories: list[MasterItemResponse]
-    priorities: list[MasterItemResponse]
-    states: list[StateResponse]
+    specializations: list[MasterItemResponse] = []
+    categories: list[MasterItemResponse] = []
+    priorities: list[MasterItemResponse] = []
+    states: list[StateResponse] = []
+    qualifications: list[MasterItemResponse] = []
+    doctor_types: list[MasterItemResponse] = []
+    store_types: list[MasterItemResponse] = []
+    distributor_types: list[MasterItemResponse] = []
+    credit_terms: list[MasterItemResponse] = []
+    expense_types: list[MasterItemResponse] = []
+    zones: list[MasterItemResponse] = []
+    city_tiers: list[MasterItemResponse] = []
+    hospital_types: list[MasterItemResponse] = []
+    divisions: list[MasterItemResponse] = []
+    designations: list[MasterItemResponse] = []
+    customer_types: list[MasterItemResponse] = []
+    approval_statuses: list[MasterItemResponse] = []

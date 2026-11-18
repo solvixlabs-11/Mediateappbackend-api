@@ -1,0 +1,5 @@
+[
+  {"code": "SAMPLE", "name": "SAMPLE", "description": "Physician sample unit", "sort_order": 1},
+  {"code": "GIFT", "name": "GIFT", "description": "Brand reminder input/gift", "sort_order": 2},
+  {"code": "PROMOTIONAL", "name": "PROMOTIONAL", "description": "Literature or visual aid", "sort_order": 3}
+]

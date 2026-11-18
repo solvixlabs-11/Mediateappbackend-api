@@ -8,7 +8,7 @@ from typing import Any
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.modules.customers.models import Chemist, Doctor, Hospital, HospitalDoctor, Stockist
+from app.modules.customers.models import Chemist, Doctor, HospitalDoctor, Stockist
 from app.modules.dcr.models import DcrVisit
 from app.modules.reports.base import BaseReport, ReportRegistry
 from app.modules.reports.schemas import ReportColumn, ReportFilterParams, ReportFilterSchema

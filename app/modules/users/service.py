@@ -1,6 +1,7 @@
 """User management and team hierarchy business service."""
 
 import math
+from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
@@ -19,7 +20,9 @@ from app.modules.users.schemas import (
     ManagerMRAssignmentResponse,
     ManagerSummary,
     ProfileUpdateRequest,
+    RoleCreate,
     RoleResponse,
+    RoleUpdate,
     UserCreate,
     UserListResponse,
     UserResponse,
@@ -392,6 +395,93 @@ class UserService:
         roles = self.repo.get_all_roles()
         return [RoleResponse.model_validate(r) for r in roles]
 
+    def create_role(self, payload: RoleCreate, user_id: int | None = None) -> RoleResponse:
+        """Create a new role."""
+        code = (
+            payload.code
+            or re.sub(r"[^A-Za-z0-9]+", "_", payload.name.strip()).upper()
+        )[:50]
+        existing = (
+            self.db.query(Role)
+            .filter(Role.code == code)
+            .first()
+        )
+        if existing:
+            if existing.is_deleted:
+                existing.is_deleted = False
+                existing.name = payload.name.strip()
+                existing.description = payload.description.strip() if payload.description else None
+                existing.updated_by = user_id
+                self.db.commit()
+                self.db.refresh(existing)
+                return RoleResponse.model_validate(existing)
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Role with code '{code}' already exists",
+            )
+        new_role = Role(
+            name=payload.name.strip(),
+            code=code,
+            description=payload.description.strip() if payload.description else None,
+            created_by=user_id,
+        )
+        self.db.add(new_role)
+        self.db.commit()
+        self.db.refresh(new_role)
+        return RoleResponse.model_validate(new_role)
+
+    def update_role(
+        self, role_id: int, payload: RoleUpdate, user_id: int | None = None
+    ) -> RoleResponse:
+        """Update role metadata."""
+        role = self.db.query(Role).filter(Role.id == role_id, Role.is_deleted == False).first()  # noqa: E712
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Role with ID {role_id} not found",
+            )
+        if payload.name is not None and payload.name.strip():
+            role.name = payload.name.strip()
+        if payload.description is not None:
+            role.description = payload.description.strip()
+        if payload.is_active is not None:
+            role.is_active = payload.is_active
+
+        role.updated_by = user_id
+        self.db.commit()
+        self.db.refresh(role)
+        return RoleResponse.model_validate(role)
+
+    def delete_role(self, role_id: int, user_id: int | None = None) -> dict[str, str]:
+        """Delete role with relational validation."""
+        role = self.db.query(Role).filter(Role.id == role_id, Role.is_deleted == False).first()  # noqa: E712
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Role with ID {role_id} not found",
+            )
+        protected_codes = ("ERP ADMIN", "ADMIN", "MANAGER", "MR")
+        if role.code.upper() in protected_codes or role.name.upper() in protected_codes:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"System role '{role.name}' is protected and cannot be deleted",
+            )
+        assigned_users_count = (
+            self.db.query(User)
+            .filter(User.role_id == role.id, User.is_deleted == False)  # noqa: E712
+            .count()
+        )
+        if assigned_users_count > 0:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Cannot delete role: {assigned_users_count} active user(s) are assigned to it.",
+            )
+        role.is_deleted = True
+        role.is_active = False
+        role.updated_by = user_id
+        self.db.commit()
+        return {"status": "success", "message": f"Role '{role.name}' deleted successfully"}
+
     def update_profile(self, current_user: User, payload: ProfileUpdateRequest) -> UserResponse:
         """Update current logged-in user profile."""
         if payload.full_name is not None and payload.full_name.strip():
@@ -537,3 +627,42 @@ class UserService:
             details=str(details),
         )
         self.db.add(log)
+
+    def get_users_summary(self) -> dict[str, int]:
+        """Summary subscription metrics for Employee Master."""
+        total = self.db.query(User).count()
+        active = self.db.query(User).filter(User.is_active == True).count()
+        pending = max(0, total - active)
+        return {
+            "total_subscriptions": total,
+            "active_subscriptions": active,
+            "pending_subscriptions": pending,
+        }
+
+    def force_logout(self, user_id: int, admin_id: int) -> dict[str, Any]:
+        """Revoke all sessions and active tokens for the specified user."""
+        from app.modules.auth.models import RefreshToken
+
+        user = self.repo.get_by_id(user_id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with ID {user_id} not found",
+            )
+
+        self.db.query(RefreshToken).filter(RefreshToken.user_id == user_id).update(
+            {"is_revoked": True}
+        )
+        self._log_audit(
+            actor_id=admin_id,
+            action="FORCE_LOGOUT",
+            entity_name="users",
+            entity_id=user_id,
+            details={"email": user.email, "full_name": user.full_name},
+        )
+        self.db.commit()
+        return {
+            "success": True,
+            "message": f"All sessions terminated successfully for {user.full_name}",
+            "user_id": user_id,
+        }

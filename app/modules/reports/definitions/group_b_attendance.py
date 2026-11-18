@@ -14,7 +14,7 @@ from app.modules.dcr.models import DcrVisit, PlannedVisit
 from app.modules.leaves.models import LeaveRequest
 from app.modules.reports.base import BaseReport, ReportRegistry
 from app.modules.reports.schemas import ReportColumn, ReportFilterParams, ReportFilterSchema
-from app.modules.reports.utils import utc_to_ist_date, utc_to_ist_time
+from app.modules.reports.utils import utc_to_ist_time
 from app.modules.territories.models import UserTerritoryAssignment
 from app.modules.users.models import User
 

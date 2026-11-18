@@ -1,0 +1,12 @@
+[
+  {"code": "B_PHARM", "name": "B-PHARM", "description": "Bachelor of Pharmacy", "sort_order": 1},
+  {"code": "BAMS", "name": "BAMS", "description": "Ayurvedic Medicine", "sort_order": 2},
+  {"code": "BDS", "name": "BDS", "description": "Dental Surgery", "sort_order": 3},
+  {"code": "BHMS", "name": "BHMS", "description": "Homeopathic Medicine", "sort_order": 4},
+  {"code": "CONSULTANT_PHY", "name": "CONSULTANT PHYSICIAN", "description": "Consultant Physician", "sort_order": 5},
+  {"code": "CP", "name": "CP", "description": "Clinical Practitioner", "sort_order": 6},
+  {"code": "DENTIST", "name": "DENTIST", "description": "Dentist", "sort_order": 7},
+  {"code": "DGO", "name": "DGO", "description": "Gynecology & Obstetrics", "sort_order": 8},
+  {"code": "DNB", "name": "DNB", "description": "National Board Diplomate", "sort_order": 9},
+  {"code": "ENT", "name": "ENT", "description": "Ear Nose Throat", "sort_order": 10}
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "key": "tour_plan.unlock_area_selection",
+    "module": "Tour Plan",
+    "question": "Should the area selection be unlocked while planning for the given dates?",
+    "value_type": "BOOLEAN",
+    "value": "NO",
+    "default_value": "NO",
+    "sort_order": 1
+  },
+  {
+    "key": "employee.min_working_hours",
+    "module": "Employee Master",
+    "question": "What should be minimum working hours for any employee?",
+    "value_type": "INTEGER",
+    "value": "1",
+    "default_value": "1",
+    "sort_order": 2
+  },
+  {
+    "key": "deviation.mandatory_without_tour_plan",
+    "module": "Deviation",
+    "question": "Is it mandatory for an employee to make a deviation on any given day with no touring plan assigned for registering the visit?",
+    "value_type": "BOOLEAN",
+    "value": "NO",
+    "default_value": "NO",
+    "sort_order": 3
+  },
+  {
+    "key": "chemist_sales.nrv_formula",
+    "module": "Chemist Wise Sales",
+    "question": "Formula for NRV (only PTR, PTS, MRP, brackets and + - * / allowed)",
+    "value_type": "FORMULA",
+    "value": "MRP-(MRP*10)/10",
+    "default_value": "MRP-(MRP*10)/10",
+    "sort_order": 4
+  },
+  {
+    "key": "reimbursement.cutoff_day_next_month",
+    "module": "Reimbursement",
+    "question": "Past which date of the next month is the reimbursement of the current month not allowed?",
+    "value_type": "INTEGER",
+    "value": "0",
+    "default_value": "0",
+    "sort_order": 5
+  },
+  {
+    "key": "sample_issue.show_total_value",
+    "module": "Sample Issue",
+    "question": "Show product total value while issuing sample product?",
+    "value_type": "BOOLEAN",
+    "value": "YES",
+    "default_value": "YES",
+    "sort_order": 6
+  },
+  {
+    "key": "deviation.work_allowed_until_approved",
+    "module": "Deviation",
+    "question": "Whenever an MR applied for a deviation, can the MR do any work until the request is approved?",
+    "value_type": "BOOLEAN",
+    "value": "NO",
+    "default_value": "NO",
+    "sort_order": 7
+  },
+  {
+    "key": "reimbursement.allow_edit_distance",
+    "module": "Reimbursement",
+    "question": "Should an employee be able to change the actual distance in reimbursement?",
+    "value_type": "BOOLEAN",
+    "value": "YES",
+    "default_value": "YES",
+    "sort_order": 8
+  },
+  {
+    "key": "reimbursement.allow_edit_allowance",
+    "module": "Reimbursement",
+    "question": "Should an employee be able to change the actual allowance in reimbursement?",
+    "value_type": "BOOLEAN",
+    "value": "YES",
+    "default_value": "YES",
+    "sort_order": 9
+  },
+  {
+    "key": "employee.min_visits_per_day",
+    "module": "Employee Master",
+    "question": "What should be minimum visits in a day for any employee?",
+    "value_type": "INTEGER",
+    "value": "1",
+    "default_value": "1",
+    "sort_order": 10
+  }
+]

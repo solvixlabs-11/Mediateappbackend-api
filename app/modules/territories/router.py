@@ -10,12 +10,28 @@ from app.modules.territories.schemas import (
     TerritoryAssignmentResponse,
     TerritoryCreate,
     TerritoryResponse,
+    TerritoryTreeResponse,
     TerritoryUpdate,
 )
 from app.modules.territories.service import TerritoryService
 from app.modules.users.models import User
 
 router = APIRouter(prefix="/territories", tags=["Territories"])
+
+
+@router.get(
+    "/tree",
+    response_model=TerritoryTreeResponse,
+    summary="Get hierarchical territory tree org chart",
+)
+def get_territory_tree(
+    status: str = Query(default="active", description="Filter by status: active | all"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> TerritoryTreeResponse:
+    """Fetch complete hierarchical org chart tree starting from 'ALL INDIA' root."""
+    service = TerritoryService(db)
+    return service.get_territory_tree(status=status)
 
 
 @router.get(
@@ -102,6 +118,20 @@ def update_territory(
     """Update territory metadata and areas."""
     service = TerritoryService(db)
     return service.update_territory(territory_id, payload, current_user)
+
+
+@router.delete(
+    "/{territory_id}",
+    summary="Delete territory (Admin)",
+)
+def delete_territory(
+    territory_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> dict[str, str]:
+    """Soft-delete territory."""
+    service = TerritoryService(db)
+    return service.delete_territory(territory_id, current_user)
 
 
 @router.post(

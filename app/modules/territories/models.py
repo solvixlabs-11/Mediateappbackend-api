@@ -37,6 +37,11 @@ class Territory(Base, StandardAuditMixin):
         "UserTerritoryAssignment", back_populates="territory"
     )
 
+    @property
+    def hq_name(self) -> str:
+        """HQ or territory display name."""
+        return self.headquarters or self.name
+
 
 class TerritoryArea(Base, StandardAuditMixin):
     """Many-to-many mapping between Territories and operational Areas."""
@@ -68,4 +73,8 @@ class UserTerritoryAssignment(Base, StandardAuditMixin):
     unassigned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     territory: Mapped[Territory] = relationship("Territory", back_populates="assignments")
-    user: Mapped["User"] = relationship("User")
+    user: Mapped["User"] = relationship("User", back_populates="territory_assignments")
+
+
+# Backward compatibility alias
+UserTerritory = UserTerritoryAssignment

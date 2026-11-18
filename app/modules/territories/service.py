@@ -9,6 +9,8 @@ from app.modules.territories.schemas import (
     TerritoryAssignmentResponse,
     TerritoryCreate,
     TerritoryResponse,
+    TerritoryTreeNode,
+    TerritoryTreeResponse,
     TerritoryUpdate,
 )
 from app.modules.users.models import User
@@ -156,3 +158,96 @@ class TerritoryService:
         """Fetch current user's active assigned territories."""
         territories = self.repo.get_user_territories(current_user.id)
         return [TerritoryResponse.model_validate(t) for t in territories]
+
+    def get_territory_tree(self, status: str = "active") -> TerritoryTreeResponse:
+        """Build hierarchical org tree starting from 'ALL INDIA' root."""
+        from collections import defaultdict
+        from app.modules.territories.models import Territory
+        from app.modules.masters.models import State
+
+        query = self.db.query(Territory)
+        if status.lower() == "active":
+            query = query.filter(Territory.is_active == True)
+
+        territories = query.all()
+        states_map = {s.id: s for s in self.db.query(State).all()}
+
+        # Group territories by state_id
+        grouped: dict[int | None, list[Territory]] = defaultdict(list)
+        for t in territories:
+            grouped[t.state_id].append(t)
+
+        state_nodes: list[TerritoryTreeNode] = []
+        for state_id, t_list in sorted(grouped.items(), key=lambda x: (x[0] is None, str(x[0]))):
+            st = states_map.get(state_id) if state_id else None
+            state_name = st.name if st else "Unassigned Region"
+            state_code = st.code if st else "UNASSIGNED"
+
+            children_nodes = [
+                TerritoryTreeNode(
+                    id=t.id,
+                    code=t.code,
+                    name=t.name,
+                    headquarters=t.headquarters,
+                    level="TERRITORY",
+                    is_active=t.is_active,
+                    children=[],
+                )
+                for t in sorted(t_list, key=lambda x: x.name)
+            ]
+
+            state_nodes.append(
+                TerritoryTreeNode(
+                    id=f"state-{state_id or 'none'}",
+                    code=state_code,
+                    name=state_name,
+                    headquarters=f"{state_name} Zone",
+                    level="STATE",
+                    is_active=True,
+                    children=children_nodes,
+                )
+            )
+
+        root = TerritoryTreeNode(
+            id="root",
+            code="ALL_INDIA",
+            name="ALL INDIA",
+            headquarters="National Operations HQ",
+            level="ROOT",
+            is_active=True,
+            children=state_nodes,
+        )
+
+        return TerritoryTreeResponse(
+            total_count=len(territories),
+            root=root,
+        )
+
+    def delete_territory(self, territory_id: int, current_user: User) -> dict[str, str]:
+        """Soft-delete territory with relational checks."""
+        from app.modules.territories.models import UserTerritoryAssignment
+
+        territory = self.repo.get_by_id(territory_id)
+        if not territory:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Territory with ID {territory_id} not found",
+            )
+        active_assignments = (
+            self.db.query(UserTerritoryAssignment)
+            .filter(
+                UserTerritoryAssignment.territory_id == territory.id,
+                UserTerritoryAssignment.is_active == True,  # noqa: E712
+            )
+            .count()
+        )
+        if active_assignments > 0:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Cannot delete territory: {active_assignments} active employee(s) are assigned to it.",
+            )
+        territory.is_deleted = True
+        territory.is_active = False
+        territory.updated_by = current_user.id
+        self.db.commit()
+        return {"status": "success", "message": f"Territory '{territory.name}' deleted successfully"}

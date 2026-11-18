@@ -637,3 +637,59 @@ class CustomerService:
             failed_count=failed_count,
             errors=errors,
         )
+
+    def delete_doctor(self, doctor_id: int, current_user: User) -> dict[str, str]:
+        """Soft-delete doctor."""
+        doc = self.repo.get_doctor_by_id(doctor_id)
+        if not doc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Doctor {doctor_id} not found",
+            )
+        doc.is_deleted = True
+        doc.is_active = False
+        doc.updated_by = current_user.id
+        self.db.commit()
+        return {"status": "success", "message": f"Doctor '{doc.full_name}' deleted successfully"}
+
+    def delete_chemist(self, chemist_id: int, current_user: User) -> dict[str, str]:
+        """Soft-delete chemist."""
+        chm = self.repo.get_chemist_by_id(chemist_id)
+        if not chm:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Chemist {chemist_id} not found",
+            )
+        chm.is_deleted = True
+        chm.is_active = False
+        chm.updated_by = current_user.id
+        self.db.commit()
+        return {"status": "success", "message": f"Chemist '{chm.shop_name}' deleted successfully"}
+
+    def delete_stockist(self, stockist_id: int, current_user: User) -> dict[str, str]:
+        """Soft-delete stockist."""
+        stk = self.repo.get_stockist_by_id(stockist_id)
+        if not stk:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Stockist {stockist_id} not found",
+            )
+        stk.is_deleted = True
+        stk.is_active = False
+        stk.updated_by = current_user.id
+        self.db.commit()
+        return {"status": "success", "message": f"Stockist '{stk.agency_name}' deleted successfully"}
+
+    def delete_hospital(self, hospital_id: int, current_user: User) -> dict[str, str]:
+        """Soft-delete hospital."""
+        hsp = self.repo.get_hospital_by_id(hospital_id)
+        if not hsp:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Hospital {hospital_id} not found",
+            )
+        hsp.is_deleted = True
+        hsp.is_active = False
+        hsp.updated_by = current_user.id
+        self.db.commit()
+        return {"status": "success", "message": f"Hospital '{hsp.name}' deleted successfully"}

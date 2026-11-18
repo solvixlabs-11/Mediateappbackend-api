@@ -15,6 +15,22 @@ class RoleResponse(BaseModel):
     description: str | None = None
 
 
+class RoleCreate(BaseModel):
+    """Payload to create a new role."""
+
+    name: str = Field(..., min_length=2, max_length=100)
+    code: str | None = Field(default=None, max_length=50)
+    description: str | None = Field(default=None, max_length=255)
+
+
+class RoleUpdate(BaseModel):
+    """Payload to update an existing role."""
+
+    name: str | None = Field(default=None, min_length=2, max_length=100)
+    description: str | None = Field(default=None, max_length=255)
+    is_active: bool | None = None
+
+
 class LiveTrackingCoordinates(BaseModel):
     """Latitude and Longitude GPS pair."""
 
@@ -154,3 +170,19 @@ class ProfileUpdateRequest(BaseModel):
     full_name: str | None = Field(default=None, min_length=2, max_length=100)
     phone: str | None = Field(default=None, max_length=20)
     profile_picture_file_id: int | None = None
+
+
+class UserSummaryResponse(BaseModel):
+    """Employee Subscriptions summary response."""
+
+    total_subscriptions: int
+    pending_subscriptions: int
+    active_subscriptions: int
+
+
+class ForceLogoutResponse(BaseModel):
+    """Result of terminating user sessions."""
+
+    success: bool
+    message: str
+    user_id: int

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import datetime
 from typing import Any
 
 from sqlalchemy import func, select
@@ -15,7 +15,7 @@ from app.modules.reports.base import BaseReport, ReportRegistry
 from app.modules.reports.schemas import ReportColumn, ReportFilterParams, ReportFilterSchema
 from app.modules.reports.utils import utc_to_ist_date, utc_to_ist_time
 from app.modules.territories.models import UserTerritoryAssignment
-from app.modules.users.models import Role, User
+from app.modules.users.models import User
 
 
 class MrWiseVisitsReport(BaseReport):

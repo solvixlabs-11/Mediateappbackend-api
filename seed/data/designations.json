@@ -1,0 +1,11 @@
+[
+  {"code": "ADMIN", "name": "ADMIN", "description": "System Administrator", "sort_order": 1},
+  {"code": "ARBH", "name": "ARBH - Assi. Regional Business Head", "description": "Assistant Regional Business Head", "sort_order": 2},
+  {"code": "BH", "name": "BH - Business Head", "description": "Business Head", "sort_order": 3},
+  {"code": "DBH", "name": "DBH - Divisional Business Head", "description": "Divisional Business Head", "sort_order": 4},
+  {"code": "DIRECTOR", "name": "DIRECTOR", "description": "Director", "sort_order": 5},
+  {"code": "MD", "name": "MD", "description": "Managing Director", "sort_order": 6},
+  {"code": "MR", "name": "MR", "description": "Medical Representative", "sort_order": 7},
+  {"code": "RBH", "name": "RBH", "description": "Regional Business Head", "sort_order": 8},
+  {"code": "ZBM", "name": "ZBM", "description": "Zonal Business Manager", "sort_order": 9}
+]

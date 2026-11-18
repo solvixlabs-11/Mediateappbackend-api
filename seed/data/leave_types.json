@@ -1,0 +1,5 @@
+[
+  {"code": "CASUAL", "name": "CASUAL LEAVE", "description": "Casual personal leave", "sort_order": 1},
+  {"code": "SICK", "name": "SICK LEAVE", "description": "Medical / sickness leave", "sort_order": 2},
+  {"code": "PRIVILEGE", "name": "PRIVILEGE LEAVE", "description": "Earned / privilege leave", "sort_order": 3}
+]

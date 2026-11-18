@@ -1,76 +1,73 @@
-"""Report definitions loader and registry initializer for all 26 reports."""
+"""Report definitions loader importing all 32 NOW report definitions."""
 
-from app.modules.reports.definitions.group_a_masters import (
-    ChemistListReport,
-    DoctorListReport,
-    MrWiseRouteMasterReport,
-)
-from app.modules.reports.definitions.group_b_attendance import (
-    DailyWorkReport,
-    MrDailyPunchingReport,
-    MrWiseAttendanceReport,
-)
-from app.modules.reports.definitions.group_c_visits import (
+from app.modules.reports.definitions.chemist_list import ChemistListReport
+from app.modules.reports.definitions.daily_call_report import DailyCallReport
+from app.modules.reports.definitions.designation_visits_analysis import (
     MrDesignationWiseVisitsAnalysisReport,
-    MrDeviationReport,
-    MrWiseDoctorChemistCallReport,
-    MrWisePromotionalCallReport,
-    MrWiseVisitsAnalysisReport,
-    MrWiseVisitsReport,
 )
-from app.modules.reports.definitions.group_d_doctor_analysis import (
-    MrDoctorWiseMonthlySummaryReport,
-    MrWiseDocSpWiseStatsReport,
-    MrWiseDoctorCategoryWiseReport,
-    MrWiseDoctorTypeWiseReport,
-    MrWiseNotSeenDoctorReport,
+from app.modules.reports.definitions.deviation_report import MrDeviationReport
+from app.modules.reports.definitions.docsp_stats import MrWiseDocSpWiseStatsReport
+from app.modules.reports.definitions.doctor_category_wise import MrWiseDoctorCategoryWiseReport
+from app.modules.reports.definitions.doctor_chemist_call import MrWiseDoctorChemistCallReport
+from app.modules.reports.definitions.doctor_list import DoctorListReport
+from app.modules.reports.definitions.doctor_monthly_summary import MrDoctorWiseMonthlySummaryReport
+from app.modules.reports.definitions.doctor_type_wise import DoctorTypeWiseReport
+from app.modules.reports.definitions.doctor_yearly_summary import MrDoctorWiseYearlySummaryReport
+from app.modules.reports.definitions.expense_report import ExpenseReport
+from app.modules.reports.definitions.expense_statement import ExpenseStatementReport
+from app.modules.reports.definitions.km_report import KmReport
+from app.modules.reports.definitions.leave_report import LeaveReport
+from app.modules.reports.definitions.management_summary import ManagementSummaryReport
+from app.modules.reports.definitions.mr_attendance import MrWiseAttendanceReport
+from app.modules.reports.definitions.mr_daily_punching import MrDailyPunchingReport
+from app.modules.reports.definitions.mr_visits_analysis import MrWiseVisitsAnalysisReport
+from app.modules.reports.definitions.mr_wise_visit_detail import MrWiseVisitDetailReport
+from app.modules.reports.definitions.not_login_web import MrWiseNotLoginWebReport
+from app.modules.reports.definitions.not_seen_doctor import MrWiseNotSeenDoctorReport
+from app.modules.reports.definitions.pending_dcr import PendingDcrReport
+from app.modules.reports.definitions.promotional_call import MrWisePromotionalCallReport
+from app.modules.reports.definitions.route_master import RouteMasterReport
+from app.modules.reports.definitions.territory_hierarchy_report import TerritoryHierarchyReport
+from app.modules.reports.definitions.tour_plan_report import TourPlanReport
+from app.modules.reports.definitions.tour_plan_status import TourPlanStatusReport
+from app.modules.reports.definitions.unassigned_customers_division import (
+    UnassignedCustomersDivisionReport,
 )
-from app.modules.reports.definitions.group_e_stock_orders import (
-    MrWiseSampleBalanceReport,
-    OrderRegisterReport,
-)
-from app.modules.reports.definitions.group_f_sales_finance import (
-    CollectionReport,
-    CreditNoteReport,
-    MrWiseChemistWiseSalesReport,
-    MrWiseMonthlyBusinessReport,
-    MrWiseStockistWiseSalesReport,
-    OutstandingReport,
-)
-from app.modules.reports.definitions.group_g_unknown import InductionReport
+from app.modules.reports.definitions.unassigned_mr_customer import UnassignedMrCustomerReport
+from app.modules.reports.definitions.unassigned_mr_division import UnassignedMrDivisionReport
+from app.modules.reports.definitions.visit_analysis import VisitAnalysisReport
 
 __all__ = [
-    # Group A: Master lists (1 to 3)
-    "DoctorListReport",
-    "ChemistListReport",
-    "MrWiseRouteMasterReport",
-    # Group B: Attendance and daily work (4 to 6)
+    "DailyCallReport",
+    "MrWiseVisitDetailReport",
     "MrDailyPunchingReport",
     "MrWiseAttendanceReport",
-    "DailyWorkReport",
-    # Group C: Visits (7 to 12)
-    "MrWiseVisitsReport",
     "MrWiseVisitsAnalysisReport",
     "MrDesignationWiseVisitsAnalysisReport",
     "MrWiseDoctorChemistCallReport",
     "MrWisePromotionalCallReport",
     "MrDeviationReport",
-    # Group D: Doctor analysis (13 to 17)
+    "PendingDcrReport",
+    "ManagementSummaryReport",
+    "MrWiseNotLoginWebReport",
+    "KmReport",
     "MrDoctorWiseMonthlySummaryReport",
+    "MrDoctorWiseYearlySummaryReport",
     "MrWiseNotSeenDoctorReport",
     "MrWiseDocSpWiseStatsReport",
     "MrWiseDoctorCategoryWiseReport",
-    "MrWiseDoctorTypeWiseReport",
-    # Group E: Stock and orders (18 to 19)
-    "MrWiseSampleBalanceReport",
-    "OrderRegisterReport",
-    # Group F: Sales and finance (20 to 25)
-    "MrWiseChemistWiseSalesReport",
-    "MrWiseStockistWiseSalesReport",
-    "MrWiseMonthlyBusinessReport",
-    "CollectionReport",
-    "CreditNoteReport",
-    "OutstandingReport",
-    # Group G: Other / Unknown (26)
-    "InductionReport",
+    "DoctorTypeWiseReport",
+    "DoctorListReport",
+    "ChemistListReport",
+    "TerritoryHierarchyReport",
+    "RouteMasterReport",
+    "UnassignedCustomersDivisionReport",
+    "UnassignedMrCustomerReport",
+    "UnassignedMrDivisionReport",
+    "TourPlanReport",
+    "TourPlanStatusReport",
+    "LeaveReport",
+    "ExpenseReport",
+    "ExpenseStatementReport",
+    "VisitAnalysisReport",
 ]

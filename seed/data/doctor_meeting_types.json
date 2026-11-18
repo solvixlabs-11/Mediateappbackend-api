@@ -1,0 +1,8 @@
+[
+  {"code": "AFTER_2", "name": "AFTER 2 O CL", "description": "After 2 O'clock meeting slot", "sort_order": 1},
+  {"code": "AFTERNOON", "name": "AFTERNOON", "description": "Afternoon slot", "sort_order": 2},
+  {"code": "EVENING", "name": "EVENING", "description": "Evening slot", "sort_order": 3},
+  {"code": "MORNING", "name": "MORNING", "description": "Morning slot", "sort_order": 4},
+  {"code": "NIGHT", "name": "NIGHT", "description": "Night slot", "sort_order": 5},
+  {"code": "NOON", "name": "NOON", "description": "Noon slot", "sort_order": 6}
+]

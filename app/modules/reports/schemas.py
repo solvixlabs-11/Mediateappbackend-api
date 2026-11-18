@@ -161,3 +161,78 @@ class ReportsDashboardResponse(BaseModel):
     summary: ReportsSummaryResponse
     mr_performances: list[MRPerformanceReportItem]
     customer_coverage: list[CustomerCoverageReportItem]
+
+
+# -------------------------------------------------------------
+# Catalog v3 Schemas
+# -------------------------------------------------------------
+
+class ReportDefinitionItem(BaseModel):
+    """Schema for individual report catalog entry in v3."""
+
+    key: str
+    name: str
+    group: str
+    description: str | None = None
+    sort_order: int = 0
+    status: str = "AVAILABLE"  # AVAILABLE or COMING_SOON
+    unavailable_reason: str | None = None
+    formats: list[str] = Field(default_factory=list)
+    filter_schema: dict[str, Any] = Field(default_factory=dict)
+    allowed_roles: list[str] = Field(default_factory=list)
+    data_as_of_source: str | None = None
+    is_active: bool = True
+
+
+class ReportCatalogV3Response(BaseModel):
+    """Schema for reports catalog list response."""
+
+    items: list[ReportDefinitionItem]
+    total: int
+    page: int = 1
+    page_size: int = 20
+    groups: list[str] = Field(default_factory=list)
+
+
+class ReportOptionItem(BaseModel):
+    """Single item for schema-driven dynamic filter dropdown options."""
+
+    value: Any
+    label: str
+    parent_id: Any | None = None
+
+
+class ReportOptionsResponse(BaseModel):
+    """Response containing filter dropdown options."""
+
+    source: str
+    options: list[ReportOptionItem]
+    total: int
+
+
+class ReportRunRequest(BaseModel):
+    """Request payload to execute a report view on screen."""
+
+    filters: dict[str, Any] = Field(default_factory=dict)
+    page: int = 1
+    page_size: int = 50
+    sort: dict[str, Any] | None = None
+
+
+class ReportRunResponse(BaseModel):
+    """Response returned when executing a report."""
+
+    meta: dict[str, Any]
+    summary: dict[str, Any]
+    columns: list[ReportColumn]
+    rows: list[dict[str, Any]]
+    total: int
+    page: int = 1
+    page_size: int = 50
+
+
+class ReportExportRequest(BaseModel):
+    """Request payload to export report as XLSX or PDF."""
+
+    filters: dict[str, Any] = Field(default_factory=dict)
+

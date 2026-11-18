@@ -1,0 +1,11 @@
+[
+  {"entry_key": "category", "label": "Category Master", "transaction_type": "BOTH"},
+  {"entry_key": "chemist", "label": "Chemist Master", "transaction_type": "BOTH"},
+  {"entry_key": "credit_notes", "label": "Credit Notes", "transaction_type": "BOTH"},
+  {"entry_key": "doctor", "label": "Doctor Master", "transaction_type": "BOTH"},
+  {"entry_key": "employee", "label": "Employee Master", "transaction_type": "BOTH"},
+  {"entry_key": "primary_sales", "label": "Primary Sales", "transaction_type": "BOTH"},
+  {"entry_key": "product", "label": "Product Master", "transaction_type": "BOTH"},
+  {"entry_key": "stockist", "label": "Stockist Master", "transaction_type": "BOTH"},
+  {"entry_key": "territory", "label": "Territory Master", "transaction_type": "BOTH"}
+]

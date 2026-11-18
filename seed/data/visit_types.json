@@ -1,0 +1,5 @@
+[
+  {"code": "GROUP_PROMO", "name": "GROUP PROMOTIONAL CALL", "description": "Group promotional call", "sort_order": 1},
+  {"code": "REGULAR_SAMPLE", "name": "REGULAR SAMPLE CALL", "description": "Regular sample call", "sort_order": 2},
+  {"code": "REMINDER", "name": "REMINDER", "description": "Reminder call", "sort_order": 3}
+]

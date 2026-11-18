@@ -73,6 +73,11 @@ class Settings(BaseSettings):
     DEFAULT_GEOFENCE_CHEMIST_RADIUS_METERS: float = 150.0
     MAX_LOCATION_ACCURACY_THRESHOLD_METERS: float = 100.0
 
+    # Field Activity & Drill-Down Defaults
+    VISITS_MORNING_CUTOFF_HOUR: int = 14
+    VISITS_MISSING_DOCTOR_DAYS: int = 30
+    VISITS_CALL_AVERAGE_DAYS: int = 30
+
 
 @lru_cache
 def get_settings() -> Settings:

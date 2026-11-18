@@ -1,0 +1,7 @@
+[
+  {"code": "EVENING", "name": "EVENING", "description": "Evening visiting slot category", "sort_order": 1},
+  {"code": "GYN", "name": "GYN", "description": "Gynecology focus category", "sort_order": 2},
+  {"code": "MORNING", "name": "MORNING", "description": "Morning visiting slot category", "sort_order": 3},
+  {"code": "N", "name": "N", "description": "Normal category", "sort_order": 4},
+  {"code": "PHY", "name": "PHY", "description": "Physician focused category", "sort_order": 5}
+]

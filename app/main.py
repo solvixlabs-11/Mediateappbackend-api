@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from app.core.config import get_settings
 from app.core.errors import register_error_handlers
@@ -21,6 +22,7 @@ from app.modules.files.router import router as files_router
 from app.modules.health.router import router as health_router
 from app.modules.leaves.router import router as leaves_router
 from app.modules.masters.router import router as masters_router
+from app.modules.navigation.router import router as navigation_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.orders.router import router as orders_router
 from app.modules.products.router import router as products_router
@@ -71,6 +73,27 @@ app.add_middleware(
 # Error handlers
 register_error_handlers(app)
 
+
+@app.get("", include_in_schema=False)
+@app.get("/", include_in_schema=False)
+def root_index() -> dict[str, str]:
+    """Root endpoint showing API metadata and Swagger docs location."""
+    return {
+        "name": settings.PROJECT_NAME,
+        "version": settings.VERSION,
+        "status": "online",
+        "docs_url": f"{settings.API_V1_PREFIX}/docs",
+        "health_url": "/health",
+        "api_v1": settings.API_V1_PREFIX,
+    }
+
+
+@app.get("/docs", include_in_schema=False)
+def docs_shortcut() -> RedirectResponse:
+    """Shortcut redirect to versioned Swagger documentation."""
+    return RedirectResponse(url=f"{settings.API_V1_PREFIX}/docs")
+
+
 # Include Routers
 # Root health probe (e.g. for docker / load balancer)
 app.include_router(health_router)
@@ -84,6 +107,7 @@ app.include_router(territories_router, prefix=settings.API_V1_PREFIX)
 app.include_router(customers_router, prefix=settings.API_V1_PREFIX)
 app.include_router(attendance_router, prefix=settings.API_V1_PREFIX)
 app.include_router(dashboard_router, prefix=settings.API_V1_PREFIX)
+app.include_router(navigation_router, prefix=settings.API_V1_PREFIX)
 app.include_router(dcr_router, prefix=settings.API_V1_PREFIX)
 app.include_router(approvals_router, prefix=settings.API_V1_PREFIX)
 app.include_router(tours_router, prefix=settings.API_V1_PREFIX)

@@ -8,15 +8,19 @@ from app.db.session import get_db
 from app.modules.users.models import User
 from app.modules.users.schemas import (
     AssignManagerRequest,
+    ForceLogoutResponse,
     LiveTrackingItem,
     ManagerMRAssignmentResponse,
     ManagerSummary,
     ProfileUpdateRequest,
+    RoleCreate,
     RoleResponse,
+    RoleUpdate,
     UserCreate,
     UserListResponse,
     UserResponse,
     UserStatusUpdate,
+    UserSummaryResponse,
     UserUpdate,
 )
 from app.modules.users.service import UserService
@@ -36,6 +40,66 @@ def get_roles(
     """List available system roles."""
     service = UserService(db)
     return service.get_all_roles()
+
+
+@router.post(
+    "/roles",
+    response_model=RoleResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new role (Admin)",
+)
+def create_role(
+    payload: RoleCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> RoleResponse:
+    """Create a new role."""
+    service = UserService(db)
+    return service.create_role(payload, user_id=current_user.id)
+
+
+@router.put(
+    "/roles/{role_id}",
+    response_model=RoleResponse,
+    summary="Update role (Admin)",
+)
+def update_role(
+    role_id: int,
+    payload: RoleUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> RoleResponse:
+    """Update role metadata."""
+    service = UserService(db)
+    return service.update_role(role_id, payload, user_id=current_user.id)
+
+
+@router.delete(
+    "/roles/{role_id}",
+    summary="Delete role (Admin)",
+)
+def delete_role(
+    role_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> dict[str, str]:
+    """Delete a role."""
+    service = UserService(db)
+    return service.delete_role(role_id, user_id=current_user.id)
+
+
+@router.get(
+    "/summary",
+    response_model=UserSummaryResponse,
+    summary="Get user subscription metrics",
+)
+def get_users_summary(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> UserSummaryResponse:
+    """Get total, active, and pending user subscription counts for Employee Master."""
+    service = UserService(db)
+    return service.get_users_summary()
 
 
 @router.get(
@@ -227,3 +291,18 @@ def get_assignment_history(
     """Retrieve full manager assignment audit history for an MR."""
     service = UserService(db)
     return service.get_assignment_history(user_id)
+
+
+@router.post(
+    "/{user_id}/force-logout",
+    response_model=ForceLogoutResponse,
+    summary="Force logout user by terminating all active sessions",
+)
+def force_logout_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> ForceLogoutResponse:
+    """Terminate all active refresh tokens and sessions for an employee."""
+    service = UserService(db)
+    return service.force_logout(user_id=user_id, admin_id=current_user.id)

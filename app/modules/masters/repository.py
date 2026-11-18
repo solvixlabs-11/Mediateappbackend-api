@@ -175,3 +175,112 @@ class MasterRepository:
         self.db.add(area)
         self.db.flush()
         return area
+
+    def delete_item(self, item_id: int, user_id: int | None = None) -> bool:
+        """Soft-delete a MasterItem."""
+        item = self.get_item_by_id(item_id)
+        if not item:
+            return False
+        item.is_deleted = True
+        item.is_active = False
+        item.updated_by = user_id
+        return True
+
+    def update_state(
+        self,
+        state_id: int,
+        name: str | None = None,
+        code: str | None = None,
+        is_active: bool | None = None,
+        user_id: int | None = None,
+    ) -> State | None:
+        """Update a state."""
+        state = self.get_state_by_id(state_id)
+        if not state:
+            return None
+        if name is not None:
+            state.name = name.strip()
+        if code is not None:
+            state.code = code.upper().strip()
+        if is_active is not None:
+            state.is_active = is_active
+        state.updated_by = user_id
+        return state
+
+    def delete_state(self, state_id: int, user_id: int | None = None) -> bool:
+        """Soft-delete a state."""
+        state = self.get_state_by_id(state_id)
+        if not state:
+            return False
+        state.is_deleted = True
+        state.is_active = False
+        state.updated_by = user_id
+        return True
+
+    def update_city(
+        self,
+        city_id: int,
+        name: str | None = None,
+        code: str | None = None,
+        state_id: int | None = None,
+        is_active: bool | None = None,
+        user_id: int | None = None,
+    ) -> City | None:
+        """Update a city."""
+        city = self.get_city_by_id(city_id)
+        if not city:
+            return None
+        if name is not None:
+            city.name = name.strip()
+        if code is not None:
+            city.code = code.upper().strip()
+        if state_id is not None:
+            city.state_id = state_id
+        if is_active is not None:
+            city.is_active = is_active
+        city.updated_by = user_id
+        return city
+
+    def delete_city(self, city_id: int, user_id: int | None = None) -> bool:
+        """Soft-delete a city."""
+        city = self.get_city_by_id(city_id)
+        if not city:
+            return False
+        city.is_deleted = True
+        city.is_active = False
+        city.updated_by = user_id
+        return True
+
+    def update_area(
+        self,
+        area_id: int,
+        name: str | None = None,
+        pincode: str | None = None,
+        city_id: int | None = None,
+        is_active: bool | None = None,
+        user_id: int | None = None,
+    ) -> Area | None:
+        """Update an area."""
+        area = self.get_area_by_id(area_id)
+        if not area:
+            return None
+        if name is not None:
+            area.name = name.strip()
+        if pincode is not None:
+            area.pincode = pincode.strip()
+        if city_id is not None:
+            area.city_id = city_id
+        if is_active is not None:
+            area.is_active = is_active
+        area.updated_by = user_id
+        return area
+
+    def delete_area(self, area_id: int, user_id: int | None = None) -> bool:
+        """Soft-delete an area."""
+        area = self.get_area_by_id(area_id)
+        if not area:
+            return False
+        area.is_deleted = True
+        area.is_active = False
+        area.updated_by = user_id
+        return True

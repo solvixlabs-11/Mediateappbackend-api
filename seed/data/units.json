@@ -1,0 +1,7 @@
+[
+  {"code": "BOTTLE", "name": "BOTTLE", "description": "Bottled liquids and syrups", "sort_order": 1},
+  {"code": "BOX", "name": "BOX", "description": "Cardboard outer packaging", "sort_order": 2},
+  {"code": "STRIP", "name": "STRIP", "description": "Blister / foil strip", "sort_order": 3},
+  {"code": "VIAL", "name": "VIAL", "description": "Injectable glass vial", "sort_order": 4},
+  {"code": "TUBE", "name": "TUBE", "description": "Ointment / cream tube", "sort_order": 5}
+]

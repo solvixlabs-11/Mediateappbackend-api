@@ -58,6 +58,28 @@ class TerritoryAssignmentResponse(BaseModel):
 
     id: int
     user_id: int
+    territory_id: int
+    assigned_at: datetime
+    unassigned_at: datetime | None = None
+
+
+class TerritoryTreeNode(BaseModel):
+    """Hierarchical territory org chart node."""
+
+    id: int | str
+    code: str
+    name: str
+    headquarters: str | None = None
+    level: str = "TERRITORY"  # ROOT, STATE, TERRITORY
+    is_active: bool = True
+    children: list["TerritoryTreeNode"] = []
+
+
+class TerritoryTreeResponse(BaseModel):
+    """Complete territory hierarchy tree with total nodes count."""
+
+    total_count: int
+    root: TerritoryTreeNode
     user_name: str
     territory_id: int
     territory_name: str

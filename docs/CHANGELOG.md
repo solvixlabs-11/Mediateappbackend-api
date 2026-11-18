@@ -1,5 +1,46 @@
 # Changelog - Mediate Healthcare MR Backend API
 
+## [Phase 7.6] - Visits Summary Drill-Down Implementation (2026-11-19)
+
+### Added
+- **Visits Summary Metric Drill-down Engine (`docs/visits-summary-drilldown.md`)**:
+  - Implemented modular metric registry `app/modules/dashboard/metrics/` with individual handlers for all 16 canonical metrics:
+    - `chemist_visits`, `new_chemist_visits`, `doctor_visits`, `new_doctor_visits`, `stockist_visits`, `new_stockist_visits` (Kind: `TABLE`)
+    - `doctor_call_average`, `missing_doctor` (Kind: `TABLE`)
+    - `punch_in_time`, `first_call_time`, `last_call_time`, `punch_out_time` (Kind: `RECORD`)
+    - `morning_calls`, `evening_calls` (Kind: `TABLE`)
+    - `work_duration` (Kind: `TIMELINE`)
+    - `total_pob` (Kind: `TABLE`, status: `COMING_SOON`)
+  - Endpoints implemented:
+    - `GET /api/v1/dashboard/visits-summary/{employee_id}/metrics/{metric_key}`: Paginated universal drill-down returning `meta` (title, kind, columns, filters, data_as_of), `rows` (for TABLE), `record` (for RECORD with coordinates and geofence verification), `events` (for TIMELINE with transit intervals), `total`, `page`, and `page_size`.
+    - `GET /api/v1/dashboard/visits-summary/{employee_id}/metrics/{metric_key}/export?format=xlsx`: Styled Excel workbook streaming export with header branding, aligned columns, and auto-adjusted widths.
+  - Enforced strict role-scoping using `core/scope.py`: `ADMIN` full access, `MANAGER` own team, `MR` own records; other employee requests return `403 REPORT_SCOPE_DENIED`.
+  - Configurable settings with defaults: `VISITS_MORNING_CUTOFF_HOUR` (14), `VISITS_MISSING_DOCTOR_DAYS` (30), `VISITS_CALL_AVERAGE_DAYS` (30).
+  - High-performance batch pre-aggregation in `get_visits_summary` preventing N+1 query loops.
+  - Added unit and integration test suite `tests/test_visits_summary_drilldown.py` (8 passed).
+
+---
+
+## [Phase 7.5] - Reports Catalog v3 Implementation (2026-11-18)
+
+### Added
+- **Reports Catalog v3 (`docs/reports-catalog-v3.md`)**:
+  - Unified catalog of all 48 reference reports from web Excel Reports, Detail Reports, and mobile lists.
+  - Implemented `report_definitions` table in database storing report metadata, schema, roles, and status tags (`AVAILABLE`, `COMING_SOON`).
+  - Added modular seeder `seed/seed_report_definitions.py` loading `seed/data/report_definitions.json` (48 reports, idempotent upsert).
+  - Built report engine in `app/modules/reports/engine/`: `ReportEngineRegistry`, `validate_filter_schema`, `validate_report_scope`.
+  - Implemented 32 distinct report definition files under `app/modules/reports/definitions/<key>.py` for every `NOW` report.
+  - Endpoints implemented:
+    - `GET /api/v1/reports`: Dynamic catalog list with search, group, status, and role filtering.
+    - `GET /api/v1/reports/{key}`: Report definition metadata and filter schema.
+    - `GET /api/v1/reports/options/{source}`: Scoped options loader for dynamic filters (`employees`, `territories`, `states`, `cities`, `areas`, `specialities`, etc.).
+    - `POST /api/v1/reports/{key}/run`: Dynamic report runner returning meta, summary KPIs, dynamic columns, and paged rows.
+    - `POST /api/v1/reports/{key}/export?format=xlsx|pdf`: Full streaming export with audit log tracking and 50,000 row safeguard.
+  - Added test suite `tests/test_reports_catalog_v3.py` verifying catalog, options, execution, and exports.
+  - All checks passed (ruff, openapi.json exported).
+
+---
+
 ## [Phase 7] - Reports Engine & Export Infrastructure (2026-10-04)
 
 ### Added

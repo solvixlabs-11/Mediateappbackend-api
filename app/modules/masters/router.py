@@ -8,14 +8,17 @@ from app.db.session import get_db
 from app.modules.masters.schemas import (
     AreaCreate,
     AreaResponse,
+    AreaUpdate,
     CityCreate,
     CityResponse,
+    CityUpdate,
     MasterBulkDropdownsResponse,
     MasterItemCreate,
     MasterItemResponse,
     MasterItemUpdate,
     StateCreate,
     StateResponse,
+    StateUpdate,
 )
 from app.modules.masters.service import MasterService
 from app.modules.users.models import User
@@ -63,12 +66,13 @@ def list_master_items(
 )
 def create_master_item(
     payload: MasterItemCreate,
+    type: str | None = Query(default=None, description="Optional fallback type query param"),
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission("users:write")),
 ) -> MasterItemResponse:
     """Create a new master item."""
     service = MasterService(db)
-    return service.create_item(payload, user_id=current_user.id)
+    return service.create_item(payload, fallback_type=type, user_id=current_user.id)
 
 
 @router.put(
@@ -85,6 +89,20 @@ def update_master_item(
     """Update existing master item."""
     service = MasterService(db)
     return service.update_item(item_id, payload, user_id=current_user.id)
+
+
+@router.delete(
+    "/{item_id}",
+    summary="Delete master item (Admin)",
+)
+def delete_master_item(
+    item_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> dict[str, str]:
+    """Soft-delete existing master item."""
+    service = MasterService(db)
+    return service.delete_item(item_id, user_id=current_user.id)
 
 
 # States
@@ -117,6 +135,36 @@ def create_state(
     """Create a state."""
     service = MasterService(db)
     return service.create_state(payload, user_id=current_user.id)
+
+
+@router.put(
+    "/states/{state_id}",
+    response_model=StateResponse,
+    summary="Update state (Admin)",
+)
+def update_state(
+    state_id: int,
+    payload: StateUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> StateResponse:
+    """Update existing state."""
+    service = MasterService(db)
+    return service.update_state(state_id, payload, user_id=current_user.id)
+
+
+@router.delete(
+    "/states/{state_id}",
+    summary="Delete state (Admin)",
+)
+def delete_state(
+    state_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> dict[str, str]:
+    """Delete a state."""
+    service = MasterService(db)
+    return service.delete_state(state_id, user_id=current_user.id)
 
 
 # Cities
@@ -152,6 +200,36 @@ def create_city(
     return service.create_city(payload, user_id=current_user.id)
 
 
+@router.put(
+    "/cities/{city_id}",
+    response_model=CityResponse,
+    summary="Update city (Admin)",
+)
+def update_city(
+    city_id: int,
+    payload: CityUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> CityResponse:
+    """Update existing city."""
+    service = MasterService(db)
+    return service.update_city(city_id, payload, user_id=current_user.id)
+
+
+@router.delete(
+    "/cities/{city_id}",
+    summary="Delete city (Admin)",
+)
+def delete_city(
+    city_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> dict[str, str]:
+    """Delete a city."""
+    service = MasterService(db)
+    return service.delete_city(city_id, user_id=current_user.id)
+
+
 # Areas
 @router.get(
     "/areas",
@@ -183,3 +261,33 @@ def create_area(
     """Create an area."""
     service = MasterService(db)
     return service.create_area(payload, user_id=current_user.id)
+
+
+@router.put(
+    "/areas/{area_id}",
+    response_model=AreaResponse,
+    summary="Update area (Admin)",
+)
+def update_area(
+    area_id: int,
+    payload: AreaUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> AreaResponse:
+    """Update existing area."""
+    service = MasterService(db)
+    return service.update_area(area_id, payload, user_id=current_user.id)
+
+
+@router.delete(
+    "/areas/{area_id}",
+    summary="Delete area (Admin)",
+)
+def delete_area(
+    area_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> dict[str, str]:
+    """Delete an area."""
+    service = MasterService(db)
+    return service.delete_area(area_id, user_id=current_user.id)
