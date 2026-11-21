@@ -13,25 +13,36 @@ from app.core.logging import get_logger, setup_logging
 from app.core.request_id import RequestIdMiddleware
 from app.modules.approvals.router import router as approvals_router
 from app.modules.attendance.router import router as attendance_router
+from app.modules.audit.router import router as audit_router
 from app.modules.auth.router import router as auth_router
+from app.modules.calendar.router import router as calendar_router
+from app.modules.company_profile.router import router as company_profile_router
 from app.modules.customers.router import router as customers_router
 from app.modules.dashboard.router import router as dashboard_router
+from app.modules.dcr.admin_visits_router import router as admin_visits_router
 from app.modules.dcr.router import router as dcr_router
+from app.modules.expenses.router import limits_router as expense_limits_router
 from app.modules.expenses.router import router as expenses_router
 from app.modules.files.router import router as files_router
 from app.modules.health.router import router as health_router
 from app.modules.leaves.router import router as leaves_router
+from app.modules.mappings.router import router as mappings_router
 from app.modules.masters.router import router as masters_router
+from app.modules.meetings.router import router as meetings_router
+from app.modules.mobile_registrations.router import router as mobile_registrations_router
 from app.modules.navigation.router import router as navigation_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.orders.router import router as orders_router
 from app.modules.products.router import router as products_router
 from app.modules.reports.router import router as reports_router
+from app.modules.settings.router import router as settings_router
+from app.modules.stock.router import router as stock_router
 from app.modules.targets.router import router as targets_router
 from app.modules.tasks.router import router as tasks_router
 from app.modules.territories.router import router as territories_router
 from app.modules.tours.router import router as tours_router
 from app.modules.users.router import router as users_router
+from app.modules.workflow.router import router as workflow_router
 
 setup_logging()
 logger = get_logger(__name__)
@@ -119,3 +130,14 @@ app.include_router(reports_router, prefix=settings.API_V1_PREFIX)
 app.include_router(products_router, prefix=settings.API_V1_PREFIX)
 app.include_router(orders_router, prefix=settings.API_V1_PREFIX)
 app.include_router(targets_router, prefix=settings.API_V1_PREFIX)
+app.include_router(workflow_router, prefix=settings.API_V1_PREFIX)
+app.include_router(settings_router, prefix=settings.API_V1_PREFIX)
+app.include_router(audit_router, prefix=settings.API_V1_PREFIX)
+app.include_router(expense_limits_router, prefix=settings.API_V1_PREFIX)
+app.include_router(mappings_router, prefix=settings.API_V1_PREFIX)
+app.include_router(company_profile_router, prefix=settings.API_V1_PREFIX)
+app.include_router(meetings_router, prefix=settings.API_V1_PREFIX)
+app.include_router(calendar_router, prefix=settings.API_V1_PREFIX)
+app.include_router(mobile_registrations_router, prefix=settings.API_V1_PREFIX)
+app.include_router(admin_visits_router, prefix=settings.API_V1_PREFIX)
+app.include_router(stock_router, prefix=settings.API_V1_PREFIX)

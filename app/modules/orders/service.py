@@ -15,6 +15,8 @@ from app.modules.orders.schemas import (
     OrderCreate,
     OrderItemResponse,
     OrderResponse,
+    OrderStatusUpdateRequest,
+    OrdersSummaryResponse,
 )
 from app.modules.products.models import Product
 
@@ -153,3 +155,29 @@ class OrderService:
         self.db.commit()
         reloaded = self.repo.get_by_id(order.id)
         return self._to_response(reloaded or order)
+
+    def update_order_status(
+        self, context: ScopeContext, order_id: int, payload: OrderStatusUpdateRequest
+    ) -> OrderResponse:
+        """Update status of an existing order."""
+        order = self.repo.get_by_id(order_id)
+        if not order:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Order {order_id} not found.",
+            )
+        updated = self.repo.update_status(order_id, payload.status, payload.notes)
+        if not updated:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to update order status.",
+            )
+        return self._to_response(updated)
+
+    def get_orders_summary(self, context: ScopeContext) -> OrdersSummaryResponse:
+        """Fetch summary KPI metrics scoped to user."""
+        accessible_ids = get_accessible_user_ids(context)
+        summary = self.repo.get_orders_summary(
+            accessible_user_ids=list(accessible_ids) if accessible_ids is not None else None
+        )
+        return OrdersSummaryResponse(**summary)

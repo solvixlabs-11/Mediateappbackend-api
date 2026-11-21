@@ -60,14 +60,15 @@ class NewStockistVisitsMetric(BaseMetricHandler):
         rows = []
         for s in stockists:
             approval = getattr(s, "approval_status", "APPROVED") or "APPROVED"
-            area_name = s.area.name if s.area else (s.city or "-")
+            area_name = s.area.name if s.area else "-"
+            city_name = s.area.city.name if (s.area and getattr(s.area, "city", None)) else "-"
             rows.append({
                 "id": str(s.id),
                 "date": s.created_at.strftime("%Y-%m-%d") if s.created_at else "-",
                 "name": s.agency_name,
                 "owner": s.contact_person or "-",
                 "mobile": s.phone or "-",
-                "city": s.city or "-",
+                "city": city_name,
                 "area": area_name,
                 "approval_status": approval,
                 "address": s.address or "-",

@@ -22,5 +22,11 @@
   {"code": "tours:write", "module": "tours", "action": "write", "description": "Submit tour programs for approval"},
   {"code": "tours:approve", "module": "tours", "action": "approve", "description": "Approve team tour programs"},
   {"code": "settings:read", "module": "settings", "action": "read", "description": "Read general configuration settings"},
-  {"code": "settings:write", "module": "settings", "action": "write", "description": "Modify system business settings"}
+  {"code": "settings:write", "module": "settings", "action": "write", "description": "Modify system business settings"},
+  {"code": "expense_limits:read", "module": "expense_limits", "action": "read", "description": "View designation expense limits"},
+  {"code": "expense_limits:write", "module": "expense_limits", "action": "write", "description": "Update and configure expense limits matrix"},
+  {"code": "audit:read", "module": "audit", "action": "read", "description": "View security and system audit logs"},
+  {"code": "audit:export", "module": "audit", "action": "export", "description": "Export system audit logs"},
+  {"code": "mappings:read", "module": "mappings", "action": "read", "description": "View territory and customer employee mappings"},
+  {"code": "mappings:write", "module": "mappings", "action": "write", "description": "Preview and apply employee territory/customer bulk mappings"}
 ]

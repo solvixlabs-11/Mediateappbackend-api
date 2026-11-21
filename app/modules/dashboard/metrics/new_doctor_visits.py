@@ -60,7 +60,8 @@ class NewDoctorVisitsMetric(BaseMetricHandler):
         rows = []
         for d in doctors:
             approval = getattr(d, "approval_status", "APPROVED") or "APPROVED"
-            area_name = d.area.name if d.area else (d.city or "-")
+            area_name = d.area.name if d.area else "-"
+            city_name = d.area.city.name if (d.area and getattr(d.area, "city", None)) else "-"
             spec = getattr(d, "specialization", None) or getattr(d, "speciality", "-")
             rows.append({
                 "id": str(d.id),
@@ -68,7 +69,7 @@ class NewDoctorVisitsMetric(BaseMetricHandler):
                 "name": f"Dr. {d.full_name}",
                 "speciality": spec or "-",
                 "mobile": d.phone or "-",
-                "city": d.city or "-",
+                "city": city_name,
                 "area": area_name,
                 "approval_status": approval,
                 "address": d.address or "-",

@@ -20,7 +20,7 @@ class TargetRepository:
             Target.user_id == user_id,
             Target.year == year,
             Target.month == month,
-            Target.is_deleted.is_(False),
+            Target.is_deleted == False,  # noqa: E712
         )
         return self.db.scalars(stmt).first()
 
@@ -37,7 +37,7 @@ class TargetRepository:
             .where(
                 Target.year == year,
                 Target.month == month,
-                Target.is_deleted.is_(False),
+                Target.is_deleted == False,  # noqa: E712
             )
         )
         if user_ids is not None:

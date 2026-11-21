@@ -35,8 +35,8 @@ def test_navigation_menu_admin(client: TestClient) -> None:
     assert response.status_code == 200, response.text
     data = response.json()
 
-    assert data["totalItems"] == 103
-    assert data["permittedItems"] == 103
+    assert data["totalItems"] == 105
+    assert data["permittedItems"] == 105
     assert len(data["groups"]) == 6
 
     group_keys = [g["key"] for g in data["groups"]]

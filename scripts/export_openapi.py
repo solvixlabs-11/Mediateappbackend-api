@@ -1,35 +1,26 @@
-"""Export OpenAPI schema to openapi.json for mobile client code generation."""
-
 import json
+import os
 import sys
-from pathlib import Path
 
-# Ensure repository root is on PYTHONPATH
-root_dir = Path(__file__).resolve().parent.parent
-if str(root_dir) not in sys.path:
-    sys.path.insert(0, str(root_dir))
+sys.path.insert(0, os.path.abspath("."))
+from app.main import app
 
-from app.main import app  # noqa: E402
+schema = app.openapi()
 
+targets = [
+    "openapi.json",
+    "docs/openapi.json",
+    "../openapi.json",
+    "../Mediateappfrontent/openapi.json",
+    "../Mediateappfrontent/docs/openapi.json",
+    "../Mediateappweb/openapi.json",
+]
 
-def export_openapi() -> None:
-    """Generate openapi.json in repository root and docs."""
-    app.openapi_schema = None
-    openapi_schema = app.openapi()
-
-    output_paths = [
-        root_dir / "openapi.json",
-        root_dir / "docs" / "openapi.json",
-        root_dir.parent / "openapi.json",
-        root_dir.parent / "Mediateappfrontent" / "openapi.json",
-    ]
-
-    for path in output_paths:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(openapi_schema, f, indent=2)
-        print(f"Exported OpenAPI schema to {path}")
-
-
-if __name__ == "__main__":
-    export_openapi()
+for t in targets:
+    try:
+        os.makedirs(os.path.dirname(os.path.abspath(t)), exist_ok=True)
+        with open(t, "w", encoding="utf-8") as f:
+            json.dump(schema, f, indent=2)
+        print(f"Exported openapi to {t}")
+    except Exception as e:
+        print(f"Failed to write {t}: {e}")

@@ -13,6 +13,7 @@ from app.modules.masters.schemas import (
     CityResponse,
     CityUpdate,
     MasterBulkDropdownsResponse,
+    MasterConfirmBulkRequest,
     MasterItemCreate,
     MasterItemResponse,
     MasterItemUpdate,
@@ -103,6 +104,39 @@ def delete_master_item(
     """Soft-delete existing master item."""
     service = MasterService(db)
     return service.delete_item(item_id, user_id=current_user.id)
+
+
+@router.post(
+    "/{type}/{item_id}/confirm",
+    response_model=MasterItemResponse,
+    summary="Confirm provisional master item",
+)
+def confirm_master_item(
+    type: str,
+    item_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> MasterItemResponse:
+    """Confirm a single provisional master item."""
+    service = MasterService(db)
+    return service.confirm_item(item_type=type, item_id=item_id, user_id=current_user.id)
+
+
+@router.post(
+    "/{type}/confirm-bulk",
+    response_model=list[MasterItemResponse],
+    summary="Bulk confirm provisional master items",
+)
+def confirm_master_items_bulk(
+    type: str,
+    payload: MasterConfirmBulkRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission("users:write")),
+) -> list[MasterItemResponse]:
+    """Bulk confirm multiple provisional master items."""
+    service = MasterService(db)
+    return service.confirm_bulk(item_type=type, item_ids=payload.item_ids, user_id=current_user.id)
+
 
 
 # States

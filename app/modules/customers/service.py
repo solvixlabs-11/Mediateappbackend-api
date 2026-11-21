@@ -35,6 +35,7 @@ from app.modules.customers.schemas import (
     StockistResponse,
     StockistUpdate,
 )
+from app.modules.settings.service import SettingsService
 from app.modules.territories.repository import TerritoryRepository
 from app.modules.users.models import User
 
@@ -441,8 +442,9 @@ class CustomerService:
     ) -> list[NearbyCustomerItem]:
         """Find doctors, chemists, stockists, and hospitals within radius_meters."""
         results: list[NearbyCustomerItem] = []
-        doc_radius = self.settings.DEFAULT_GEOFENCE_DOCTOR_RADIUS_METERS
-        chm_radius = self.settings.DEFAULT_GEOFENCE_CHEMIST_RADIUS_METERS
+        settings_svc = SettingsService(self.db)
+        doc_radius = settings_svc.get_geofence_radius("DOCTOR")
+        chm_radius = settings_svc.get_geofence_radius("CHEMIST")
 
         # 1. Doctors
         doctors = (

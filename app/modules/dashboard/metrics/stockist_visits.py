@@ -68,7 +68,7 @@ class StockistVisitsMetric(BaseMetricHandler):
                 "contact_person": st.contact_person if st else "-",
                 "city": area_name,
                 "area": area_name,
-                "visit_type": v.call_type or "Regular",
+                "visit_type": v.visit_type or "Regular",
                 "address": st.address if st else "-",
                 "verified": "VERIFIED" if v.is_geofence_verified else "UNVERIFIED",
             })

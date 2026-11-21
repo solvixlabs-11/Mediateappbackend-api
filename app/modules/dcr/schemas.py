@@ -51,6 +51,8 @@ class PlannedVisitResponse(BaseModel):
     status: str
     notes: str | None = None
     client_uuid: str | None = None
+    user_name: str | None = None
+    employee_code: str | None = None
     created_at: datetime
 
 
@@ -173,6 +175,8 @@ class DcrVisitResponse(BaseModel):
     pob_amount: float
     status: str
     client_uuid: str | None = None
+    user_name: str | None = None
+    employee_code: str | None = None
     created_at: datetime
 
     post_call_analysis: DcrPostCallAnalysisResponse | None = None
@@ -217,6 +221,8 @@ class FollowUpResponse(BaseModel):
     status: str
     completed_at: datetime | None = None
     client_uuid: str | None = None
+    user_name: str | None = None
+    employee_code: str | None = None
     created_at: datetime
 
 

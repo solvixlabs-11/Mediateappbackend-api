@@ -69,7 +69,7 @@ class ChemistVisitsMetric(BaseMetricHandler):
                 "owner_name": ch.contact_person if ch else "-",
                 "area": area_name,
                 "city": area_name,
-                "visit_type": v.call_type or "Regular",
+                "visit_type": v.visit_type or "Regular",
                 "address": ch.address if ch else "-",
                 "verified": "VERIFIED" if v.is_geofence_verified else "UNVERIFIED",
                 "pob_amount": float(v.pob_amount or 0.0),

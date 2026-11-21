@@ -345,7 +345,7 @@ class ReportService:
         ver_calls = sum(1 for v in visits if v.is_geofence_verified)
         compliance = round((ver_calls / total_calls * 100.0), 1) if total_calls > 0 else 0.0
 
-        u_stmt = self.db.query(User).filter(User.is_active.is_(True))
+        u_stmt = self.db.query(User).filter(User.is_active == True)  # noqa: E712
         if user_ids is not None:
             u_stmt = u_stmt.filter(User.id.in_(user_ids))
         mrs = u_stmt.all()

@@ -68,3 +68,38 @@ class OrderRepository:
             stk = self.db.query(Stockist).filter(Stockist.id == customer_id).first()
             return stk.agency_name if stk else None
         return None
+
+    def update_status(self, order_id: int, new_status: str, notes: str | None = None) -> Order | None:
+        """Update status of an order."""
+        order = self.get_by_id(order_id)
+        if not order:
+            return None
+        order.status = new_status.upper()
+        if notes:
+            order.notes = f"{order.notes or ''}\n[Status Update]: {notes}".strip()
+        self.db.commit()
+        self.db.refresh(order)
+        return order
+
+    def get_orders_summary(self, accessible_user_ids: list[int] | None = None) -> dict:
+        """Calculate KPI summary across orders."""
+        query = self.db.query(Order)
+        if accessible_user_ids is not None:
+            query = query.filter(Order.user_id.in_(accessible_user_ids))
+        orders = query.all()
+
+        chemist_orders = [o for o in orders if o.customer_type == "CHEMIST"]
+        stockist_orders = [o for o in orders if o.customer_type == "STOCKIST"]
+
+        return {
+            "total_orders": len(orders),
+            "total_amount": round(sum(o.total_amount for o in orders), 2),
+            "chemist_orders_count": len(chemist_orders),
+            "chemist_orders_amount": round(sum(o.total_amount for o in chemist_orders), 2),
+            "stockist_orders_count": len(stockist_orders),
+            "stockist_orders_amount": round(sum(o.total_amount for o in stockist_orders), 2),
+            "submitted_count": len([o for o in orders if o.status == "SUBMITTED"]),
+            "confirmed_count": len([o for o in orders if o.status == "CONFIRMED"]),
+            "dispatched_count": len([o for o in orders if o.status == "DISPATCHED"]),
+            "delivered_count": len([o for o in orders if o.status == "DELIVERED"]),
+        }

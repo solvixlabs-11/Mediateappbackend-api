@@ -55,4 +55,6 @@ class AttendanceResponse(BaseModel):
     total_work_minutes: int | None = None
     remarks: str | None = None
     client_uuid: str | None = None
+    user_name: str | None = None
+    employee_code: str | None = None
     created_at: dt.datetime

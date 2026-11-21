@@ -1,0 +1,46 @@
+[
+  {"designation_code": "MR", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 350.0, "monthly_limit": 8000.0, "is_provisional": true},
+  {"designation_code": "MR", "expense_type_code": "TRAVEL_FARE", "daily_limit": 600.0, "monthly_limit": 15000.0, "is_provisional": true},
+  {"designation_code": "MR", "expense_type_code": "LODGING", "daily_limit": 1200.0, "monthly_limit": 12000.0, "is_provisional": true},
+  {"designation_code": "MR", "expense_type_code": "MISCELLANEOUS", "daily_limit": 200.0, "monthly_limit": 2500.0, "is_provisional": true},
+
+  {"designation_code": "ARBH", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 500.0, "monthly_limit": 12000.0, "is_provisional": true},
+  {"designation_code": "ARBH", "expense_type_code": "TRAVEL_FARE", "daily_limit": 1000.0, "monthly_limit": 25000.0, "is_provisional": true},
+  {"designation_code": "ARBH", "expense_type_code": "LODGING", "daily_limit": 2000.0, "monthly_limit": 20000.0, "is_provisional": true},
+  {"designation_code": "ARBH", "expense_type_code": "MISCELLANEOUS", "daily_limit": 400.0, "monthly_limit": 5000.0, "is_provisional": true},
+
+  {"designation_code": "BH", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 600.0, "monthly_limit": 15000.0, "is_provisional": true},
+  {"designation_code": "BH", "expense_type_code": "TRAVEL_FARE", "daily_limit": 1500.0, "monthly_limit": 35000.0, "is_provisional": true},
+  {"designation_code": "BH", "expense_type_code": "LODGING", "daily_limit": 2500.0, "monthly_limit": 25000.0, "is_provisional": true},
+  {"designation_code": "BH", "expense_type_code": "MISCELLANEOUS", "daily_limit": 500.0, "monthly_limit": 6000.0, "is_provisional": true},
+
+  {"designation_code": "DBH", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 700.0, "monthly_limit": 18000.0, "is_provisional": true},
+  {"designation_code": "DBH", "expense_type_code": "TRAVEL_FARE", "daily_limit": 1800.0, "monthly_limit": 40000.0, "is_provisional": true},
+  {"designation_code": "DBH", "expense_type_code": "LODGING", "daily_limit": 3000.0, "monthly_limit": 30000.0, "is_provisional": true},
+  {"designation_code": "DBH", "expense_type_code": "MISCELLANEOUS", "daily_limit": 600.0, "monthly_limit": 7500.0, "is_provisional": true},
+
+  {"designation_code": "RBH", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 800.0, "monthly_limit": 20000.0, "is_provisional": true},
+  {"designation_code": "RBH", "expense_type_code": "TRAVEL_FARE", "daily_limit": 2000.0, "monthly_limit": 45000.0, "is_provisional": true},
+  {"designation_code": "RBH", "expense_type_code": "LODGING", "daily_limit": 3500.0, "monthly_limit": 35000.0, "is_provisional": true},
+  {"designation_code": "RBH", "expense_type_code": "MISCELLANEOUS", "daily_limit": 750.0, "monthly_limit": 9000.0, "is_provisional": true},
+
+  {"designation_code": "ZBM", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 900.0, "monthly_limit": 22000.0, "is_provisional": true},
+  {"designation_code": "ZBM", "expense_type_code": "TRAVEL_FARE", "daily_limit": 2500.0, "monthly_limit": 50000.0, "is_provisional": true},
+  {"designation_code": "ZBM", "expense_type_code": "LODGING", "daily_limit": 4000.0, "monthly_limit": 40000.0, "is_provisional": true},
+  {"designation_code": "ZBM", "expense_type_code": "MISCELLANEOUS", "daily_limit": 1000.0, "monthly_limit": 12000.0, "is_provisional": true},
+
+  {"designation_code": "ADMIN", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 1000.0, "monthly_limit": 25000.0, "is_provisional": true},
+  {"designation_code": "ADMIN", "expense_type_code": "TRAVEL_FARE", "daily_limit": 3000.0, "monthly_limit": 60000.0, "is_provisional": true},
+  {"designation_code": "ADMIN", "expense_type_code": "LODGING", "daily_limit": 5000.0, "monthly_limit": 50000.0, "is_provisional": true},
+  {"designation_code": "ADMIN", "expense_type_code": "MISCELLANEOUS", "daily_limit": 1500.0, "monthly_limit": 15000.0, "is_provisional": true},
+
+  {"designation_code": "DIRECTOR", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 1500.0, "monthly_limit": 35000.0, "is_provisional": true},
+  {"designation_code": "DIRECTOR", "expense_type_code": "TRAVEL_FARE", "daily_limit": 5000.0, "monthly_limit": 100000.0, "is_provisional": true},
+  {"designation_code": "DIRECTOR", "expense_type_code": "LODGING", "daily_limit": 8000.0, "monthly_limit": 80000.0, "is_provisional": true},
+  {"designation_code": "DIRECTOR", "expense_type_code": "MISCELLANEOUS", "daily_limit": 2500.0, "monthly_limit": 25000.0, "is_provisional": true},
+
+  {"designation_code": "MD", "expense_type_code": "DAILY_ALLOWANCE", "daily_limit": 2000.0, "monthly_limit": 50000.0, "is_provisional": true},
+  {"designation_code": "MD", "expense_type_code": "TRAVEL_FARE", "daily_limit": 7000.0, "monthly_limit": 150000.0, "is_provisional": true},
+  {"designation_code": "MD", "expense_type_code": "LODGING", "daily_limit": 10000.0, "monthly_limit": 100000.0, "is_provisional": true},
+  {"designation_code": "MD", "expense_type_code": "MISCELLANEOUS", "daily_limit": 5000.0, "monthly_limit": 50000.0, "is_provisional": true}
+]

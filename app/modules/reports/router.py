@@ -1,3 +1,4 @@
+
 """Reports & Analytics REST API router conforming to Reports Catalog v3."""
 
 from __future__ import annotations
@@ -6,7 +7,7 @@ import io
 from datetime import date
 from urllib.parse import quote
 
-from fastapi import APIRouter, Depends, Query, Response
+from fastapi import APIRouter, Depends, Query, Request, Response
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
@@ -190,11 +191,18 @@ def export_report_post(
     summary="Export report file as PDF or Excel (XLSX) using GET (backward compatibility)",
 )
 def export_report_get(
+    request: Request,
     key: str,
     format: str = Query("xlsx", description="Export format: 'xlsx' or 'pdf'"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> Response:
     """Stream report as PDF or Excel workbook using GET query params."""
-    body = ReportExportRequest(filters={})
+    filters = dict(request.query_params)
+    filters.pop("format", None)
+    if "month" not in filters:
+        filters["month"] = date.today().month
+    if "year" not in filters:
+        filters["year"] = date.today().year
+    body = ReportExportRequest(filters=filters)
     return export_report_post(key=key, body=body, format=format, db=db, current_user=current_user)

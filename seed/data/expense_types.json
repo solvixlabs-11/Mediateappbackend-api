@@ -1,0 +1,26 @@
+[
+  {
+    "code": "DAILY_ALLOWANCE",
+    "name": "Daily Allowance (DA)",
+    "description": "Daily food and local per-diem allowance",
+    "sort_order": 1
+  },
+  {
+    "code": "TRAVEL_FARE",
+    "name": "Travel / Fare (TA)",
+    "description": "Bus, train, auto or fuel distance reimbursement",
+    "sort_order": 2
+  },
+  {
+    "code": "LODGING",
+    "name": "Hotel / Lodging",
+    "description": "Night stay and hotel room tariff",
+    "sort_order": 3
+  },
+  {
+    "code": "MISCELLANEOUS",
+    "name": "Miscellaneous",
+    "description": "Stationery, postage, and ad-hoc field supplies",
+    "sort_order": 4
+  }
+]

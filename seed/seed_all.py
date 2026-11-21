@@ -49,6 +49,16 @@ from seed import (
     seed_visits,
     seed_leaves,
     seed_tour_plans,
+    seed_attendance,
+    seed_orders,
+    seed_system_settings,
+    seed_geofence_settings,
+    seed_expense_types,
+    seed_expense_limits,
+    seed_audit_logs,
+    seed_mapping_batches,
+    seed_mobile_registrations,
+    seed_tour_plan_locks,
 )
 
 SEEDERS = [
@@ -80,10 +90,20 @@ SEEDERS = [
     ("products", seed_products.run, False),
     ("holidays", seed_holidays.run, False),
     ("report_definitions", seed_report_definitions.run, False),
+    ("system_settings", seed_system_settings.run, False),
+    ("geofence_settings", seed_geofence_settings.run, False),
+    ("expense_types", seed_expense_types.run, False),
+    ("expense_limits", seed_expense_limits.run, False),
     # Dev-only seeders
     ("visits", seed_visits.run, True),
     ("leaves", seed_leaves.run, True),
     ("tour_plans", seed_tour_plans.run, True),
+    ("attendance", seed_attendance.run, True),
+    ("orders", seed_orders.run, True),
+    ("audit_logs", seed_audit_logs.run, True),
+    ("mapping_batches", seed_mapping_batches.run, True),
+    ("mobile_registrations", seed_mobile_registrations.run, True),
+    ("tour_plan_locks", seed_tour_plan_locks.run, True),
 ]
 
 

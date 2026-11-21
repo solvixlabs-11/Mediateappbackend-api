@@ -75,7 +75,7 @@ class DoctorVisitsMetric(BaseMetricHandler):
                 "category": cat or "-",
                 "area": area_name,
                 "city": area_name,
-                "visit_type": v.call_type or "Regular",
+                "visit_type": v.visit_type or "Regular",
                 "address": doc.address if doc else "-",
                 "verified": "VERIFIED" if v.is_geofence_verified else "UNVERIFIED",
                 "pob_amount": float(v.pob_amount or 0.0),

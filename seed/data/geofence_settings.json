@@ -1,0 +1,26 @@
+[
+  {
+    "entity_type": "DOCTOR",
+    "radius_m": 200.0,
+    "min_accuracy_m": 50.0,
+    "is_provisional": false
+  },
+  {
+    "entity_type": "HOSPITAL",
+    "radius_m": 200.0,
+    "min_accuracy_m": 50.0,
+    "is_provisional": false
+  },
+  {
+    "entity_type": "CHEMIST",
+    "radius_m": 150.0,
+    "min_accuracy_m": 50.0,
+    "is_provisional": false
+  },
+  {
+    "entity_type": "STOCKIST",
+    "radius_m": 150.0,
+    "min_accuracy_m": 50.0,
+    "is_provisional": true
+  }
+]

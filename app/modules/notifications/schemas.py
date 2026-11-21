@@ -17,6 +17,15 @@ class NotificationCreate(BaseModel):
     reference_id: str | None = None
 
 
+class NotificationBroadcastRequest(BaseModel):
+    """Payload to broadcast an announcement to multiple employees."""
+
+    title: str = Field(..., min_length=2, max_length=150)
+    body: str = Field(..., min_length=2)
+    notification_type: str = Field(default="ANNOUNCEMENT")
+    target_role: str = Field(default="ALL", description="'ALL', 'MR', 'MANAGER', 'ADMIN'")
+
+
 class NotificationResponse(BaseModel):
     """Notification entity representation."""
 

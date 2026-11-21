@@ -42,9 +42,10 @@ def submit_dcr_visit(
 @router.get(
     "/visits",
     response_model=list[DcrVisitResponse],
-    summary="List DCR visits for current user",
+    summary="List DCR visits for current user or team",
 )
 def list_dcr_visits(
+    user_id: int | None = Query(default=None, description="Filter by user ID (Admin/Manager only)"),
     dcr_date: date | None = Query(default=None),
     customer_type: str | None = Query(default=None),
     skip: int = Query(default=0, ge=0),
@@ -52,10 +53,11 @@ def list_dcr_visits(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[DcrVisitResponse]:
-    """Fetch user's DCR calls."""
+    """Fetch DCR calls."""
     service = DcrService(db)
     return service.list_dcr_visits(
         current_user=current_user,
+        user_id=user_id,
         dcr_date=dcr_date,
         customer_type=customer_type,
         skip=skip,

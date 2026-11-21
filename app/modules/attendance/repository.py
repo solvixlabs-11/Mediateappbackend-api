@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.modules.attendance.models import Attendance
 
@@ -89,16 +89,23 @@ class AttendanceRepository:
 
     def list_history(
         self,
-        user_id: int,
+        user_id: int | None = None,
         start_date: date | None = None,
         end_date: date | None = None,
         skip: int = 0,
-        limit: int = 31,
+        limit: int = 50,
     ) -> list[Attendance]:
-        """Fetch chronological attendance records for user."""
-        query = self.db.query(Attendance).filter(Attendance.user_id == user_id)
+        """Fetch chronological attendance records for user or all users."""
+        query = self.db.query(Attendance).options(joinedload(Attendance.user))
+        if user_id:
+            query = query.filter(Attendance.user_id == user_id)
         if start_date:
             query = query.filter(Attendance.date >= start_date)
         if end_date:
             query = query.filter(Attendance.date <= end_date)
-        return query.order_by(Attendance.date.desc()).offset(skip).limit(limit).all()
+        return (
+            query.order_by(Attendance.date.desc(), Attendance.check_in_time.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )

@@ -7,12 +7,32 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user
 from app.db.session import get_db
-from app.modules.orders.schemas import OrderCreate, OrderResponse
+from app.modules.orders.schemas import (
+    OrderCreate,
+    OrderResponse,
+    OrderStatusUpdateRequest,
+    OrdersSummaryResponse,
+)
 from app.modules.orders.service import OrderService
 from app.modules.users.models import User
 from app.modules.users.service import UserService
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
+
+
+@router.get(
+    "/summary",
+    response_model=OrdersSummaryResponse,
+    summary="Get commercial orders KPI summary",
+)
+def get_orders_summary(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> OrdersSummaryResponse:
+    """Fetch order stats and revenue totals."""
+    scope = UserService(db).get_user_scope_context(current_user)
+    service = OrderService(db)
+    return service.get_orders_summary(scope)
 
 
 @router.get(
@@ -73,3 +93,20 @@ def create_order(
     scope = UserService(db).get_user_scope_context(current_user)
     service = OrderService(db)
     return service.create_order(scope, payload)
+
+
+@router.patch(
+    "/{order_id}/status",
+    response_model=OrderResponse,
+    summary="Update commercial order status (Admin/Manager)",
+)
+def update_order_status(
+    order_id: int,
+    payload: OrderStatusUpdateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> OrderResponse:
+    """Update order fulfillment status."""
+    scope = UserService(db).get_user_scope_context(current_user)
+    service = OrderService(db)
+    return service.update_order_status(scope, order_id, payload)

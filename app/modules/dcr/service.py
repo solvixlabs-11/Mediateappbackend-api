@@ -22,6 +22,7 @@ from app.modules.dcr.schemas import (
     PlannedVisitCreate,
     PlannedVisitResponse,
 )
+from app.modules.settings.service import SettingsService
 from app.modules.users.models import User
 
 settings = get_settings()
@@ -107,11 +108,8 @@ class DcrService:
         # 3. Customer GPS lookup & Server Geofence calculation (BR-04, BR-05)
         cust_lat: float | None = None
         cust_lon: float | None = None
-        radius = (
-            settings.DEFAULT_GEOFENCE_CHEMIST_RADIUS_METERS
-            if payload.customer_type in ["CHEMIST", "STOCKIST"]
-            else settings.DEFAULT_GEOFENCE_DOCTOR_RADIUS_METERS
-        )
+        settings_svc = SettingsService(self.db)
+        radius = settings_svc.get_geofence_radius(payload.customer_type)
 
         if payload.doctor_id:
             doc = self.db.query(Doctor).filter(Doctor.id == payload.doctor_id).first()
@@ -230,14 +228,25 @@ class DcrService:
     def list_dcr_visits(
         self,
         current_user: User,
+        user_id: int | None = None,
         dcr_date: date | None = None,
         customer_type: str | None = None,
         skip: int = 0,
         limit: int = 50,
     ) -> list[DcrVisitResponse]:
-        """List visits for user."""
+        """List visits for user or across team with role-based scoping."""
+        is_admin_or_mgr = bool(
+            current_user.role and current_user.role.code in ("ADMIN", "MANAGER", "SUPERADMIN", "ERP ADMIN")
+        )
+
+        effective_user_id: int | None
+        if is_admin_or_mgr:
+            effective_user_id = user_id
+        else:
+            effective_user_id = current_user.id
+
         visits = self.repo.list_dcr_visits(
-            user_id=current_user.id,
+            user_id=effective_user_id,
             dcr_date=dcr_date,
             customer_type=customer_type,
             skip=skip,
@@ -368,6 +377,8 @@ class DcrService:
             status=plan.status,
             notes=plan.notes,
             client_uuid=plan.client_uuid,
+            user_name=plan.user.full_name if plan.user else None,
+            employee_code=plan.user.employee_code if plan.user else None,
             created_at=plan.created_at,
         )
 
@@ -414,6 +425,8 @@ class DcrService:
             pob_amount=float(dcr.pob_amount or 0.0),
             status=dcr.status,
             client_uuid=dcr.client_uuid,
+            user_name=dcr.user.full_name if dcr.user else None,
+            employee_code=dcr.user.employee_code if dcr.user else None,
             created_at=dcr.created_at,
             post_call_analysis=post_call,
             product_details=products,

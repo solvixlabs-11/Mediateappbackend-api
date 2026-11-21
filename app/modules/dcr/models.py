@@ -60,6 +60,14 @@ class PlannedVisit(Base):
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
+    # Soft Delete Audit Columns (Wave W7)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, index=True)
+    deleted_by_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    deletion_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    deletion_token: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
+
     # Relationships
     user: Mapped["User"] = relationship("User", foreign_keys=[user_id])  # type: ignore # noqa: F821
     doctor: Mapped["Doctor"] = relationship("Doctor", foreign_keys=[doctor_id])  # type: ignore # noqa: F821
@@ -130,6 +138,14 @@ class DcrVisit(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
+
+    # Soft Delete Audit Columns (Wave W7)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, index=True)
+    deleted_by_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    deletion_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    deletion_token: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
 
     # Relationships
     user: Mapped["User"] = relationship("User", foreign_keys=[user_id])  # type: ignore # noqa: F821
@@ -233,6 +249,14 @@ class FollowUp(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
+
+    # Soft Delete Audit Columns (Wave W7)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, index=True)
+    deleted_by_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    deletion_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    deletion_token: Mapped[str | None] = mapped_column(String(100), nullable=True, index=True)
 
     user: Mapped["User"] = relationship("User", foreign_keys=[user_id])  # type: ignore # noqa: F821
     doctor: Mapped["Doctor"] = relationship("Doctor", foreign_keys=[doctor_id])  # type: ignore # noqa: F821

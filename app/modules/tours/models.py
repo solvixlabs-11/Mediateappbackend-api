@@ -4,10 +4,12 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import BigInteger, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+from app.db.mixins import StandardAuditMixin, utc_now
+from app.modules.users.models import User
 
 
 class TourProgram(Base):
@@ -42,3 +44,37 @@ class TourProgram(Base):
     approval_request: Mapped[ApprovalRequest] = relationship(  # type: ignore # noqa: F821
         "ApprovalRequest", foreign_keys=[approval_request_id]
     )
+
+
+class TourPlanLock(Base, StandardAuditMixin):
+    """Cutoff lock on tour plan submissions by scope (ALL, TERRITORY, EMPLOYEE)."""
+
+    __tablename__ = "tour_plan_locks"
+
+    scope: Mapped[str] = mapped_column(String(50), nullable=False)  # ALL, TERRITORY, EMPLOYEE
+    scope_id: Mapped[int | None] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"), nullable=True
+    )
+    month: Mapped[int] = mapped_column(Integer, nullable=False)  # 1-12
+    year: Mapped[int] = mapped_column(Integer, nullable=False)
+    financial_year: Mapped[str] = mapped_column(String(20), nullable=False)  # e.g. '2026-2027'
+    cutoff_date: Mapped[date] = mapped_column(Date, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(50), default="LOCKED", nullable=False, index=True
+    )  # LOCKED, UNLOCKED
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    created_by_id: Mapped[int] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        ForeignKey("users.id"),
+        nullable=False,
+    )
+    unlocked_by_id: Mapped[int | None] = mapped_column(
+        BigInteger().with_variant(Integer, "sqlite"),
+        ForeignKey("users.id"),
+        nullable=True,
+    )
+    unlocked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    created_by_user: Mapped[User] = relationship("User", foreign_keys=[created_by_id])
+    unlocked_by_user: Mapped[User | None] = relationship("User", foreign_keys=[unlocked_by_id])

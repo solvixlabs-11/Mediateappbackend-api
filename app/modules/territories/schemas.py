@@ -80,9 +80,3 @@ class TerritoryTreeResponse(BaseModel):
 
     total_count: int
     root: TerritoryTreeNode
-    user_name: str
-    territory_id: int
-    territory_name: str
-    assigned_at: datetime
-    unassigned_at: datetime | None = None
-    is_active: bool

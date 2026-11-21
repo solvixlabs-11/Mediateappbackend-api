@@ -87,4 +87,7 @@ class AuthConfigResponse(BaseModel):
     version: str
     environment: str
     roles: list[str]
+    company_name: str | None = None
+    company_code: str | None = None
+    logo_url: str | None = None
     demo_accounts: list[DemoAccount] = []

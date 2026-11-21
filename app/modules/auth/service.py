@@ -466,10 +466,24 @@ class AuthService:
                 ),
             ]
 
+        from app.modules.company_profile.models import CompanyProfile
+
+        company = self.db.query(CompanyProfile).first()
+        company_name = company.company_name if company else settings.PROJECT_NAME
+        company_code = company.company_code if company else "MED"
+        logo_url = (
+            f"/api/v1/files/{company.logo_file_id}/download"
+            if company and company.logo_file_id
+            else None
+        )
+
         return AuthConfigResponse(
             project_name=settings.PROJECT_NAME,
             version=settings.VERSION,
             environment=settings.ENVIRONMENT,
             roles=role_codes,
+            company_name=company_name,
+            company_code=company_code,
+            logo_url=logo_url,
             demo_accounts=demo_accounts,
         )

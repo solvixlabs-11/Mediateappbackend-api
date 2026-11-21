@@ -4,6 +4,7 @@ import math
 from typing import Any
 
 from fastapi import HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
@@ -630,9 +631,17 @@ class UserService:
 
     def get_users_summary(self) -> dict[str, int]:
         """Summary subscription metrics for Employee Master."""
+        from app.modules.mobile_registrations.models import MobileRegistration
+
         total = self.db.query(User).count()
         active = self.db.query(User).filter(User.is_active == True).count()
-        pending = max(0, total - active)
+        pending_regs = (
+            self.db.query(func.count(MobileRegistration.id))
+            .filter(MobileRegistration.status == "PENDING")
+            .scalar()
+            or 0
+        )
+        pending = max(pending_regs, total - active)
         return {
             "total_subscriptions": total,
             "active_subscriptions": active,

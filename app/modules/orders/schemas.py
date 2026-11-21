@@ -63,3 +63,25 @@ class OrderResponse(BaseModel):
     items: list[OrderItemResponse] = []
     created_at: datetime
     updated_at: datetime
+
+
+class OrderStatusUpdateRequest(BaseModel):
+    """Payload to update order status."""
+
+    status: str = Field(..., description="SUBMITTED, CONFIRMED, DISPATCHED, DELIVERED, CANCELLED")
+    notes: str | None = None
+
+
+class OrdersSummaryResponse(BaseModel):
+    """Aggregate KPI metrics for commercial orders."""
+
+    total_orders: int
+    total_amount: float
+    chemist_orders_count: int
+    chemist_orders_amount: float
+    stockist_orders_count: int
+    stockist_orders_amount: float
+    submitted_count: int
+    confirmed_count: int
+    dispatched_count: int
+    delivered_count: int

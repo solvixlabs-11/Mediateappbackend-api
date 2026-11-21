@@ -17,6 +17,7 @@ class MasterItemResponse(BaseModel):
     description: str | None = None
     sort_order: int
     is_active: bool
+    is_provisional: bool = False
     created_at: datetime
 
 
@@ -29,6 +30,7 @@ class MasterItemCreate(BaseModel):
     description: str | None = Field(default=None, max_length=255)
     sort_order: int = 0
     is_active: bool = True
+    is_provisional: bool = False
 
 
 class MasterItemUpdate(BaseModel):
@@ -38,6 +40,14 @@ class MasterItemUpdate(BaseModel):
     description: str | None = Field(default=None, max_length=255)
     sort_order: int | None = None
     is_active: bool | None = None
+    is_provisional: bool | None = None
+
+
+class MasterConfirmBulkRequest(BaseModel):
+    """Payload to bulk confirm provisional master items."""
+
+    item_ids: list[int]
+
 
 
 class StateResponse(BaseModel):

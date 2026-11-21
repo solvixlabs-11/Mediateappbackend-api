@@ -10,6 +10,7 @@ from app.db.session import get_db
 from app.modules.notifications.schemas import (
     DeviceTokenRegisterRequest,
     DeviceTokenResponse,
+    NotificationBroadcastRequest,
     NotificationCreate,
     NotificationResponse,
     NotificationSummaryResponse,
@@ -132,3 +133,23 @@ def register_device_token(
     """Register device token for push notifications."""
     service = NotificationService(db)
     return service.register_device_token(current_user.id, payload)
+
+
+@router.post(
+    "/broadcast",
+    summary="Broadcast announcement notification to field employees",
+)
+def broadcast_notification(
+    payload: NotificationBroadcastRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> dict[str, str | int]:
+    """Broadcast an alert to field staff."""
+    service = NotificationService(db)
+    return service.broadcast_notification(
+        title=payload.title,
+        body=payload.body,
+        notification_type=payload.notification_type,
+        role=payload.target_role,
+        sender_id=current_user.id,
+    )

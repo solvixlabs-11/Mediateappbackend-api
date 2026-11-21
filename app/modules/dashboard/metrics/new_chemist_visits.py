@@ -61,13 +61,14 @@ class NewChemistVisitsMetric(BaseMetricHandler):
         for ch in chemists:
             approval = getattr(ch, "approval_status", "APPROVED") or "APPROVED"
             area_name = ch.area.name if ch.area else "-"
+            city_name = ch.area.city.name if (ch.area and getattr(ch.area, "city", None)) else "-"
             rows.append({
                 "id": str(ch.id),
                 "date": ch.created_at.strftime("%Y-%m-%d") if ch.created_at else "-",
                 "name": ch.shop_name,
                 "owner": ch.contact_person or "-",
                 "mobile": ch.phone or "-",
-                "city": area_name,
+                "city": city_name,
                 "area": area_name,
                 "approval_status": approval,
                 "address": ch.address or "-",

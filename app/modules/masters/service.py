@@ -127,6 +127,44 @@ class MasterService:
         self.db.commit()
         return {"status": "success", "message": f"Item {item_id} deleted successfully"}
 
+    def confirm_item(
+        self, item_type: str, item_id: int, user_id: int | None = None
+    ) -> MasterItemResponse:
+        """Mark a provisional master item as confirmed."""
+        item = self.repo.get_item_by_id(item_id)
+        if not item or (item.type != item_type.upper().strip()):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Master item {item_id} of type '{item_type}' not found",
+            )
+        item.is_provisional = False
+        item.updated_by = user_id
+        self.db.commit()
+        self.db.refresh(item)
+        return MasterItemResponse.model_validate(item)
+
+    def confirm_bulk(
+        self, item_type: str, item_ids: list[int], user_id: int | None = None
+    ) -> list[MasterItemResponse]:
+        """Bulk confirm provisional master items for a given type."""
+        items = (
+            self.db.query(MasterItem)
+            .filter(
+                MasterItem.type == item_type.upper().strip(),
+                MasterItem.id.in_(item_ids),
+                MasterItem.is_deleted == False,
+            )
+            .all()
+        )
+        for it in items:
+            it.is_provisional = False
+            it.updated_by = user_id
+        self.db.commit()
+        for it in items:
+            self.db.refresh(it)
+        return [MasterItemResponse.model_validate(it) for it in items]
+
+
     def list_states(self, active_only: bool = True) -> list[StateResponse]:
         """Fetch all states."""
         states = self.repo.list_states(active_only=active_only)

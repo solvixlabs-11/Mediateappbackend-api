@@ -1,9 +1,9 @@
-"""Seeder for Users and admin accounts."""
+"""Seeder for Users and admin accounts (35 users: 1 Admin, 4 Managers, 30 MRs)."""
 
 import os
 from sqlalchemy.orm import Session
 from app.core.security import hash_password
-from app.modules.users.models import Role, User
+from app.modules.users.models import ManagerMRAssignment, Role, User
 from seed.base import SeedResult
 
 
@@ -27,17 +27,37 @@ def run(session: Session, dev: bool = False) -> SeedResult:
         },
         {
             "email": "manager@mediatehealthcare.com",
-            "full_name": "Regional Manager Demo",
+            "full_name": "Regional Manager West (Demo)",
             "phone": "+919820098201",
             "role": manager_role,
         },
         {
+            "email": "manager.north@mediatehealthcare.com",
+            "full_name": "Regional Manager North",
+            "phone": "+919820098203",
+            "role": manager_role,
+        },
+        {
+            "email": "manager.south@mediatehealthcare.com",
+            "full_name": "Regional Manager South",
+            "phone": "+919820098204",
+            "role": manager_role,
+        },
+        {
+            "email": "manager.east@mediatehealthcare.com",
+            "full_name": "Regional Manager East",
+            "phone": "+919820098205",
+            "role": manager_role,
+        },
+        {
             "email": "mr@mediatehealthcare.com",
-            "full_name": "Field MR Demo",
+            "full_name": "Field MR Demo (Mumbai)",
             "phone": "+919820098202",
             "role": mr_role,
         },
     ]
+
+    managers_list: list[User] = []
 
     for u_data in core_users:
         if not u_data["role"]:
@@ -59,6 +79,8 @@ def run(session: Session, dev: bool = False) -> SeedResult:
                 result.updated += 1
             else:
                 result.unchanged += 1
+            if u_data["role"].code == "MANAGER":
+                managers_list.append(existing)
         else:
             new_u = User(
                 email=u_data["email"],
@@ -70,27 +92,49 @@ def run(session: Session, dev: bool = False) -> SeedResult:
                 force_password_change=False,
             )
             session.add(new_u)
+            session.flush()
             result.created += 1
+            if u_data["role"].code == "MANAGER":
+                managers_list.append(new_u)
 
     session.flush()
 
-    if dev and mr_role:
-        # Seed 10 synthetic MRs for development
-        for i in range(1, 11):
+    if mr_role:
+        # Seed 30 synthetic MRs across territories
+        mr_names = [
+            "Amitabh Varma", "Suresh Deshmukh", "Pooja Hegde", "Vikas Rathore", "Priya Kulkarni",
+            "Rohan Mehra", "Deepak Joshi", "Neha Chawla", "Kunal Singhania", "Anjali Verma",
+            "Gaurav Nambiar", "Sneha Iyer", "Rajesh Tiwari", "Meera Sen", "Manish Rawat",
+            "Swati Bhosale", "Arun Nair", "Kavita Reddy", "Nikhil Chopra", "Divya Menon",
+            "Sanjay Gupta", "Bhavna Patel", "Alok Kumar", "Archana Dubey", "Vinod Pandey",
+            "Radhika Rao", "Sunil Shinde", "Pallavi Joshi", "Harish Pillai", "Preeti Saxena"
+        ]
+
+        for i, name in enumerate(mr_names, start=1):
             email = f"test.mr{i}@mediatehealthcare.com"
             existing = session.query(User).filter(User.email == email).first()
             if not existing:
                 mr = User(
                     email=email,
                     hashed_password=hash_password("MrTest@123"),
-                    full_name=f"Test MR {i:02d}",
-                    phone=f"+9198000000{i:02d}",
+                    full_name=f"{name} (MR-{i:02d})",
+                    phone=f"+9198000{10000 + i}",
                     role_id=mr_role.id,
                     is_active=True,
                     force_password_change=False,
                 )
                 session.add(mr)
+                session.flush()
                 result.created += 1
+
+                # Assign to one of the 4 managers
+                if managers_list:
+                    mgr = managers_list[i % len(managers_list)]
+                    assign = ManagerMRAssignment(
+                        manager_id=mgr.id,
+                        mr_id=mr.id,
+                    )
+                    session.add(assign)
             else:
                 result.unchanged += 1
 

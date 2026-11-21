@@ -804,6 +804,20 @@
     "purpose": "Company logo, legal business name, default timezones, password expiry rules."
   },
   {
+    "id": 591,
+    "key": "utility-admin-panel-audit-trail",
+    "label": "Audit Trail",
+    "path": "/utility/admin-panel/audit-trail",
+    "group": "utility",
+    "groupLabel": "Utility",
+    "subgroup": "Admin Panel",
+    "requiredPermission": "audit:read",
+    "status": "HAVE",
+    "tier": "T3",
+    "ourApp": "Audit trail ledger (W5)",
+    "purpose": "Immutable system audit trail and security mutation ledger."
+  },
+  {
     "id": 60,
     "key": "utility-admin-panel-import-column-mapping",
     "label": "Import Column Mapping",
@@ -1110,6 +1124,20 @@
     "tier": "T1",
     "ourApp": "Expense approval exists, payment step not",
     "purpose": "Finance settlement and bank payout verification for approved claims."
+  },
+  {
+    "id": 811,
+    "key": "utility-reimbursement-expense-limits",
+    "label": "Expense Limits",
+    "path": "/utility/reimbursement/expense-limits",
+    "group": "utility",
+    "groupLabel": "Utility",
+    "subgroup": "Reimbursement",
+    "requiredPermission": "expense_limits:read",
+    "status": "HAVE",
+    "tier": "T3",
+    "ourApp": "Expense limits matrix (W5)",
+    "purpose": "Designation expense limits matrix per expense type."
   },
   {
     "id": 82,

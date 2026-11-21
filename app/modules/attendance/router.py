@@ -69,17 +69,19 @@ def check_out(
     summary="Get user attendance history",
 )
 def get_attendance_history(
+    user_id: int | None = Query(default=None, description="Filter by user ID (Admin/Manager only)"),
     start_date: date | None = Query(default=None),
     end_date: date | None = Query(default=None),
     skip: int = Query(default=0, ge=0),
-    limit: int = Query(default=31, ge=1, le=100),
+    limit: int = Query(default=50, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ) -> list[AttendanceResponse]:
     """Fetch attendance history for date range."""
     service = AttendanceService(db)
     return service.list_history(
-        user=current_user,
+        current_user=current_user,
+        user_id=user_id,
         start_date=start_date,
         end_date=end_date,
         skip=skip,

@@ -418,6 +418,10 @@ def seed_masters(db: Session) -> None:
         if not item:
             db.add(MasterItem(type="VISIT_TYPE", code=code, name=name, description=desc, sort_order=order))
 
+    # 19. Provisional Masters (Wave W6)
+    from app.modules.masters.seed_provisional import seed_provisional_masters
+    seed_provisional_masters(db)
+
     db.flush()
 
     # 4. Geography (States -> Cities -> Areas)

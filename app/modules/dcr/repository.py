@@ -99,6 +99,7 @@ class DcrRepository:
                 joinedload(DcrVisit.chemist),
                 joinedload(DcrVisit.hospital),
                 joinedload(DcrVisit.stockist),
+                joinedload(DcrVisit.user),
                 joinedload(DcrVisit.post_call_analysis),
                 joinedload(DcrVisit.product_details),
             )
@@ -115,6 +116,7 @@ class DcrRepository:
                 joinedload(DcrVisit.chemist),
                 joinedload(DcrVisit.hospital),
                 joinedload(DcrVisit.stockist),
+                joinedload(DcrVisit.user),
                 joinedload(DcrVisit.post_call_analysis),
                 joinedload(DcrVisit.product_details),
             )
@@ -244,6 +246,7 @@ class DcrRepository:
                 joinedload(DcrVisit.chemist),
                 joinedload(DcrVisit.hospital),
                 joinedload(DcrVisit.stockist),
+                joinedload(DcrVisit.user),
                 joinedload(DcrVisit.post_call_analysis),
                 joinedload(DcrVisit.product_details),
             )

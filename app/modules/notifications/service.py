@@ -118,3 +118,38 @@ class NotificationService:
             is_active=token.is_active,
             created_at=token.created_at,
         )
+
+    def broadcast_notification(
+        self,
+        title: str,
+        body: str,
+        notification_type: str = "ANNOUNCEMENT",
+        role: str = "ALL",
+        sender_id: int | None = None,
+    ) -> dict[str, Any]:
+        """Broadcast an alert notification to all active field representatives or a specific role."""
+        from typing import Any
+        from app.modules.users.models import Role, User
+        q = self.db.query(User).filter(User.is_active == True)  # noqa: E712
+        if role and role != "ALL":
+            q = q.join(User.role).filter(Role.code == role.upper())
+        users = q.all()
+
+        created_count = 0
+        for u in users:
+            self.repo.create(
+                user_id=u.id,
+                title=title,
+                body=body,
+                notification_type=notification_type,
+                reference_id=f"broadcast-{sender_id or 0}",
+            )
+            created_count += 1
+
+        self.db.commit()
+        return {
+            "sent_count": created_count,
+            "target_role": role,
+            "title": title,
+            "message": f"Successfully broadcast notification to {created_count} employees.",
+        }
