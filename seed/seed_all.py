@@ -59,6 +59,7 @@ from seed import (
     seed_mapping_batches,
     seed_mobile_registrations,
     seed_tour_plan_locks,
+    seed_app_releases,
 )
 
 SEEDERS = [
@@ -75,6 +76,7 @@ SEEDERS = [
     ("issue_types", seed_issue_types.run, False),
     ("leave_types", seed_leave_types.run, False),
     ("financial_years", seed_financial_years.run, False),
+    ("app_releases", seed_app_releases.run, False),
     ("general_settings", seed_general_settings.run, False),
     ("entry_configs", seed_entry_configs.run, False),
     ("application_setting", seed_application_setting.run, False),

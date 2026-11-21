@@ -9,6 +9,7 @@ import app.modules.customers.models  # noqa: F401
 import app.modules.dcr.models  # noqa: F401
 import app.modules.expenses.models  # noqa: F401
 import app.modules.files.models  # noqa: F401
+import app.modules.financial_years.models  # noqa: F401
 import app.modules.leaves.models  # noqa: F401
 import app.modules.masters.models  # noqa: F401
 import app.modules.meetings.models  # noqa: F401
@@ -16,6 +17,7 @@ import app.modules.mobile_registrations.models  # noqa: F401
 import app.modules.notifications.models  # noqa: F401
 import app.modules.orders.models  # noqa: F401
 import app.modules.products.models  # noqa: F401
+import app.modules.releases.models  # noqa: F401
 import app.modules.stock.models  # noqa: F401
 import app.modules.tasks.models  # noqa: F401
 import app.modules.territories.models  # noqa: F401

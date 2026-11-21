@@ -6031,6 +6031,255 @@
         }
       }
     },
+    "/api/v1/tour-plan-locks": {
+      "get": {
+        "tags": [
+          "Tour Programs"
+        ],
+        "summary": "List active and historical tour plan locks",
+        "description": "Fetch tour plan cutoff locks.",
+        "operationId": "list_tour_plan_locks_api_v1_tour_plan_locks_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 12,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Month"
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 2050,
+                  "minimum": 2020
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Year"
+            }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "ALL, TERRITORY, EMPLOYEE, or ALL_SCOPES",
+              "title": "Scope"
+            },
+            "description": "ALL, TERRITORY, EMPLOYEE, or ALL_SCOPES"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "LOCKED, UNLOCKED, or ALL",
+              "title": "Status"
+            },
+            "description": "LOCKED, UNLOCKED, or ALL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TourPlanLockResponse"
+                  },
+                  "title": "Response List Tour Plan Locks Api V1 Tour Plan Locks Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tour Programs"
+        ],
+        "summary": "Establish a cutoff lock on tour plan submissions (Admin only)",
+        "description": "Establish cutoff deadline lock for a given month and scope.",
+        "operationId": "create_tour_plan_lock_api_v1_tour_plan_locks_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TourPlanLockCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourPlanLockResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tour-plan-locks/history": {
+      "get": {
+        "tags": [
+          "Tour Programs"
+        ],
+        "summary": "Fetch audit history of tour plan locks",
+        "description": "Audit history log of all lock/unlock events.",
+        "operationId": "get_tour_plan_lock_history_api_v1_tour_plan_locks_history_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TourPlanLockResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Tour Plan Lock History Api V1 Tour Plan Locks History Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/tour-plan-locks/{lock_id}/unlock": {
+      "post": {
+        "tags": [
+          "Tour Programs"
+        ],
+        "summary": "Unlock tour plan submissions with audited reason (Admin only)",
+        "description": "Unlock an established tour plan lock.",
+        "operationId": "unlock_tour_plan_lock_api_v1_tour_plan_locks__lock_id__unlock_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lock_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Lock Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TourPlanUnlockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourPlanLockResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/expenses": {
       "post": {
         "tags": [
@@ -10738,6 +10987,1751 @@
           }
         }
       }
+    },
+    "/api/v1/mobile-registrations": {
+      "get": {
+        "tags": [
+          "Mobile Registrations"
+        ],
+        "summary": "List mobile device registrations with filters and pagination",
+        "operationId": "list_mobile_registrations_api_v1_mobile_registrations_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by status (PENDING, APPROVED, REJECTED, ALL)",
+              "title": "Status"
+            },
+            "description": "Filter by status (PENDING, APPROVED, REJECTED, ALL)"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search employee name, code, model",
+              "title": "Search"
+            },
+            "description": "Search employee name, code, model"
+          },
+          {
+            "name": "state_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by employee state IDs",
+              "title": "State Id"
+            },
+            "description": "Filter by employee state IDs"
+          },
+          {
+            "name": "city_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by employee city IDs",
+              "title": "City Id"
+            },
+            "description": "Filter by employee city IDs"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MobileRegistrationListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mobile-registrations/approve": {
+      "post": {
+        "tags": [
+          "Mobile Registrations"
+        ],
+        "summary": "Bulk approve mobile device registrations and activate accounts",
+        "operationId": "bulk_approve_registrations_api_v1_mobile_registrations_approve_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MobileRegistrationBulkActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MobileRegistrationBulkActionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/mobile-registrations/reject": {
+      "post": {
+        "tags": [
+          "Mobile Registrations"
+        ],
+        "summary": "Bulk reject mobile device registrations",
+        "operationId": "bulk_reject_registrations_api_v1_mobile_registrations_reject_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MobileRegistrationBulkActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MobileRegistrationBulkActionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/visits/delete-preview": {
+      "post": {
+        "tags": [
+          "Admin Visits Management"
+        ],
+        "summary": "Preview matching visits for bulk deletion with security token",
+        "description": "Generate preview and secure token for visits deletion (Admin only).",
+        "operationId": "preview_delete_visits_api_v1_admin_visits_delete_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteVisitsPreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteVisitsPreviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/visits/delete": {
+      "post": {
+        "tags": [
+          "Admin Visits Management"
+        ],
+        "summary": "Execute transactional soft delete with side-effect rollback (Admin only)",
+        "description": "Soft delete up to 5,000 visits with atomic rollback of planned visits and follow-ups.",
+        "operationId": "execute_delete_visits_api_v1_admin_visits_delete_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteVisitsExecuteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteVisitsExecuteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/admin/visits/restore": {
+      "post": {
+        "tags": [
+          "Admin Visits Management"
+        ],
+        "summary": "Restore soft-deleted visits within retention window (Admin only)",
+        "description": "Restore soft deleted visits by batch token or explicit IDs.",
+        "operationId": "restore_visits_api_v1_admin_visits_restore_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreVisitsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestoreVisitsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stock/samples/inward": {
+      "get": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "List sample inward shipments received at Head Office",
+        "operationId": "list_sample_inwards_api_v1_stock_samples_inward_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by product ID",
+              "title": "Product Id"
+            },
+            "description": "Filter by product ID"
+          },
+          {
+            "name": "batch_number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by batch number",
+              "title": "Batch Number"
+            },
+            "description": "Filter by batch number"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search challan, product, supplier",
+              "title": "Search"
+            },
+            "description": "Search challan, product, supplier"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleInwardListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "Record sample stock inward arrival at Head Office depot",
+        "operationId": "record_sample_inward_api_v1_stock_samples_inward_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SampleInwardCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleInwardResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stock/samples/allocations": {
+      "get": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "List monthly sample quotas allocated to representatives",
+        "operationId": "list_sample_allocations_api_v1_stock_samples_allocations_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by employee ID",
+              "title": "User Id"
+            },
+            "description": "Filter by employee ID"
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by product ID",
+              "title": "Product Id"
+            },
+            "description": "Filter by product ID"
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 12,
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by calendar month",
+              "title": "Month"
+            },
+            "description": "Filter by calendar month"
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 2035,
+                  "minimum": 2024
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by calendar year",
+              "title": "Year"
+            },
+            "description": "Filter by calendar year"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 15,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleAllocationListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "Assign or update monthly sample quota for an employee",
+        "operationId": "create_sample_allocation_api_v1_stock_samples_allocations_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SampleAllocationCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleAllocationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stock/samples/allocations/bulk": {
+      "post": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "Bulk assign monthly sample quotas across representatives",
+        "operationId": "bulk_sample_allocation_api_v1_stock_samples_allocations_bulk_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SampleAllocationBulkCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/stock/samples/issues": {
+      "get": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "List sample dispatches and issue orders",
+        "operationId": "list_sample_issues_api_v1_stock_samples_issues_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by recipient user ID",
+              "title": "User Id"
+            },
+            "description": "Filter by recipient user ID"
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by product ID",
+              "title": "Product Id"
+            },
+            "description": "Filter by product ID"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by dispatch status",
+              "title": "Status"
+            },
+            "description": "Filter by dispatch status"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleIssueListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "Issue samples to field representative and deduct stock",
+        "operationId": "create_sample_issue_api_v1_stock_samples_issues_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SampleIssueCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleIssueResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stock/samples/issues/{issue_id}/acknowledge": {
+      "post": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "Field staff acknowledgment of sample receipt",
+        "operationId": "acknowledge_sample_issue_api_v1_stock_samples_issues__issue_id__acknowledge_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "issue_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Issue Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SampleIssueAcknowledgeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleIssueResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stock/samples/batches": {
+      "get": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "List active sample batches with expiry status",
+        "operationId": "get_sample_batches_api_v1_stock_samples_batches_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by product ID",
+              "title": "Product Id"
+            },
+            "description": "Filter by product ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SampleBatchResponse"
+                  },
+                  "title": "Response Get Sample Batches Api V1 Stock Samples Batches Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stock/samples/balance": {
+      "get": {
+        "tags": [
+          "Sample Stock Management"
+        ],
+        "summary": "Product-wise sample stock balance ledger (HO vs Field)",
+        "operationId": "get_sample_stock_balance_api_v1_stock_samples_balance_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SampleStockBalanceResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Get Sample Stock Balance Api V1 Stock Samples Balance Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/financial-years": {
+      "get": {
+        "tags": [
+          "Financial Years"
+        ],
+        "summary": "List financial years",
+        "operationId": "list_financial_years_api_v1_financial_years_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search by name or code",
+              "title": "Search"
+            },
+            "description": "Search by name or code"
+          },
+          {
+            "name": "is_current",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter current active fiscal year",
+              "title": "Is Current"
+            },
+            "description": "Filter current active fiscal year"
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter active status",
+              "title": "Is Active"
+            },
+            "description": "Filter active status"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialYearListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Financial Years"
+        ],
+        "summary": "Create financial year",
+        "operationId": "create_financial_year_api_v1_financial_years_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinancialYearCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialYearResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/financial-years/current": {
+      "get": {
+        "tags": [
+          "Financial Years"
+        ],
+        "summary": "Get currently active financial year",
+        "operationId": "get_current_financial_year_api_v1_financial_years_current_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/FinancialYearResponse"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Get Current Financial Year Api V1 Financial Years Current Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/financial-years/{year_id}": {
+      "get": {
+        "tags": [
+          "Financial Years"
+        ],
+        "summary": "Get single financial year details",
+        "operationId": "get_financial_year_api_v1_financial_years__year_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "year_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Year Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialYearResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Financial Years"
+        ],
+        "summary": "Update financial year",
+        "operationId": "update_financial_year_api_v1_financial_years__year_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "year_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Year Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinancialYearUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialYearResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/financial-years/{year_id}/set-current": {
+      "post": {
+        "tags": [
+          "Financial Years"
+        ],
+        "summary": "Set financial year as the current active fiscal year",
+        "operationId": "set_current_financial_year_api_v1_financial_years__year_id__set_current_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "year_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Year Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialYearResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/releases": {
+      "get": {
+        "tags": [
+          "App Releases & What's New"
+        ],
+        "summary": "List product releases & what's new entries",
+        "operationId": "list_releases_api_v1_releases_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Search by title, version, summary",
+              "title": "Search"
+            },
+            "description": "Search by title, version, summary"
+          },
+          {
+            "name": "release_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by release type",
+              "title": "Release Type"
+            },
+            "description": "Filter by release type"
+          },
+          {
+            "name": "is_published",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter publication status",
+              "title": "Is Published"
+            },
+            "description": "Filter publication status"
+          },
+          {
+            "name": "target_audience",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter audience",
+              "title": "Target Audience"
+            },
+            "description": "Filter audience"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Page Size"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppReleaseListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "App Releases & What's New"
+        ],
+        "summary": "Create release note",
+        "operationId": "create_release_api_v1_releases_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppReleaseCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppReleaseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/releases/latest": {
+      "get": {
+        "tags": [
+          "App Releases & What's New"
+        ],
+        "summary": "Get latest published release note",
+        "operationId": "get_latest_release_api_v1_releases_latest_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "target_audience",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Target Audience"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/AppReleaseResponse"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Get Latest Release Api V1 Releases Latest Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/releases/{release_id}": {
+      "get": {
+        "tags": [
+          "App Releases & What's New"
+        ],
+        "summary": "Get single release details",
+        "operationId": "get_release_by_id_api_v1_releases__release_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "release_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Release Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppReleaseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "App Releases & What's New"
+        ],
+        "summary": "Update release note",
+        "operationId": "update_release_api_v1_releases__release_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "release_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Release Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppReleaseUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppReleaseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -10766,6 +12760,314 @@
         ],
         "title": "AdminLiveActivityResponse",
         "description": "Full Admin Home Live Field Activity response (Section 8.2)."
+      },
+      "AppReleaseCreate": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 2,
+            "title": "Version",
+            "description": "Semantic version e.g. v2.2.0"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Title",
+            "description": "Headline of the release"
+          },
+          "release_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Release Date",
+            "description": "Release deployment date"
+          },
+          "release_type": {
+            "type": "string",
+            "title": "Release Type",
+            "description": "Release type: WEB_UPDATE, MOBILE_APK, MAJOR_RELEASE, PATCH",
+            "default": "WEB_UPDATE"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 5,
+            "title": "Summary",
+            "description": "Summary paragraph"
+          },
+          "highlights": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Highlights",
+            "description": "List of key feature bullets"
+          },
+          "target_audience": {
+            "type": "string",
+            "title": "Target Audience",
+            "description": "Target audience: ALL, ADMIN, MR, MANAGER",
+            "default": "ALL"
+          },
+          "is_published": {
+            "type": "boolean",
+            "title": "Is Published",
+            "description": "Publish status",
+            "default": true
+          },
+          "apk_download_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apk Download Url",
+            "description": "Optional APK download link"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "title",
+          "release_date",
+          "summary"
+        ],
+        "title": "AppReleaseCreate"
+      },
+      "AppReleaseListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AppReleaseResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "page_size",
+          "total_pages"
+        ],
+        "title": "AppReleaseListResponse"
+      },
+      "AppReleaseResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "release_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Release Date"
+          },
+          "release_type": {
+            "type": "string",
+            "title": "Release Type"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "highlights": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Highlights"
+          },
+          "target_audience": {
+            "type": "string",
+            "title": "Target Audience"
+          },
+          "is_published": {
+            "type": "boolean",
+            "title": "Is Published"
+          },
+          "apk_download_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apk Download Url"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "version",
+          "title",
+          "release_date",
+          "release_type",
+          "summary",
+          "target_audience",
+          "is_published",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "AppReleaseResponse"
+      },
+      "AppReleaseUpdate": {
+        "properties": {
+          "version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 3
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "release_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Release Date"
+          },
+          "release_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Release Type"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500,
+                "minLength": 5
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "highlights": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Highlights"
+          },
+          "target_audience": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Audience"
+          },
+          "is_published": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Published"
+          },
+          "apk_download_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apk Download Url"
+          }
+        },
+        "type": "object",
+        "title": "AppReleaseUpdate"
       },
       "ApprovalDecisionRequest": {
         "properties": {
@@ -13704,6 +16006,214 @@
         "title": "DcrVisitResponse",
         "description": "DCR visit response with calculated geofence status."
       },
+      "DeleteVisitsExecuteRequest": {
+        "properties": {
+          "preview_token": {
+            "type": "string",
+            "title": "Preview Token",
+            "description": "Active token generated from delete-preview"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 5,
+            "title": "Reason",
+            "description": "Audited business justification for deletion"
+          },
+          "confirm_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confirm Text",
+            "description": "Optional safety phrase confirmation"
+          }
+        },
+        "type": "object",
+        "required": [
+          "preview_token",
+          "reason"
+        ],
+        "title": "DeleteVisitsExecuteRequest",
+        "description": "Payload to execute bulk soft delete with security validation."
+      },
+      "DeleteVisitsExecuteResponse": {
+        "properties": {
+          "deleted_count": {
+            "type": "integer",
+            "title": "Deleted Count"
+          },
+          "planned_visits_reverted": {
+            "type": "integer",
+            "title": "Planned Visits Reverted"
+          },
+          "follow_ups_cancelled": {
+            "type": "integer",
+            "title": "Follow Ups Cancelled"
+          },
+          "deletion_token": {
+            "type": "string",
+            "title": "Deletion Token"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "deleted_count",
+          "planned_visits_reverted",
+          "follow_ups_cancelled",
+          "deletion_token",
+          "message"
+        ],
+        "title": "DeleteVisitsExecuteResponse",
+        "description": "Execution summary of deleted visits and side effect rollbacks."
+      },
+      "DeleteVisitsPreviewRequest": {
+        "properties": {
+          "employee_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employee Ids",
+            "description": "Employee IDs to delete visits for"
+          },
+          "city_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City Ids",
+            "description": "City IDs"
+          },
+          "area_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area Ids",
+            "description": "Area IDs"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date",
+            "description": "Start date (inclusive)"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date",
+            "description": "End date (inclusive)"
+          },
+          "customer_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Type",
+            "description": "DOCTOR, CHEMIST, STOCKIST, HOSPITAL, or ALL"
+          },
+          "visit_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visit Type",
+            "description": "INDEPENDENT, JOINT_WITH_MANAGER, etc."
+          }
+        },
+        "type": "object",
+        "title": "DeleteVisitsPreviewRequest",
+        "description": "Filter parameters to preview visits targeted for bulk deletion."
+      },
+      "DeleteVisitsPreviewResponse": {
+        "properties": {
+          "total_matching_visits": {
+            "type": "integer",
+            "title": "Total Matching Visits"
+          },
+          "preview_token": {
+            "type": "string",
+            "title": "Preview Token"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Expires At"
+          },
+          "max_limit_allowed": {
+            "type": "integer",
+            "title": "Max Limit Allowed",
+            "default": 5000
+          },
+          "sample_visits": {
+            "items": {
+              "$ref": "#/components/schemas/VisitSampleItem"
+            },
+            "type": "array",
+            "title": "Sample Visits"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_matching_visits",
+          "preview_token",
+          "expires_at",
+          "sample_visits"
+        ],
+        "title": "DeleteVisitsPreviewResponse",
+        "description": "Response containing matching count, preview token, and sample records."
+      },
       "DemoAccount": {
         "properties": {
           "role": {
@@ -15147,6 +17657,263 @@
         ],
         "title": "FileResponse",
         "description": "File metadata response."
+      },
+      "FinancialYearCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Name",
+            "description": "Display name e.g. FY 2026-2027"
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 4,
+            "title": "Code",
+            "description": "Code e.g. 2026-2027"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date",
+            "description": "Start date of fiscal year e.g. 2026-04-01"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "title": "End Date",
+            "description": "End date of fiscal year e.g. 2027-03-31"
+          },
+          "is_current": {
+            "type": "boolean",
+            "title": "Is Current",
+            "description": "Flag indicating active current fiscal year",
+            "default": false
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "description": "Active status",
+            "default": true
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Notes / description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "code",
+          "start_date",
+          "end_date"
+        ],
+        "title": "FinancialYearCreate"
+      },
+      "FinancialYearListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/FinancialYearResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "page_size",
+          "total_pages"
+        ],
+        "title": "FinancialYearListResponse"
+      },
+      "FinancialYearResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "title": "End Date"
+          },
+          "is_current": {
+            "type": "boolean",
+            "title": "Is Current"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "code",
+          "start_date",
+          "end_date",
+          "is_current",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "FinancialYearResponse"
+      },
+      "FinancialYearUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20,
+                "minLength": 4
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "start_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Date"
+          },
+          "end_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Date"
+          },
+          "is_current": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Current"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "title": "FinancialYearUpdate"
       },
       "FollowUpCreate": {
         "properties": {
@@ -18250,6 +21017,337 @@
         "title": "MobileDrawerItem",
         "description": "Drawer menu item for mobile application."
       },
+      "MobileRegistrationBulkActionRequest": {
+        "properties": {
+          "ids": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Ids",
+            "description": "List of registration IDs"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment",
+            "description": "Approval or rejection notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ids"
+        ],
+        "title": "MobileRegistrationBulkActionRequest",
+        "description": "Payload to bulk approve or reject registrations."
+      },
+      "MobileRegistrationBulkActionResponse": {
+        "properties": {
+          "total_processed": {
+            "type": "integer",
+            "title": "Total Processed"
+          },
+          "success_count": {
+            "type": "integer",
+            "title": "Success Count"
+          },
+          "failure_count": {
+            "type": "integer",
+            "title": "Failure Count"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/MobileRegistrationRowResult"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_processed",
+          "success_count",
+          "failure_count",
+          "results"
+        ],
+        "title": "MobileRegistrationBulkActionResponse",
+        "description": "Summary of bulk action outcomes."
+      },
+      "MobileRegistrationListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MobileRegistrationResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          },
+          "pending_count": {
+            "type": "integer",
+            "title": "Pending Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "page_size",
+          "total_pages",
+          "pending_count"
+        ],
+        "title": "MobileRegistrationListResponse",
+        "description": "Paginated mobile registration response."
+      },
+      "MobileRegistrationResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "registration_code": {
+            "type": "string",
+            "title": "Registration Code"
+          },
+          "employee_id": {
+            "type": "integer",
+            "title": "Employee Id"
+          },
+          "employee_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employee Name"
+          },
+          "employee_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employee Email"
+          },
+          "designation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Designation"
+          },
+          "territory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Territory"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State"
+          },
+          "device_id_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Id Hash"
+          },
+          "device_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Model"
+          },
+          "app_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "App Version"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "requested_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Requested At"
+          },
+          "decided_by_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By Id"
+          },
+          "decided_by_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By Name"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          },
+          "comment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comment"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "registration_code",
+          "employee_id",
+          "status",
+          "requested_at",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "MobileRegistrationResponse",
+        "description": "Mobile registration single item response."
+      },
+      "MobileRegistrationRowResult": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "success",
+          "status"
+        ],
+        "title": "MobileRegistrationRowResult",
+        "description": "Per-row outcome for bulk action."
+      },
       "MonthlyExpenseSummaryResponse": {
         "properties": {
           "year": {
@@ -20544,6 +23642,81 @@
         "type": "object",
         "title": "ReportsSummaryResponse"
       },
+      "RestoreVisitsRequest": {
+        "properties": {
+          "deletion_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deletion Token",
+            "description": "Token of the deletion batch"
+          },
+          "visit_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Visit Ids",
+            "description": "Explicit visit IDs to restore"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason",
+            "description": "Reason for restoration"
+          }
+        },
+        "type": "object",
+        "title": "RestoreVisitsRequest",
+        "description": "Payload to restore previously soft-deleted visits."
+      },
+      "RestoreVisitsResponse": {
+        "properties": {
+          "restored_count": {
+            "type": "integer",
+            "title": "Restored Count"
+          },
+          "planned_visits_restored": {
+            "type": "integer",
+            "title": "Planned Visits Restored"
+          },
+          "follow_ups_restored": {
+            "type": "integer",
+            "title": "Follow Ups Restored"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "restored_count",
+          "planned_visits_restored",
+          "follow_ups_restored",
+          "message"
+        ],
+        "title": "RestoreVisitsResponse",
+        "description": "Execution summary of restored visits."
+      },
       "RoleCreate": {
         "properties": {
           "name": {
@@ -20661,6 +23834,952 @@
         "type": "object",
         "title": "RoleUpdate",
         "description": "Payload to update an existing role."
+      },
+      "SampleAllocationBulkCreate": {
+        "properties": {
+          "month": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month"
+          },
+          "year": {
+            "type": "integer",
+            "maximum": 2035.0,
+            "minimum": 2024.0,
+            "title": "Year"
+          },
+          "allocations": {
+            "items": {
+              "$ref": "#/components/schemas/SampleAllocationBulkItem"
+            },
+            "type": "array",
+            "title": "Allocations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "month",
+          "year",
+          "allocations"
+        ],
+        "title": "SampleAllocationBulkCreate",
+        "description": "Bulk monthly sample allocation payload."
+      },
+      "SampleAllocationBulkItem": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "allocated_quantity": {
+            "type": "integer",
+            "title": "Allocated Quantity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "product_id",
+          "allocated_quantity"
+        ],
+        "title": "SampleAllocationBulkItem"
+      },
+      "SampleAllocationCreate": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id",
+            "description": "Target field representative user ID"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id",
+            "description": "Product ID"
+          },
+          "month": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month",
+            "description": "Allocation calendar month"
+          },
+          "year": {
+            "type": "integer",
+            "maximum": 2035.0,
+            "minimum": 2024.0,
+            "title": "Year",
+            "description": "Allocation calendar year"
+          },
+          "allocated_quantity": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Allocated Quantity",
+            "description": "Target quota in units"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "product_id",
+          "month",
+          "year",
+          "allocated_quantity"
+        ],
+        "title": "SampleAllocationCreate",
+        "description": "Payload to create or update monthly sample quota for an employee."
+      },
+      "SampleAllocationListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SampleAllocationResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "page_size",
+          "total_pages"
+        ],
+        "title": "SampleAllocationListResponse",
+        "description": "Paginated list of sample allocations."
+      },
+      "SampleAllocationResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Name"
+          },
+          "employee_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employee Code"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "product_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Code"
+          },
+          "month": {
+            "type": "integer",
+            "title": "Month"
+          },
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "allocated_quantity": {
+            "type": "integer",
+            "title": "Allocated Quantity"
+          },
+          "issued_quantity": {
+            "type": "integer",
+            "title": "Issued Quantity"
+          },
+          "distributed_quantity": {
+            "type": "integer",
+            "title": "Distributed Quantity"
+          },
+          "balance_quantity": {
+            "type": "integer",
+            "title": "Balance Quantity"
+          },
+          "allocated_by_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allocated By Name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "product_id",
+          "month",
+          "year",
+          "allocated_quantity",
+          "issued_quantity",
+          "distributed_quantity",
+          "balance_quantity",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SampleAllocationResponse",
+        "description": "Sample monthly allocation output."
+      },
+      "SampleBatchResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "batch_number": {
+            "type": "string",
+            "title": "Batch Number"
+          },
+          "mfg_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mfg Date"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Expiry Date"
+          },
+          "quantity_received": {
+            "type": "integer",
+            "title": "Quantity Received"
+          },
+          "quantity_allocated": {
+            "type": "integer",
+            "title": "Quantity Allocated"
+          },
+          "quantity_issued": {
+            "type": "integer",
+            "title": "Quantity Issued"
+          },
+          "quantity_balance": {
+            "type": "integer",
+            "title": "Quantity Balance"
+          },
+          "days_to_expiry": {
+            "type": "integer",
+            "title": "Days To Expiry"
+          },
+          "expiry_status": {
+            "type": "string",
+            "title": "Expiry Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "product_id",
+          "batch_number",
+          "expiry_date",
+          "quantity_received",
+          "quantity_allocated",
+          "quantity_issued",
+          "quantity_balance",
+          "days_to_expiry",
+          "expiry_status"
+        ],
+        "title": "SampleBatchResponse",
+        "description": "Available batch inventory at Head Office depot."
+      },
+      "SampleInwardCreate": {
+        "properties": {
+          "challan_number": {
+            "type": "string",
+            "title": "Challan Number",
+            "description": "Supplier or manufacturing inward challan/invoice number"
+          },
+          "inward_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Inward Date",
+            "description": "Date of physical arrival at depot"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id",
+            "description": "Target pharmaceutical product ID"
+          },
+          "batch_number": {
+            "type": "string",
+            "title": "Batch Number",
+            "description": "Batch number"
+          },
+          "mfg_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mfg Date",
+            "description": "Manufacturing date"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Expiry Date",
+            "description": "Expiry date (must be in future)"
+          },
+          "quantity": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Quantity",
+            "description": "Quantity inwarded in packs/units"
+          },
+          "unit_cost": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Unit Cost",
+            "description": "Unit cost per sample",
+            "default": 0.0
+          },
+          "supplier_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supplier Name",
+            "description": "Supplier / Manufacturing unit name"
+          },
+          "remarks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remarks",
+            "description": "Inspection or warehouse remarks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "challan_number",
+          "inward_date",
+          "product_id",
+          "batch_number",
+          "expiry_date",
+          "quantity"
+        ],
+        "title": "SampleInwardCreate",
+        "description": "Payload to record new promotional sample stock inward at HO."
+      },
+      "SampleInwardListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SampleInwardResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "page_size",
+          "total_pages"
+        ],
+        "title": "SampleInwardListResponse",
+        "description": "Paginated list of sample inward records."
+      },
+      "SampleInwardResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "challan_number": {
+            "type": "string",
+            "title": "Challan Number"
+          },
+          "inward_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Inward Date"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "product_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Code"
+          },
+          "batch_number": {
+            "type": "string",
+            "title": "Batch Number"
+          },
+          "mfg_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mfg Date"
+          },
+          "expiry_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Expiry Date"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "unit_cost": {
+            "type": "number",
+            "title": "Unit Cost"
+          },
+          "supplier_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supplier Name"
+          },
+          "remarks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remarks"
+          },
+          "received_by_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received By Id"
+          },
+          "received_by_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received By Name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "challan_number",
+          "inward_date",
+          "product_id",
+          "batch_number",
+          "expiry_date",
+          "quantity",
+          "unit_cost",
+          "created_at"
+        ],
+        "title": "SampleInwardResponse",
+        "description": "Sample inward record output."
+      },
+      "SampleIssueAcknowledgeRequest": {
+        "properties": {
+          "received_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Received Date",
+            "description": "Date samples physically received"
+          },
+          "remarks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remarks",
+            "description": "Condition on arrival notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "received_date"
+        ],
+        "title": "SampleIssueAcknowledgeRequest",
+        "description": "Field representative acknowledgment of receipt."
+      },
+      "SampleIssueCreate": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id",
+            "description": "Field representative recipient user ID"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id",
+            "description": "Product ID"
+          },
+          "batch_number": {
+            "type": "string",
+            "title": "Batch Number",
+            "description": "Selected available stock batch number"
+          },
+          "quantity": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Quantity",
+            "description": "Quantity to dispatch"
+          },
+          "dispatch_mode": {
+            "type": "string",
+            "title": "Dispatch Mode",
+            "description": "HANDOVER, COURIER, DEPOT_PICKUP",
+            "default": "COURIER"
+          },
+          "tracking_reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracking Reference",
+            "description": "Courier docket / tracking number"
+          },
+          "remarks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remarks",
+            "description": "Dispatch instructions or notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "product_id",
+          "batch_number",
+          "quantity"
+        ],
+        "title": "SampleIssueCreate",
+        "description": "Payload to physically issue samples to field representative."
+      },
+      "SampleIssueListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SampleIssueResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "page_size": {
+            "type": "integer",
+            "title": "Page Size"
+          },
+          "total_pages": {
+            "type": "integer",
+            "title": "Total Pages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "page",
+          "page_size",
+          "total_pages"
+        ],
+        "title": "SampleIssueListResponse",
+        "description": "Paginated list of sample issue dispatches."
+      },
+      "SampleIssueResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "issue_number": {
+            "type": "string",
+            "title": "Issue Number"
+          },
+          "issue_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Issue Date"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "user_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Name"
+          },
+          "employee_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employee Code"
+          },
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Name"
+          },
+          "product_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Code"
+          },
+          "batch_number": {
+            "type": "string",
+            "title": "Batch Number"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "dispatch_mode": {
+            "type": "string",
+            "title": "Dispatch Mode"
+          },
+          "tracking_reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tracking Reference"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "received_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Received Date"
+          },
+          "remarks": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remarks"
+          },
+          "issued_by_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Issued By Name"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "issue_number",
+          "issue_date",
+          "user_id",
+          "product_id",
+          "batch_number",
+          "quantity",
+          "dispatch_mode",
+          "status",
+          "created_at"
+        ],
+        "title": "SampleIssueResponse",
+        "description": "Sample dispatch / issue record output."
+      },
+      "SampleStockBalanceResponse": {
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "product_code": {
+            "type": "string",
+            "title": "Product Code"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "packaging": {
+            "type": "string",
+            "title": "Packaging"
+          },
+          "ho_balance": {
+            "type": "integer",
+            "title": "Ho Balance"
+          },
+          "total_allocated": {
+            "type": "integer",
+            "title": "Total Allocated"
+          },
+          "total_issued": {
+            "type": "integer",
+            "title": "Total Issued"
+          },
+          "total_sampled_dcr": {
+            "type": "integer",
+            "title": "Total Sampled Dcr"
+          },
+          "mr_holding_balance": {
+            "type": "integer",
+            "title": "Mr Holding Balance"
+          },
+          "active_batches_count": {
+            "type": "integer",
+            "title": "Active Batches Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "product_name",
+          "product_code",
+          "category",
+          "packaging",
+          "ho_balance",
+          "total_allocated",
+          "total_issued",
+          "total_sampled_dcr",
+          "mr_holding_balance",
+          "active_batches_count"
+        ],
+        "title": "SampleStockBalanceResponse",
+        "description": "High-level sample stock balance report item."
       },
       "SettingBulkItem": {
         "properties": {
@@ -22429,6 +26548,231 @@
         "title": "TokenResponse",
         "description": "JWT access token and rotating refresh token response."
       },
+      "TourPlanLockCreateRequest": {
+        "properties": {
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "description": "Lock scope: ALL, TERRITORY, or EMPLOYEE",
+            "default": "ALL"
+          },
+          "scope_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Id",
+            "description": "Target territory ID or employee ID"
+          },
+          "month": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month",
+            "description": "Target month (1-12)"
+          },
+          "year": {
+            "type": "integer",
+            "maximum": 2050.0,
+            "minimum": 2020.0,
+            "title": "Year",
+            "description": "Target calendar year"
+          },
+          "financial_year": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Financial Year",
+            "description": "e.g. 2026-2027",
+            "default": "2026-2027"
+          },
+          "cutoff_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Cutoff Date",
+            "description": "Cutoff submission deadline date"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason",
+            "description": "Reason for establishing lock"
+          }
+        },
+        "type": "object",
+        "required": [
+          "month",
+          "year",
+          "cutoff_date"
+        ],
+        "title": "TourPlanLockCreateRequest",
+        "description": "Payload to establish a cutoff lock on tour plans."
+      },
+      "TourPlanLockResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope"
+          },
+          "scope_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Id"
+          },
+          "scope_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Name"
+          },
+          "month": {
+            "type": "integer",
+            "title": "Month"
+          },
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "financial_year": {
+            "type": "string",
+            "title": "Financial Year"
+          },
+          "cutoff_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Cutoff Date"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "created_by_id": {
+            "type": "integer",
+            "title": "Created By Id"
+          },
+          "created_by_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created By Name"
+          },
+          "unlocked_by_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unlocked By Id"
+          },
+          "unlocked_by_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unlocked By Name"
+          },
+          "unlocked_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unlocked At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "scope",
+          "month",
+          "year",
+          "financial_year",
+          "cutoff_date",
+          "status",
+          "created_by_id",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "TourPlanLockResponse",
+        "description": "Tour plan cutoff lock response."
+      },
+      "TourPlanUnlockRequest": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "title": "Reason",
+            "description": "Audited business justification for unlocking"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "title": "TourPlanUnlockRequest",
+        "description": "Payload to unlock tour plan submissions."
+      },
       "TourProgramCreateRequest": {
         "properties": {
           "title": {
@@ -22473,6 +26817,18 @@
             ],
             "title": "Objectives",
             "description": "Key tour targets and customer visits"
+          },
+          "admin_override_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Admin Override Reason",
+            "description": "Admin justification to override an active cutoff lock"
           }
         },
         "type": "object",
@@ -23033,6 +27389,74 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "VisitSampleItem": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "dcr_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Dcr Date"
+          },
+          "customer_type": {
+            "type": "string",
+            "title": "Customer Type"
+          },
+          "customer_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Name"
+          },
+          "employee_id": {
+            "type": "integer",
+            "title": "Employee Id"
+          },
+          "employee_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employee Name"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "pob_amount": {
+            "type": "number",
+            "title": "Pob Amount",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "dcr_date",
+          "customer_type",
+          "employee_id"
+        ],
+        "title": "VisitSampleItem",
+        "description": "Summary of a visit in the deletion preview sample."
       },
       "VisitsSummaryResponse": {
         "properties": {

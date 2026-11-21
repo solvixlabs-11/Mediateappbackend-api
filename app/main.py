@@ -24,6 +24,7 @@ from app.modules.dcr.router import router as dcr_router
 from app.modules.expenses.router import limits_router as expense_limits_router
 from app.modules.expenses.router import router as expenses_router
 from app.modules.files.router import router as files_router
+from app.modules.financial_years.router import router as financial_years_router
 from app.modules.health.router import router as health_router
 from app.modules.leaves.router import router as leaves_router
 from app.modules.mappings.router import router as mappings_router
@@ -34,6 +35,7 @@ from app.modules.navigation.router import router as navigation_router
 from app.modules.notifications.router import router as notifications_router
 from app.modules.orders.router import router as orders_router
 from app.modules.products.router import router as products_router
+from app.modules.releases.router import router as releases_router
 from app.modules.reports.router import router as reports_router
 from app.modules.settings.router import router as settings_router
 from app.modules.stock.router import router as stock_router
@@ -141,3 +143,5 @@ app.include_router(calendar_router, prefix=settings.API_V1_PREFIX)
 app.include_router(mobile_registrations_router, prefix=settings.API_V1_PREFIX)
 app.include_router(admin_visits_router, prefix=settings.API_V1_PREFIX)
 app.include_router(stock_router, prefix=settings.API_V1_PREFIX)
+app.include_router(financial_years_router, prefix=settings.API_V1_PREFIX)
+app.include_router(releases_router, prefix=settings.API_V1_PREFIX)
